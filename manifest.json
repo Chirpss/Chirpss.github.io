@@ -7,12 +7,12 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "https://gist.githubusercontent.com/thomkri/bc67a4a25f374f45ff3ed2c5ff2f7d50/raw/27640e3bdb6a02686c2cfd648ec08bd2ea821223/logo192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "https://raw.githubusercontent.com/mikolalysenko/lena/refs/heads/master/lena.png",
       "sizes": "512x512",
       "type": "image/png"
     }
