@@ -1,6 +1,6 @@
 {
-  "name": "My App",
-  "short_name": "MyApp",
+  "name": "Chirpss",
+  "short_name": "Chirpss",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
