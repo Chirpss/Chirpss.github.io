@@ -31,8 +31,8 @@
     }
 
     .gradient-text {
-      padding-top: 20px;
-      background: linear-gradient(90deg, #FFD347, #FF9F00, #FFF580);
+      padding-top: 30px;
+      background: linear-gradient(90deg, #EFEFEF);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: gradientShift 6s infinite alternate ease-in-out;
@@ -69,7 +69,7 @@
 <body class="flex flex-col items-center justify-center min-h-screen text-center">
   <header class="fade-in mb-10">
     <div class="flex justify-center items-center gap-4">
-      <img src="icon.png" alt="LOGO" width="72" height="72" padding-top="10px" class="drop-shadow-lg">
+      <img src="icon.png" alt="LOGO" width="72" height="72" class="drop-shadow-lg gradient-text">
       <h1 class="text-6xl md:text-7xl font-bold gradient-text font-[Poppins]">Chirpss</h1>
     </div>
     <p class="mt-4 text-orange-100 text-lg font-semibold">
@@ -162,7 +162,7 @@
       const t = calculateTimeLeft();
       if (!t) {
         document.getElementById("countdown-timer").innerHTML =
-          '<span class="text-3xl font-bold gradient-text">🚀 We\'re Live!</span>';
+          '<span class="text-6xl md:text-7xl font-bold gradient-text font-[Poppins]">We\'re Live!</span>';
         return;
       }
       document.getElementById('days').textContent = t.days.toString().padStart(2, '0');
