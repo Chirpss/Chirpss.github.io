@@ -1,203 +1,178 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chirpss - Coming Soon</title>
-    <link rel="icon" href="icon.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#000000">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        @layer base {
-            :root {
-                --background: 20 100% 96%;
-                --foreground: 264 60% 15%;
-                --card: 0 0% 100%;
-                --card-foreground: 264 60% 15%;
-                --popover: 0 0% 100%;
-                --popover-foreground: 264 60% 15%;
-                --primary: 35 95% 58%;
-                --primary-foreground: 0 0% 100%;
-                --secondary: 259 100% 90%;
-                --secondary-foreground: 264 60% 15%;
-                --muted: 259 100% 90%;
-                --muted-foreground: 264 30% 40%;
-                --accent: 0 100% 67%;
-                --accent-foreground: 0 0% 100%;
-                --destructive: 0 84.2% 60.2%;
-                --destructive-foreground: 0 0% 98%;
-                --border: 259 100% 88%;
-                --input: 259 100% 90%;
-                --ring: 206 100% 67%;
-                --radius: 0.8rem;
-            }
-            body {
-                font-family: 'PT Sans', sans-serif;
-            }
-        }
-    </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        body: ['PT Sans', 'sans-serif'],
-                        headline: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        border: "hsl(var(--border))",
-                        input: "hsl(var(--input))",
-                        ring: "hsl(var(--ring))",
-                        background: "hsl(var(--background))",
-                        foreground: "hsl(var(--foreground))",
-                        primary: {
-                            DEFAULT: "hsl(var(--primary))",
-                            foreground: "hsl(var(--primary-foreground))",
-                        },
-                        secondary: {
-                            DEFAULT: "hsl(var(--secondary))",
-                            foreground: "hsl(var(--secondary-foreground))",
-                        },
-                        destructive: {
-                            DEFAULT: "hsl(var(--destructive))",
-                            foreground: "hsl(var(--destructive-foreground))",
-                        },
-                        muted: {
-                            DEFAULT: "hsl(var(--muted))",
-                            foreground: "hsl(var(--muted-foreground))",
-                        },
-                        accent: {
-                            DEFAULT: "hsl(var(--accent))",
-                            foreground: "hsl(var(--accent-foreground))",
-                        },
-                        popover: {
-                            DEFAULT: "hsl(var(--popover))",
-                            foreground: "hsl(var(--popover-foreground))",
-                        },
-                        card: {
-                            DEFAULT: "hsl(var(--card))",
-                            foreground: "hsl(var(--card-foreground))",
-                        },
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chirpss - Coming Soon</title>
+  <link rel="icon" href="icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'PT Sans', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #FFD580, #FF914D, #FF6B00, #201000);
+      background-attachment: fixed;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .countdown-box {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .countdown-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 160, 64, 0.7);
+    }
+
+    .gradient-text {
+      padding-top: 20px;
+      background: linear-gradient(90deg, #FFD347, #FF9F00, #FFF580);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 6s infinite alternate ease-in-out;
+    }
+
+    @keyframes gradientShift {
+      from { background-position: 0% 50%; }
+      to { background-position: 100% 50%; }
+    }
+
+    .fade-in {
+      animation: fadeIn 1.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 25px rgba(255, 165, 64, 0.4);
+    }
+  </style>
 </head>
-<body class="font-body antialiased h-full bg-gradient-to-br from-background to-secondary text-foreground">
-    <div class="min-h-screen p-4 sm:p-8">
-        <div class="max-w-4xl mx-auto">
-            <header class="text-center py-12">
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <img src="icon.png" alt="LOGO" width="72" height="72">
-                    <h1 class="text-5xl md:text-7xl font-headline font-bold text-primary">
-                        Chirpss
-                    </h1>
-                </div>
-            </header>
+<body class="flex flex-col items-center justify-center min-h-screen text-center">
+  <header class="fade-in mb-10">
+    <div class="flex justify-center items-center gap-4">
+      <img src="icon.png" alt="LOGO" width="72" height="72" padding-top="10px" class="drop-shadow-lg">
+      <h1 class="text-6xl md:text-7xl font-bold gradient-text font-[Poppins]">Chirpss</h1>
+    </div>
+    <p class="mt-4 text-orange-100 text-lg font-semibold">
+      Launching November 10th, 2025 • 3:30 PM (Berlin Time)
+    </p>
+  </header>
 
-            <main>
-                <div id="countdown-timer" class="flex justify-center gap-4 my-8">
-                     <div class="text-center p-4 bg-white/10 rounded-lg shadow-lg">
-                        <div class="text-4xl md:text-6xl font-bold font-headline" id="days">--</div>
-                        <div class="text-sm md:text-lg uppercase font-semibold">days</div>
-                    </div>
-                    <div class="text-center p-4 bg-white/10 rounded-lg shadow-lg">
-                        <div class="text-4xl md:text-6xl font-bold font-headline" id="hours">--</div>
-                        <div class="text-sm md:text-lg uppercase font-semibold">hours</div>
-                    </div>
-                    <div class="text-center p-4 bg-white/10 rounded-lg shadow-lg">
-                        <div class="text-4xl md:text-6xl font-bold font-headline" id="minutes">--</div>
-                        <div class="text-sm md:text-lg uppercase font-semibold">minutes</div>
-                    </div>
-                    <div class="text-center p-4 bg-white/10 rounded-lg shadow-lg">
-                        <div class="text-4xl md:text-6xl font-bold font-headline" id="seconds">--</div>
-                        <div class="text-sm md:text-lg uppercase font-semibold">seconds</div>
-                    </div>
-                </div>
-                <p class="text-center text-muted-foreground font-semibold mb-16">
-                    Launching on November 10th, 2025 at 3:30 PM (Berlin Time)
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-card/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        </div>
-                        <h3 class="text-xl font-headline font-bold mb-2">Dynamic Feed</h3>
-                        <p class="text-muted-foreground">Engage with a real-time feed powered by an intelligent ranking algorithm. See posts from friends and discover new content.</p>
-                    </div>
-                    <div class="bg-card/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
-                        </div>
-                        <h3 class="text-xl font-headline font-bold mb-2">Interactive Polls</h3>
-                        <p class="text-muted-foreground">Create engaging polls to gather opinions from your followers. Choose from multiple options and see results in real-time.</p>
-                    </div>
-                     <div class="bg-card/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        </div>
-                        <h3 class="text-xl font-headline font-bold mb-2">Location Tagging</h3>
-                        <p class="text-muted-foreground">Share your experiences by tagging posts and even individual poll options with a location, complete with an embedded map view.</p>
-                    </div>
-                    <div class="bg-card/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-headline font-bold mb-2">Customizable Themes</h3>
-                        <p class="text-muted-foreground">Personalize your experience with multiple light and dark mode themes. Choose a color palette that fits your style.</p>
-                    </div>
-                </div>
-            </main>
-
-            <footer class="text-center py-12 mt-8">
-                <p class="text-muted-foreground">Chirpss@proton.me</p>
-            </footer>
-        </div>
+  <main class="fade-in">
+    <!-- Countdown -->
+    <div id="countdown-timer" class="flex flex-wrap justify-center gap-6 mb-16">
+      <div class="countdown-box rounded-2xl px-6 py-4">
+        <div id="days" class="text-5xl md:text-7xl font-bold font-[Poppins]">--</div>
+        <div class="uppercase text-sm tracking-wider mt-1 text-orange-200">Days</div>
+      </div>
+      <div class="countdown-box rounded-2xl px-6 py-4">
+        <div id="hours" class="text-5xl md:text-7xl font-bold font-[Poppins]">--</div>
+        <div class="uppercase text-sm tracking-wider mt-1 text-orange-200">Hours</div>
+      </div>
+      <div class="countdown-box rounded-2xl px-6 py-4">
+        <div id="minutes" class="text-5xl md:text-7xl font-bold font-[Poppins]">--</div>
+        <div class="uppercase text-sm tracking-wider mt-1 text-orange-200">Minutes</div>
+      </div>
+      <div class="countdown-box rounded-2xl px-6 py-4">
+        <div id="seconds" class="text-5xl md:text-7xl font-bold font-[Poppins]">--</div>
+        <div class="uppercase text-sm tracking-wider mt-1 text-orange-200">Seconds</div>
+      </div>
     </div>
 
-    <script>
-        function calculateTimeLeft() {
-            // Berlin is UTC+2 (CEST) during summer, UTC+1 (CET) during winter. Nov 10st is CET.
-            const difference = +new Date('2025-11-10T15:30:00+01:00') - +new Date();
-            let timeLeft = {};
+    <!-- Features -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+      <div class="feature-card p-6">
+        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-orange-400 to-yellow-500 text-white mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-[Poppins]">Dynamic Feed</h3>
+        <p class="text-orange-100/90">Engage with a real-time feed powered by an intelligent ranking algorithm. See posts from friends and discover new content.</p>
+      </div>
 
-            if (difference > 0) {
-                timeLeft = {
-                    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-                    minutes: Math.floor((difference / 1000 / 60) % 60),
-                    seconds: Math.floor((difference / 1000) % 60),
-                };
-            }
-            return timeLeft;
-        }
+      <div class="feature-card p-6">
+        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-orange-400 to-yellow-500 text-white mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-[Poppins]">Interactive Polls</h3>
+        <p class="text-orange-100/90">Create engaging polls to gather opinions from your followers. Choose from multiple options and see results in real-time.</p>
+      </div>
 
-        function updateTimer() {
-            const timeLeft = calculateTimeLeft();
-            const timerEl = document.getElementById('countdown-timer');
+      <div class="feature-card p-6">
+        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-orange-400 to-yellow-500 text-white mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-[Poppins]">Location Tagging</h3>
+        <p class="text-orange-100/90">Share your experiences by tagging posts and even poll options with a location, complete with an embedded map view.</p>
+      </div>
 
-            if (Object.keys(timeLeft).length === 0) {
-                timerEl.innerHTML = '<span class="text-2xl font-bold">Launch Time!</span>';
-                return;
-            }
+      <div class="feature-card p-6">
+        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-orange-400 to-yellow-500 text-white mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2 font-[Poppins]">Customizable Themes</h3>
+        <p class="text-orange-100/90">Personalize your experience with multiple light and dark mode themes. Choose a color palette that fits your vibe.</p>
+      </div>
+    </div>
+  </main>
 
-            document.getElementById('days').innerText = String(timeLeft.days).padStart(2, '0');
-            document.getElementById('hours').innerText = String(timeLeft.hours).padStart(2, '0');
-            document.getElementById('minutes').innerText = String(timeLeft.minutes).padStart(2, '0');
-            document.getElementById('seconds').innerText = String(timeLeft.seconds).padStart(2, '0');
-        }
+  <footer class="text-orange-200 text-sm fade-in mb-8">
+    <p>Chirpss@proton.me</p>
+  </footer>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateTimer(); // Initial call
-            setInterval(updateTimer, 1000);
-        });
-    </script>
+  <script>
+    function calculateTimeLeft() {
+      const difference = +new Date('2025-11-10T15:30:00+01:00') - +new Date();
+      if (difference <= 0) return null;
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    }
+
+    function updateTimer() {
+      const t = calculateTimeLeft();
+      if (!t) {
+        document.getElementById("countdown-timer").innerHTML =
+          '<span class="text-3xl font-bold gradient-text">🚀 We\'re Live!</span>';
+        return;
+      }
+      document.getElementById('days').textContent = t.days.toString().padStart(2, '0');
+      document.getElementById('hours').textContent = t.hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = t.minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = t.seconds.toString().padStart(2, '0');
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  </script>
 </body>
 </html>
