@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chirpss - Party Games Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind Configuration: Deep Twilight Palette
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',   /* Main Dark Background */
+                        'warm-dusk': '#E87040',       /* Primary Action/Button */
+                        'fiery-core': '#FFC35B',      /* Accent/Highlight */
+                        'soft-horizon': '#F5F1E6',    /* Light Text/Card Background */
+                        'subtle-gray': '#5A6F82',     /* Subtler text/border color */
+                    },
+                    boxShadow: {
+                        // Custom shadow for a modern "lift" effect on hover
+                        'card-glow': '0 0 15px rgba(232, 112, 64, 0.4)', // Subtle glow using warm-dusk
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Set the overall dark background */
+            background-color: #1C2A39; /* deep-twilight */
+            color: #F5F1E6; /* soft-horizon for default text */
+        }
+        .game-card-link {
+            /* Clean focus state for accessibility */
+            outline: none; 
+            transition: all 0.2s ease-in-out;
+        }
+        .game-card-link:hover, .game-card-link:focus-visible {
+            transform: translateY(-4px); /* Subtle lift effect */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), var(--tw-shadow-card-glow);
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+
+    <script>
+        window.startPlay = function(gameName) {
+            // Remove spaces from the game name for a clean URL
+            const urlPath = '/' + gameName.replace(/\s/g, '') + '/';
+            console.log(`Navigating to: ${urlPath}`);
+            window.location.href = urlPath;
+        };
+    </script>
+    
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-8">
+        
+        <div class="text-center mb-12 mt-4">
+            <p class="text-lg text-subtle-gray font-medium mb-1"></p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('Imposter')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        
+                        <div class="flex-grow">
+                            <h3 class="text-xl font-extrabold mb-1 tracking-tight">The Imposter</h3>
+                            <p class="text-sm font-normal text-deep-twilight/80">
+                                Everyone but the Imposter knows the secret word. Debate and vote to unmask the spy before they figure out the truth!
+                            </p>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="w-full py-2 bg-warm-dusk text-soft-horizon font-semibold text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
+                                Launch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative cursor-default p-1">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
+                    <div class="text-center text-soft-horizon">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-fiery-core/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 3h.01M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h3 class="text-lg font-bold">More Games Soon!</h3>
+                        <p class="text-sm mt-1 text-subtle-gray">Coming soon to your party.</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+</body>
+</html>
