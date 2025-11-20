@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposter Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind Configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                        'danger-red': '#E53E3E',
+                        'success-green': '#38A169',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1C2A39;
+            color: #F5F1E6;
+            overflow: hidden; 
+        }
+        .timer-display {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(255, 195, 91, 0.4);
+        }
+        @media (max-width: 640px) {
+            .timer-display {
+                font-size: 6rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased flex flex-col">
+    
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+        
+        <div id="timer-state" class="text-center transition-opacity duration-300">
+            <h2 id="timer-heading" class="text-3xl font-bold mb-8 text-soft-horizon">DISCUSSION ROUND</h2>
+            
+            <div id="timer" class="timer-display text-fiery-core mb-10">
+                05:00
+            </div>
+
+            <div class="flex space-x-4 max-w-sm mx-auto">
+                <button onclick="toggleTimer()" id="pause-button" class="flex-grow py-3 bg-subtle-gray text-soft-horizon font-bold text-lg rounded-xl shadow-lg">
+                    ⏸️ PAUSE
+                </button>
+                <button onclick="endRound()" id="end-button" class="flex-grow py-3 bg-danger-red text-soft-horizon font-bold text-lg rounded-xl shadow-lg">
+                    🛑 END ROUND
+                </button>
+            </div>
+        </div>
+
+        <div id="results-state" class="hidden text-center max-w-md mx-auto transition-opacity duration-300">
+            <h2 id="results-heading" class="text-4xl font-extrabold text-soft-horizon mb-6">TIME IS UP!</h2>
+            <p id="results-message" class="text-xl text-subtle-gray mb-8">
+                The round has ended. Time to vote for the imposter!
+            </p>
+            
+            <button onclick="revealImposter()" id="reveal-button" class="w-full py-4 bg-warm-dusk text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg">
+                REVEAL IMPOSTER
+            </button>
+            
+            <div id="imposter-details" class="hidden mt-8 p-6 bg-deep-twilight/50 rounded-xl border border-subtle-gray/50">
+                <p class="text-2xl font-bold mb-2 text-danger-red">
+                    The Imposter(s) was: <span id="imposter-name"></span>
+                </p>
+                <p class="text-lg text-soft-horizon">
+                    The secret word was: <span id="secret-word" class="font-bold text-fiery-core"></span>
+                </p>
+            </div>
+            
+            <button onclick="playAgain()" id="play-again-button" class="w-full py-4 mt-6 bg-success-green text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg hidden">
+                PLAY AGAIN
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Game Variables ---
+        let gameData = {};
+        let assignedRoles = {}; 
+        let timerInterval;
+        let timeRemaining; 
+        let isPaused = false;
+        let imposterNames = [];
+        let secretWord = '';
+
+        // --- Utility Functions ---
+
+        function getGameData() {
+            const data = sessionStorage.getItem('chirpss_imposter_game_data');
+            const roles = sessionStorage.getItem('chirpss_imposter_assigned_roles');
+            
+            if (!data || !roles) {
+                // Should only happen if user navigates directly here without setup
+                alert("Game data not found. Redirecting to setup.");
+                window.location.href = '/Imposter/';
+                return null;
+            }
+            gameData = JSON.parse(data);
+            assignedRoles = JSON.parse(roles);
+            
+            // Extract core game details
+            secretWord = assignedRoles[Object.keys(assignedRoles)[0]].word;
+            imposterNames = Object.keys(assignedRoles).filter(name => assignedRoles[name].isImposter);
+            
+            return true;
+        }
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // --- Timer Functions ---
+
+        function startTimer() {
+            if (!getGameData()) return;
+
+            // Initialize time if starting fresh (redirected from reveal page)
+            if (timeRemaining === undefined) {
+                timeRemaining = gameData.gameTimeSeconds;
+            }
+            isPaused = false;
+            
+            // Update button text and state
+            document.getElementById('pause-button').textContent = '⏸️ PAUSE';
+            document.getElementById('timer-heading').textContent = 'DISCUSSION ROUND';
+
+            // Clear any existing interval
+            clearInterval(timerInterval);
+
+            // Start new interval
+            timerInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeUp();
+                    return;
+                }
+                
+                timeRemaining--;
+                document.getElementById('timer').textContent = formatTime(timeRemaining);
+            }, 1000);
+        }
+
+        function toggleTimer() {
+            if (!isPaused) {
+                clearInterval(timerInterval);
+                isPaused = true;
+                document.getElementById('pause-button').textContent = '▶️ RESUME';
+                document.getElementById('timer-heading').textContent = 'ROUND PAUSED';
+            } else {
+                startTimer();
+            }
+        }
+
+        function endRound() {
+            if (confirm("Are you sure you want to end the round early and start voting?")) {
+                clearInterval(timerInterval);
+                handleTimeUp(true);
+            }
+        }
+
+        function handleTimeUp(earlyEnd = false) {
+            // Show the results state container
+            document.getElementById('timer-state').classList.add('hidden');
+            document.getElementById('results-state').classList.remove('hidden');
+            
+            const heading = earlyEnd ? 'VOTING TIME!' : 'TIME IS UP!';
+            document.getElementById('results-heading').textContent = heading;
+            document.getElementById('results-message').textContent = 'The round has ended. Time to discuss and vote for the imposter!';
+        }
+
+        // --- Results Functions ---
+
+        function revealImposter() {
+            document.getElementById('reveal-button').classList.add('hidden');
+            document.getElementById('imposter-details').classList.remove('hidden');
+            document.getElementById('play-again-button').classList.remove('hidden');
+            
+            const imposterNamesString = imposterNames.join(' and ');
+
+            // Player win condition logic:
+            // If Imposter was caught (not implemented in this frontend logic, so we assume they were caught for a fun reveal)
+
+            document.getElementById('imposter-name').textContent = imposterNamesString;
+            document.getElementById('secret-word').textContent = secretWord;
+            document.getElementById('imposter-details').classList.remove('bg-deep-twilight/50');
+            document.getElementById('imposter-details').classList.add('bg-danger-red/20');
+            
+            document.getElementById('results-message').textContent = "The truth is revealed! Did the crew catch the right person?";
+        }
+
+        function playAgain() {
+            // The /Imposter/ page uses localStorage for players and sessionStorage for game settings.
+            // Since the settings page loads fresh, it will automatically use the last entered player list.
+            
+            // Clear current game session data to force a fresh assignment, but keep player list.
+            sessionStorage.removeItem('chirpss_imposter_game_data');
+            sessionStorage.removeItem('chirpss_imposter_assigned_roles');
+            
+            // Redirect to setup page
+            window.location.href = '/Imposter/';
+        }
+
+        // --- Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if data is available from the reveal page
+            const initialGameData = getGameData(); 
+            
+            if (initialGameData) {
+                // Store roles separately so they can be retrieved after a refresh, if needed.
+                sessionStorage.setItem('chirpss_imposter_assigned_roles', JSON.stringify(assignedRoles));
+                startTimer();
+            }
+        });
+    </script>
+</body>
+</html>
