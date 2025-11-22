@@ -7,6 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+    gtag('config', 'G-SV2022ERX5');
+    </script>
+    <script>
         // Custom Tailwind Configuration
         tailwind.config = {
             theme: {
@@ -31,16 +38,31 @@
             color: #F5F1E6;
             overflow: hidden; 
         }
+        /* Removed glow effect for the timer-display */
         .timer-display {
             font-size: 8rem;
             font-weight: 800;
             line-height: 1;
-            text-shadow: 0 0 10px rgba(255, 195, 91, 0.4);
+            /* Removed the text-shadow for glow effect */
+            /* text-shadow: 0 0 10px rgba(255, 195, 91, 0.4); */
         }
         @media (max-width: 640px) {
             .timer-display {
                 font-size: 6rem;
             }
+        }
+        /* Custom button styling for a better look */
+        .primary-btn {
+            transition: all 0.15s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
+        }
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+        }
+        .primary-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
         }
     </style>
 </head>
@@ -55,6 +77,9 @@
     <main class="flex-grow flex flex-col items-center justify-center p-4">
         
         <div id="timer-state" class="text-center transition-opacity duration-300">
+            <p id="start-player-announcement" class="text-xl font-medium mb-4 text-warm-dusk/90 hidden">
+                </p>
+
             <h2 id="timer-heading" class="text-3xl font-bold mb-8 text-soft-horizon">DISCUSSION ROUND</h2>
             
             <div id="timer" class="timer-display text-fiery-core mb-10">
@@ -62,11 +87,11 @@
             </div>
 
             <div class="flex space-x-4 max-w-sm mx-auto">
-                <button onclick="toggleTimer()" id="pause-button" class="flex-grow py-3 bg-subtle-gray text-soft-horizon font-bold text-lg rounded-xl shadow-lg">
-                    ⏸️ PAUSE
+                <button onclick="toggleTimer()" id="pause-button" class="flex-grow py-3 bg-subtle-gray hover:bg-subtle-gray/80 text-soft-horizon font-bold text-lg rounded-xl primary-btn">
+                    PAUSE
                 </button>
-                <button onclick="endRound()" id="end-button" class="flex-grow py-3 bg-danger-red text-soft-horizon font-bold text-lg rounded-xl shadow-lg">
-                    🛑 END ROUND
+                <button onclick="endRound()" id="end-button" class="flex-grow py-3 bg-danger-red hover:bg-danger-red/80 text-soft-horizon font-bold text-lg rounded-xl primary-btn">
+                    END ROUND
                 </button>
             </div>
         </div>
@@ -77,7 +102,7 @@
                 The round has ended. Time to vote for the imposter!
             </p>
             
-            <button onclick="revealImposter()" id="reveal-button" class="w-full py-4 bg-warm-dusk text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg">
+            <button onclick="revealImposter()" id="reveal-button" class="w-full py-4 bg-warm-dusk hover:bg-warm-dusk/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn">
                 REVEAL IMPOSTER
             </button>
             
@@ -90,7 +115,7 @@
                 </p>
             </div>
             
-            <button onclick="playAgain()" id="play-again-button" class="w-full py-4 mt-6 bg-success-green text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg hidden">
+            <button onclick="playAgain()" id="play-again-button" class="w-full py-4 mt-6 bg-success-green hover:bg-success-green/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn hidden">
                 PLAY AGAIN
             </button>
         </div>
@@ -106,6 +131,7 @@
         let isPaused = false;
         let imposterNames = [];
         let secretWord = '';
+        let allPlayerNames = []; // New array for all players
 
         // --- Utility Functions ---
 
@@ -116,7 +142,7 @@
             if (!data || !roles) {
                 // Should only happen if user navigates directly here without setup
                 alert("Game data not found. Redirecting to setup.");
-                window.location.href = '/Imposter/';
+                // window.location.href = '/Imposter/'; // Uncomment if this path is valid
                 return null;
             }
             gameData = JSON.parse(data);
@@ -125,6 +151,7 @@
             // Extract core game details
             secretWord = assignedRoles[Object.keys(assignedRoles)[0]].word;
             imposterNames = Object.keys(assignedRoles).filter(name => assignedRoles[name].isImposter);
+            allPlayerNames = Object.keys(assignedRoles); // Populate the player list
             
             return true;
         }
@@ -135,6 +162,19 @@
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
+        // --- New Function for Random Player Start ---
+        function announceStartingPlayer() {
+            if (allPlayerNames.length === 0) return;
+
+            const randomIndex = Math.floor(Math.random() * allPlayerNames.length);
+            const startingPlayer = allPlayerNames[randomIndex];
+            
+            const announcementElement = document.getElementById('start-player-announcement');
+            announcementElement.textContent = `📢 Player ${startingPlayer} starts!`;
+            announcementElement.classList.remove('hidden');
+        }
+        // ------------------------------------------
+
         // --- Timer Functions ---
 
         function startTimer() {
@@ -143,6 +183,7 @@
             // Initialize time if starting fresh (redirected from reveal page)
             if (timeRemaining === undefined) {
                 timeRemaining = gameData.gameTimeSeconds;
+                announceStartingPlayer(); // Announce only on fresh start
             }
             isPaused = false;
             
@@ -185,6 +226,9 @@
         }
 
         function handleTimeUp(earlyEnd = false) {
+            // Hide the starting player announcement
+            document.getElementById('start-player-announcement').classList.add('hidden');
+            
             // Show the results state container
             document.getElementById('timer-state').classList.add('hidden');
             document.getElementById('results-state').classList.remove('hidden');
@@ -223,7 +267,7 @@
             sessionStorage.removeItem('chirpss_imposter_assigned_roles');
             
             // Redirect to setup page
-            window.location.href = '/Imposter/';
+            // window.location.href = '/Imposter/'; // Uncomment if this path is valid
         }
 
         // --- Initialization ---
