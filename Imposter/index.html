@@ -6,6 +6,8 @@
     <title>Imposter Setup - Chirpss</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV2022ERX5"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -174,7 +176,7 @@
         // === REMOVED: EMBEDDED CATEGORY DATA ===
 
         // === NEW: Define constants for URL and storage keys ===
-        const CATEGORY_URL = 'https://chirpss.my.to/Imposter/categories.json'';
+        const CATEGORY_URL = 'https://chirpss.my.to/Imposter/categories.json';
         const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings'; 
         const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players';
 
@@ -418,7 +420,6 @@
                 saveSettingsToStorage(getCurrentSettings());
             }
         }
-
         // --- Initialization and Submit ---
         document.addEventListener('DOMContentLoaded', () => {
             // 1. Load and apply persistent settings to the form controls (Sliders, Toggles, Categories array)
@@ -428,7 +429,7 @@
             players = getPlayersFromStorage();
             renderPlayers(); // Renders the list
 
-// 3. ***CHANGED: Fetch categories, then render them and update UI***
+            // 3. ***CHANGED: Fetch categories, then render them and update UI***
             fetchAndRenderCategories();
         });
 
