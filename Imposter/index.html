@@ -7,6 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+    gtag('config', 'G-SV2022ERX5');
+    </script>
+    <script>
         // Custom Tailwind Configuration
         tailwind.config = {
             theme: {
@@ -101,7 +108,7 @@
                         <input type="text" id="player-input" placeholder="Enter player name" 
                             class="custom-input flex-grow p-3 rounded-lg placeholder-subtle-gray/70" onkeydown="handlePlayerInput(event)">
                         <button type="button" onclick="addPlayer()" class="bg-warm-dusk text-soft-horizon p-3 rounded-lg font-semibold">
-                            + Add
+                            Add
                         </button>
                     </div>
 
@@ -155,7 +162,8 @@
                     START GAME
                 </button>
                 
-                            <p class="text-lg text-subtle-gray">Rules: Everyone gets a secret word besides one player they only get a hint, the imposter. They either need to guess the word or at the end of the time everyone has to vote and if the imposter isn't voted out they win. During the game each player has to go clock wise and say one word until the timer runs out. The first play is the player who is youngest.</p>
+                <p class="text-sm text-subtle-gray mt-6"> Rules: Everyone gets a secret word besides one player (the imposter) who only gets a hint. The imposter must guess the word before the time runs out. If the timer ends, everyone votes. If the imposter isn't voted out, they win. Players take turns saying one word related to the secret word until the timer ends. The youngest player goes first.
+                </p>
 
             </form>
         </div>
@@ -163,176 +171,19 @@
     </main>
 
     <script>
-        // === EMBEDDED CATEGORY DATA (COMPACT JSON) ===
-        const IMPOSTER_CATEGORIES_DATA = {
-            "c": [
-                {
-                    "n": "Everyday Objects",
-                    "w": [
-                        {"w": "Phone", "h": "Call"}, {"w": "Laptop", "h": "Work"}, {"w": "Keyboard", "h": "Type"},
-                        {"w": "Mouse", "h": "Click"}, {"w": "Headphones", "h": "Listen"}, {"w": "Charger", "h": "Power"},
-                        {"w": "Backpack", "h": "Carry"}, {"w": "Notebook", "h": "Write"}, {"w": "Pencil", "h": "Draw"},
-                        {"w": "Pen", "h": "Ink"}, {"w": "Chair", "h": "Sit"}, {"w": "Table", "h": "Surface"},
-                        {"w": "Bottle", "h": "Water"}, {"w": "Watch", "h": "Time"}, {"w": "Glasses", "h": "Vision"},
-                        {"w": "Shoes", "h": "Walk"}, {"w": "Keys", "h": "Unlock"}, {"w": "Umbrella", "h": "Rain"},
-                        {"w": "Wallet", "h": "Money"}, {"w": "TV", "h": "Screen"}, {"w": "Remote", "h": "Control"},
-                        {"w": "Couch", "h": "Relax"}, {"w": "Blanket", "h": "Warm"}, {"w": "Pillow", "h": "Sleep"},
-                        {"w": "Fan", "h": "Cool"}, {"w": "Lamp", "h": "Bright"}, {"w": "Mirror", "h": "Reflection"},
-                        {"w": "Scissors", "h": "Cut"}, {"w": "Ruler", "h": "Measure"}, {"w": "Tape", "h": "Stick"},
-                        {"w": "Calculator", "h": "Math"}, {"w": "Bag", "h": "Hold"}, {"w": "Sunglasses", "h": "Shade"},
-                        {"w": "Flashlight", "h": "Dark"}, {"w": "Cable", "h": "Connect"}, {"w": "Speaker", "h": "Sound"},
-                        {"w": "Camera", "h": "Photo"}, {"w": "Tripod", "h": "Stabilize"}, {"w": "Powerbank", "h": "Charge"},
-                        {"w": "Brush", "h": "Clean"}, {"w": "Soap", "h": "Wash"}, {"w": "Towel", "h": "Dry"},
-                        {"w": "Toothbrush", "h": "Teeth"}, {"w": "Toothpaste", "h": "Mint"}, {"w": "Deodorant", "h": "Fresh"},
-                        {"w": "Comb", "h": "Hair"}, {"w": "Trashcan", "h": "Waste"}, {"w": "Broom", "h": "Sweep"},
-                        {"w": "Lock", "h": "Secure"}
-                    ]
-                },
-                {
-                    "n": "Animals",
-                    "w": [
-                        {"w": "Dog", "h": "Bark"}, {"w": "Cat", "h": "Meow"}, {"w": "Bird", "h": "Fly"},
-                        {"w": "Fish", "h": "Swim"}, {"w": "Horse", "h": "Gallop"}, {"w": "Cow", "h": "Milk"},
-                        {"w": "Pig", "h": "Oink"}, {"w": "Sheep", "h": "Wool"}, {"w": "Goat", "h": "Horn"},
-                        {"w": "Chicken", "h": "Cluck"}, {"w": "Duck", "h": "Quack"}, {"w": "Frog", "h": "Jump"},
-                        {"w": "Rabbit", "h": "Hop"}, {"w": "Fox", "h": "Sneaky"}, {"w": "Wolf", "h": "Howl"},
-                        {"w": "Bear", "h": "Forest"}, {"w": "Lion", "h": "Roar"}, {"w": "Tiger", "h": "Stripes"},
-                        {"w": "Monkey", "h": "Tree"}, {"w": "Elephant", "h": "Trunk"}, {"w": "Giraffe", "h": "Tall"},
-                        {"w": "Zebra", "h": "Stripes"}, {"w": "Kangaroo", "h": "Pouch"}, {"w": "Koala", "h": "Eucalyptus"},
-                        {"w": "Panda", "h": "Bamboo"}, {"w": "Hawk", "h": "Hunt"}, {"w": "Eagle", "h": "Soar"},
-                        {"w": "Shark", "h": "Teeth"}, {"w": "Dolphin", "h": "Smart"}, {"w": "Whale", "h": "Giant"},
-                        {"w": "Octopus", "h": "Tentacles"}, {"w": "Crab", "h": "Claws"}, {"w": "Lizard", "h": "Scales"},
-                        {"w": "Snake", "h": "Hiss"}, {"w": "Butterfly", "h": "Wings"}, {"w": "Bee", "h": "Honey"},
-                        {"w": "Ant", "h": "Colony"}, {"w": "Spider", "h": "Web"}, {"w": "Bat", "h": "Night"},
-                        {"w": "Owl", "h": "Wisdom"}, {"w": "Parrot", "h": "Talk"}, {"w": "Flamingo", "h": "Pink"},
-                        {"w": "Penguin", "h": "Cold"}, {"w": "Seal", "h": "Ice"}, {"w": "Moose", "h": "Antlers"},
-                        {"w": "Hedgehog", "h": "Spikes"}, {"w": "Hamster", "h": "Wheel"}, {"w": "Camel", "h": "Desert"},
-                        {"w": "Peacock", "h": "Feathers"}
-                    ]
-                },
-                {
-                    "n": "Technology",
-                    "w": [
-                        {"w": "Computer", "h": "Process"}, {"w": "Server", "h": "Host"}, {"w": "Router", "h": "WiFi"},
-                        {"w": "Modem", "h": "Internet"}, {"w": "Tablet", "h": "Touch"}, {"w": "Smartwatch", "h": "Wrist"},
-                        {"w": "Drone", "h": "Fly"}, {"w": "Robot", "h": "Automate"}, {"w": "Console", "h": "Games"},
-                        {"w": "Controller", "h": "Buttons"}, {"w": "Monitor", "h": "Display"}, {"w": "Printer", "h": "Paper"},
-                        {"w": "Scanner", "h": "Scan"}, {"w": "Keyboard", "h": "Type"}, {"w": "Mouse", "h": "Click"},
-                        {"w": "SSD", "h": "Fast"}, {"w": "HDD", "h": "Storage"}, {"w": "GPU", "h": "Graphics"},
-                        {"w": "CPU", "h": "Brain"}, {"w": "RAM", "h": "Memory"}, {"w": "Power Supply", "h": "Electricity"},
-                        {"w": "Ethernet Cable", "h": "Wired"}, {"w": "Smartphone", "h": "Apps"}, {"w": "Headset", "h": "Audio"},
-                        {"w": "VR Headset", "h": "Virtual"}, {"w": "Microphone", "h": "Voice"}, {"w": "Webcam", "h": "Video"},
-                        {"w": "Smart TV", "h": "Stream"}, {"w": "Projector", "h": "Screen"}, {"w": "Powerbank", "h": "Charge"},
-                        {"w": "Charger", "h": "Energy"}, {"w": "Battery", "h": "Power"}, {"w": "USB Stick", "h": "Portable"},
-                        {"w": "SD Card", "h": "Storage"}, {"w": "Keyboard Switch", "h": "Clicky"}, {"w": "Cooling Fan", "h": "Airflow"},
-                        {"w": "LED Strip", "h": "RGB"}, {"w": "Mousepad", "h": "Smooth"}, {"w": "AirPods", "h": "Wireless"},
-                        {"w": "Bluetooth Speaker", "h": "Portable"}, {"w": "Smart Home Hub", "h": "Control"}, {"w": "Doorbell Cam", "h": "Security"},
-                        {"w": "3D Printer", "h": "Print"}, {"w": "Smart Light", "h": "Color"}, {"w": "Game Cartridge", "h": "Insert"},
-                        {"w": "Joystick", "h": "Arcade"}, {"w": "NAS", "h": "Storage"}, {"w": "Firewall", "h": "Protect"},
-                        {"w": "Algorithm", "h": "Logic"}
-                    ]
-                },
-                {
-                    "n": "Sports",
-                    "w": [
-                        {"w": "Soccer", "h": "Goal"}, {"w": "Basketball", "h": "Hoop"}, {"w": "Tennis", "h": "Racket"},
-                        {"w": "Volleyball", "h": "Spike"}, {"w": "Baseball", "h": "Bat"}, {"w": "Football", "h": "Touchdown"},
-                        {"w": "Table Tennis", "h": "Paddle"}, {"w": "Badminton", "h": "Shuttle"}, {"w": "Running", "h": "Speed"},
-                        {"w": "Cycling", "h": "Pedal"}, {"w": "Swimming", "h": "Water"}, {"w": "Boxing", "h": "Punch"},
-                        {"w": "Karate", "h": "Kick"}, {"w": "Judo", "h": "Throw"}, {"w": "Wrestling", "h": "Grapple"},
-                        {"w": "Gymnastics", "h": "Balance"}, {"w": "Skating", "h": "Ice"}, {"w": "Skiing", "h": "Snow"},
-                        {"w": "Snowboarding", "h": "Slope"}, {"w": "Golf", "h": "Swing"}, {"w": "Cricket", "h": "Wickets"},
-                        {"w": "Rugby", "h": "Scrum"}, {"w": "Hockey", "h": "Puck"}, {"w": "Field Hockey", "h": "Stick"},
-                        {"w": "Fencing", "h": "Sword"}, {"w": "Rowing", "h": "Boat"}, {"w": "Canoeing", "h": "Paddle"},
-                        {"w": "Surfing", "h": "Wave"}, {"w": "Climbing", "h": "Rock"}, {"w": "Track", "h": "Sprint"},
-                        {"w": "Dodgeball", "h": "Throw"}, {"w": "Handball", "h": "Pass"}, {"w": "Archery", "h": "Bow"},
-                        {"w": "Triathlon", "h": "Endurance"}, {"w": "Marathon", "h": "Distance"}, {"w": "Pole Vault", "h": "Jump"},
-                        {"w": "Long Jump", "h": "Sand"}, {"w": "High Jump", "h": "Bar"}, {"w": "Skateboarding", "h": "Tricks"},
-                        {"w": "Parkour", "h": "Move"}, {"w": "Esports", "h": "Gaming"}, {"w": "Lacrosse", "h": "Net"},
-                        {"w": "Billiards", "h": "Cue"}, {"w": "Bowling", "h": "Pins"}, {"w": "Darts", "h": "Board"},
-                        {"w": "Kickboxing", "h": "Strike"}, {"w": "Sailing", "h": "Wind"}, {"w": "Motorsport", "h": "Racing"},
-                        {"w": "Yoga", "h": "Stretch"}
-                    ]
-                },
-                {
-                    "n": "Pop Culture",
-                    "w": [
-                        {"w": "Superhero", "h": "Powers"}, {"w": "YouTuber", "h": "Videos"}, {"w": "Memes", "h": "Funny"},
-                        {"w": "Anime", "h": "Japan"}, {"w": "Disney", "h": "Magic"}, {"w": "Marvel", "h": "Heroes"},
-                        {"w": "DC", "h": "Gotham"}, {"w": "Minecraft", "h": "Blocks"}, {"w": "Fortnite", "h": "Battle"},
-                        {"w": "Roblox", "h": "Games"}, {"w": "Star Wars", "h": "Force"}, {"w": "Harry Potter", "h": "Magic"},
-                        {"w": "Pokémon", "h": "Catch"}, {"w": "Mario", "h": "Jump"}, {"w": "Sonic", "h": "Fast"},
-                        {"w": "Avengers", "h": "Team"}, {"w": "Stranger Things", "h": "Upside"}, {"w": "TikTok", "h": "Shorts"},
-                        {"w": "Netflix", "h": "Stream"}, {"w": "Hogwarts", "h": "School"}, {"w": "Lightsaber", "h": "Laser"},
-                        {"w": "Stormtrooper", "h": "Helmet"}, {"w": "Thanos", "h": "Snap"}, {"w": "Batman", "h": "Gotham"},
-                        {"w": "Spiderman", "h": "Web"}, {"w": "Lego", "h": "Bricks"}, {"w": "Barbie", "h": "Pink"},
-                        {"w": "Transformers", "h": "Robots"}, {"w": "Avatar", "h": "Blue"}, {"w": "Shrek", "h": "Ogre"},
-                        {"w": "Frozen", "h": "Ice"}, {"w": "Minions", "h": "Yellow"}, {"w": "SpongeBob", "h": "Pineapple"},
-                        {"w": "Halo", "h": "Master"}, {"w": "Zelda", "h": "Quest"}, {"w": "Link", "h": "Hero"},
-                        {"w": "Pokéball", "h": "Catch"}, {"w": "Naruto", "h": "Ninja"}, {"w": "One Piece", "h": "Pirates"},
-                        {"w": "GTA", "h": "Crime"}, {"w": "FIFA", "h": "Soccer"}, {"w": "Among Us", "h": "Sus"},
-                        {"w": "Valorant", "h": "Agents"}, {"w": "COD", "h": "War"}, {"w": "Breaking Bad", "h": "Chemistry"},
-                        {"w": "Wednesday", "h": "Addams"}, {"w": "Star Trek", "h": "Space"}, {"w": "Jurassic Park", "h": "Dinosaurs"},
-                        {"w": "Matrix", "h": "Simulation"}, {"w": "Joker", "h": "Chaos"}
-                    ]
-                },
-                {
-                    "n": "Places",
-                    "w": [
-                        {"w": "Beach", "h": "Sand"}, {"w": "Park", "h": "Trees"}, {"w": "School", "h": "Learn"},
-                        {"w": "Hospital", "h": "Doctor"}, {"w": "Airport", "h": "Flight"}, {"w": "Restaurant", "h": "Menu"},
-                        {"w": "Library", "h": "Quiet"}, {"w": "Mountain", "h": "Hike"}, {"w": "City", "h": "Buildings"},
-                        {"w": "Village", "h": "Small"}, {"w": "Forest", "h": "Woods"}, {"w": "Desert", "h": "Hot"},
-                        {"w": "Island", "h": "Water"}, {"w": "River", "h": "Flow"}, {"w": "Lake", "h": "Calm"},
-                        {"w": "Ocean", "h": "Waves"}, {"w": "Farm", "h": "Animals"}, {"w": "Castle", "h": "Medieval"},
-                        {"w": "Bridge", "h": "Connect"}, {"w": "Tower", "h": "Tall"}, {"w": "Mall", "h": "Shops"},
-                        {"w": "Hotel", "h": "Stay"}, {"w": "Cinema", "h": "Movies"}, {"w": "Stadium", "h": "Sports"},
-                        {"w": "Gym", "h": "Training"}, {"w": "Zoo", "h": "Animals"}, {"w": "Harbor", "h": "Boats"},
-                        {"w": "Museum", "h": "History"}, {"w": "Subway", "h": "Underground"}, {"w": "Highway", "h": "Cars"},
-                        {"w": "Bakery", "h": "Bread"}, {"w": "Cafe", "h": "Coffee"}, {"w": "Garden", "h": "Flowers"},
-                        {"w": "Temple", "h": "Worship"}, {"w": "Church", "h": "Faith"}, {"w": "Playground", "h": "Kids"},
-                        {"w": "Market", "h": "Stalls"}, {"w": "Bus Stop", "h": "Wait"}, {"w": "Train Station", "h": "Tracks"},
-{"w": "Waterfall", "h": "Drop"}, {"w": "Campsite", "h": "Tents"}, {"w": "Cave", "h": "Dark"},
-                        {"w": "Jungle", "h": "Dense"}, {"w": "Volcano", "h": "Lava"}, {"w": "Cliff", "h": "Edge"},
-                        {"w": "Factory", "h": "Machines"}, {"w": "Skyscraper", "h": "Tall"}, {"w": "Beach House", "h": "Vacation"},
-                        {"w": "Downtown", "h": "Center"}
-                    ]
-                },
-                {
-                    "n": "Food & Drinks",
-                    "w": [
-                        {"w": "Pizza", "h": "Cheesy"}, {"w": "Burger", "h": "Bun"}, {"w": "Fries", "h": "Salty"},
-                        {"w": "Hotdog", "h": "Sausage"}, {"w": "Salad", "h": "Green"}, {"w": "Pasta", "h": "Noodles"},
-                        {"w": "Rice", "h": "Grain"}, {"w": "Sushi", "h": "Rolls"}, {"w": "Soup", "h": "Spoon"},
-                        {"w": "Sandwich", "h": "Layers"}, {"w": "Taco", "h": "Crunchy"}, {"w": "Burrito", "h": "Wrap"},
-                        {"w": "Steak", "h": "Grill"}, {"w": "Chicken", "h": "Protein"}, {"w": "Fish", "h": "Fresh"},
-                        {"w": "Shrimp", "h": "Seafood"}, {"w": "Cake", "h": "Sweet"}, {"w": "Cookie", "h": "Crunch"},
-                        {"w": "Donut", "h": "Glaze"}, {"w": "Chocolate", "h": "Cocoa"}, {"w": "Ice Cream", "h": "Cold"},
-                        {"w": "Yogurt", "h": "Creamy"}, {"w": "Cheese", "h": "Dairy"}, {"w": "Eggs", "h": "Breakfast"},
-                        {"w": "Bread", "h": "Slice"}, {"w": "Cereal", "h": "Bowl"}, {"w": "Milk", "h": "White"},
-                        {"w": "Juice", "h": "Fruit"}, {"w": "Coffee", "h": "Caffeine"}, {"w": "Tea", "h": "Warm"},
-                        {"w": "Soda", "h": "Fizzy"}, {"w": "Smoothie", "h": "Blend"}, {"w": "Lemonade", "h": "Sour"},
-                        {"w": "Apple", "h": "Fruit"}, {"w": "Banana", "h": "Yellow"}, {"w": "Grapes", "h": "Bunch"},
-                        {"w": "Orange", "h": "Peel"}, {"w": "Strawberry", "h": "Red"}, {"w": "Pineapple", "h": "Tropical"},
-                        {"w": "Watermelon", "h": "Summer"}, {"w": "Noodles", "h": "Bowl"}, {"w": "Kebab", "h": "Skewer"},
-                        {"w": "Nuggets", "h": "Bite"}, {"w": "Pancakes", "h": "Syrup"}, {"w": "Waffles", "h": "Grid"},
-                        {"w": "Popcorn", "h": "Movie"}, {"w": "Chips", "h": "Crunch"}, {"w": "Burger Patty", "h": "Grill"},
-                        {"w": "Water", "h": "Drink"}
-                    ]
-                }
-            ]
-        };
-        // ===========================================
+        // === REMOVED: EMBEDDED CATEGORY DATA ===
+
+        // === NEW: Define constants for URL and storage keys ===
+        const CATEGORY_URL = 'https://chirpss.my.to/Imposter/categories.json';
         const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings'; 
-        const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players'; // Define a separate key for clarity
+        const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players';
 
         let players = [];
         let selectedCategories = [];
-        let availableCategories = []; 
+        let availableCategories = []; // Will be populated by fetch
 
         // --- Persistence Helper Function ---
         function getCurrentSettings() {
-            // Check if elements exist before reading their values
             const imposterSlider = document.getElementById('imposter-count-slider');
             const timeSlider = document.getElementById('game-time-slider');
             const hintToggle = document.getElementById('imposter-hint-toggle');
@@ -349,7 +200,6 @@
 
         function savePlayersToStorage() {
             localStorage.setItem(PLAYERS_STORAGE_KEY, JSON.stringify(players));
-            // Trigger UI update and settings save after player change
             updatePlayerCount(); 
         }
 
@@ -373,7 +223,10 @@
             const count = players.length;
             const catCount = selectedCategories.length;
             document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
-            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${IMPOSTER_CATEGORIES_DATA.c.length || 0} categories.`;
+            
+            // *** CHANGED: Use availableCategories.length instead of the old constant ***
+            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${availableCategories.length || 0} categories.`;
+            
             const startBtn = document.getElementById('start-game-btn');
             
             const isReady = count >= 3 && catCount > 0;
@@ -389,7 +242,6 @@
 
             document.getElementById('player-list-placeholder').style.display = count === 0 ? 'block' : 'none';
             
-            // --- CRITICAL: Save current settings state immediately for persistence ---
             saveSettingsToStorage(getCurrentSettings());
         }
 
@@ -399,15 +251,9 @@
 
             if (minutes === 0.5) {
                 timeDisplay.textContent = '30 Seconds';
-            } else if (minutes <= 3) {
-                timeDisplay.textContent = `${minutes} Minutes`;
             } else {
-                const wholeMinutes = Math.floor(minutes);
-                timeDisplay.textContent = `${wholeMinutes} Minutes`;
-                
-                if (minutes % 1 !== 0) {
-                    document.getElementById('game-time-slider').value = wholeMinutes;
-                }
+                 // Simplified: Just show minutes, e.g., "2.5 Minutes"
+                timeDisplay.textContent = `${minutes} Minutes`;
             }
             updatePlayerCount(); // Triggers settings save
         }
@@ -415,6 +261,11 @@
         function renderPlayers() {
             const listEl = document.getElementById('player-list');
             listEl.innerHTML = '';
+            
+            if (players.length === 0) {
+                listEl.innerHTML = `<p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 3 players to begin.</p>`;
+            }
+            
             players.forEach((name) => {
                 const playerEl = document.createElement('div');
                 playerEl.className = 'flex justify-between items-center p-2 bg-input-bg rounded-md border border-subtle-gray/50';
@@ -426,8 +277,6 @@
                 `;
                 listEl.appendChild(playerEl);
             });
-            // CRITICAL: Don't call updatePlayerCount here, it's called inside savePlayersToStorage
-            // CRITICAL: savePlayersToStorage now handles calling updatePlayerCount for the UI update.
         }
 
         function addPlayer() {
@@ -465,8 +314,32 @@
             updatePlayerCount(); // Triggers settings save
         }
 
-        function loadCategories() {
-            availableCategories = IMPOSTER_CATEGORIES_DATA.c; 
+        // *** NEW: Async function to fetch and render categories ***
+        async function fetchAndRenderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
+
+            try {
+                const response = await fetch(CATEGORY_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (!data || !data.c) {
+                     throw new Error("Invalid JSON structure.");
+                }
+
+                availableCategories = data.c; // Populate the global variable
+
+                renderCategories(); // Now call render
+                updatePlayerCount(); // And update the count display
+
+            } catch (error) {
+                console.error("Failed to load categories:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load word categories. Please try refreshing.</p>`;
+                document.getElementById('start-game-btn').disabled = true;
+            }
         }
 
         function renderCategories() {
@@ -474,7 +347,8 @@
             container.innerHTML = ''; 
 
             if (!availableCategories || availableCategories.length === 0) {
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: No categories found in embedded data.</p>`;
+                // This is now mainly a fallback, as the fetch function handles the primary error
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: No categories found.</p>`;
                 return;
             }
 
@@ -496,7 +370,7 @@
                 
                 container.appendChild(button);
             });
-            // CRITICAL: We don't call updatePlayerCount here, it's called after all initialization is done.
+            // updatePlayerCount() is called by fetchAndRenderCategories after this runs
         }
 
         function toggleCategory(button, categoryName) {
@@ -540,7 +414,6 @@
             // 4. Selected Categories (Array used for logic)
             selectedCategories = settings ? settings.selectedCategories || [] : [];
             
-            // If no settings were loaded, save the defaults now
             if (!settings) {
                 saveSettingsToStorage(getCurrentSettings());
             }
@@ -548,21 +421,15 @@
 
         // --- Initialization and Submit ---
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Load data structure
-            loadCategories(); 
-            
-            // 2. Load and apply persistent settings to the form controls (Sliders, Toggles, Categories array)
+            // 1. Load and apply persistent settings to the form controls (Sliders, Toggles, Categories array)
             initializeSettings(); 
 
-            // 3. Load and render players (Updates the global 'players' array and UI list)
+            // 2. Load and render players (Updates the global 'players' array and UI list)
             players = getPlayersFromStorage();
-            renderPlayers(); // Renders the list but does NOT call updatePlayerCount
+            renderPlayers(); // Renders the list
 
-            // 4. Render the category buttons (uses the restored 'selectedCategories' array)
-            renderCategories(); 
-
-            // 5. CRITICAL: Final call to update form status after all persistence data has been loaded and applied.
-            updatePlayerCount();
+// 3. ***CHANGED: Fetch categories, then render them and update UI***
+            fetchAndRenderCategories();
         });
 
         document.getElementById('imposter-settings-form').addEventListener('submit', function(e) {
@@ -577,16 +444,21 @@
                 return;
             }
 
-            // Capture Current Settings (Ensures latest values are used)
             const currentSettings = getCurrentSettings();
             
-            // Settings are already saved by updatePlayerCount(), but saving on submit is a safe final step.
+            // Final save just in case
             saveSettingsToStorage(currentSettings);
 
             // Prepare Game Data for Session
             const finalCategories = availableCategories
                 .filter(cat => selectedCategories.includes(cat.n))
                 .map(cat => ({ name: cat.n, words: cat.w })); 
+            
+            // *** NEW: Check if categories actually loaded ***
+            if (finalCategories.length === 0 || finalCategories.every(cat => cat.words.length === 0)) {
+                alert("Error: No words were loaded from the selected categories. Cannot start game.");
+                return;
+            }
             
             const gameData = {
                 players: players,
@@ -596,10 +468,8 @@
                 categories: finalCategories 
             };
 
-            // Store data in SESSION STORAGE (for the active game session)
             sessionStorage.setItem('chirpss_imposter_game_data', JSON.stringify(gameData));
 
-            // Redirect
             window.location.href = '/Imposter/RevealRole';
         });
     </script>
