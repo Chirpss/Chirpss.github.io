@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wrong Answers Only Setup - Chirpss</title>
+    <title>Wrong Answers Only - Chirpss</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+    gtag('config', 'G-SV2022ERX5');
+    </script>
     <script>
         // Custom Tailwind Configuration
         tailwind.config = {
@@ -19,6 +26,7 @@
                         'subtle-gray': '#5A6F82',
                         'input-bg': '#2A3C50',
                         'success-green': '#38A169', /* New primary color for this game */
+                        'danger-red': '#E53E3E', /* Added for error messages */
                     },
                     boxShadow: {
                         'input-focus': '0 0 0 3px rgba(56, 161, 105, 0.4)', // Green focus ring
@@ -40,21 +48,18 @@
             transition: all 0.2s;
         }
         .custom-input:focus {
-            border-color: #38A169; /* success-green */
-            box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.4); 
+            border-color: #E87040; /* warm-dusk */
             outline: none;
         }
         /* Style adjustments for the main action color (green) */
         .primary-action-bg {
-            background-color: #38A169; /* success-green */
+            background-color: #E87040; /* warm-dusk */
             color: #1C2A39;
         }
-        .primary-action-bg:hover {
-            background-color: #2F855A;
-        }
+        
         /* Custom Range Slider Thumb */
         input[type=range]::-webkit-slider-thumb {
-            background: #38A169; /* success-green */
+            background: #E87040; /* warm-dusk */
         }
     </style>
 </head>
@@ -68,7 +73,7 @@
 
     <main class="max-w-3xl mx-auto p-4 sm:p-8">
         <div class="text-center mb-10">
-            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2">Setup: Wrong Answers Only</h2>
+            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2">Wrong Answers Only</h2>
             <p class="text-lg text-subtle-gray">Answer the prompt with a wrong answer before time runs out!</p>
         </div>
 
@@ -85,9 +90,9 @@
                         </button>
                     </div>
                     <div id="player-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
-                        <p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 3 players to begin.</p>
+                        <p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 2 players to begin.</p>
                     </div>
-                    <p class="text-xs text-subtle-gray mt-1" id="player-count-display">Players: 0 (Min 3)</p>
+                    <p class="text-xs text-subtle-gray mt-1" id="player-count-display">Players: 0 (Min 2)</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 mb-8">
@@ -118,459 +123,15 @@
     </main>
 
     <script>
-        // === EMBEDDED CATEGORY DATA (WAO PROMPTS) ===
-        // Note: These prompts should be general knowledge or concepts to allow for creative WRONG answers.
-        const WAO_CATEGORIES_DATA = {
-            "c": [
-                {
-                    "n": "Basic Knowledge",
-                    "p": [
-                        "What color is the sky?", 
-                        "What shape is a standard soccer ball?", 
-                        "What animal barks?", 
-                        "Which number comes after nine?", 
-                        "What do you use to write?",
-                        "How many months are in a year?",
-                        "What is the first letter of the English alphabet?",
-                        "What day comes after Monday?",
-                        "How many fingers are on one human hand?",
-                        "What is the opposite of 'up'?",
-                        "What is the main function of your nose?",
-                        "What do you call a baby cat?",
-                        "Which geometrical shape has three sides?",
-                        "What do traffic lights use to tell cars to stop?",
-                        "What is the usual purpose of a key?",
-                        "Which season follows summer?",
-                        "What time of day is 12:00 PM?",
-                        "What is the primary ingredient of bread?",
-                        "What is the collective term for a group of fish?",
-                        "What part of your body lets you see?",
-                        "What is the color of an emerald?",
-                        "How many sides does a square have?",
-                        "What animal says 'Moo'?",
-                        "What is the tool used to sweep the floor?",
-                        "What do you wear on your feet inside the house?",
-                        "What planet do we live on?",
-                        "What sound does a clock make?",
-                        "How many hours are in a day?",
-                        "What is the job of a dentist?",
-                        "What is the name of the last month of the year?",
-                        "What color do you get when you mix blue and yellow?",
-                        "What is the opposite of 'hot'?",
-                        "What do you call the liquid that falls from the sky when it rains?",
-                        "Which body part allows you to hear?",
-                        "How many weeks are in a year?",
-                        "What is the primary color of a banana?",
-                        "What punctuation mark ends a statement?",
-                        "What device is used to check the time?",
-                        "What is the job title of a person who puts out fires?",
-                        "What is the young of a sheep called?",
-                        "What common item is used to clean your teeth?",
-                        "What are the pieces on a chessboard called?",
-                        "What is the number that represents nothing or zero?",
-                        "What do you use to unlock a door?",
-                        "What covers the outside of a fish?",
-                        "What does 'AM' stand for in time telling?",
-                        "What is the usual material used to make a window?",
-                        "What is the largest land animal?",
-                        "What is the term for a long narrative written in prose?",
-                        "What is the collective term for a group of lions?"
-                    ]
-                },
-                {
-                    "n": "Food & Drink",
-                    "p": [
-                        "What is milk usually white?", 
-                        "What is pizza crust made of?", 
-                        "What color are strawberries?", 
-                        "Name a carbonated beverage.", 
-                        "What meat is found in a hotdog?",
-                        "What spice makes curry yellow?",
-                        "What fruit is dried to make raisins?",
-                        "What kind of vegetable is a potato?",
-                        "What is traditionally spread on toast?",
-                        "What are French fries made from?",
-                        "What is the main sweetener in honey?",
-                        "What type of shell does a peanut have?",
-                        "What is the primary flavor of chocolate?",
-                        "What beverage is made from brewed leaves?",
-                        "What color is an avocado when ripe?",
-                        "What is the main component of ice cream?",
-                        "What breakfast item comes from a chicken?",
-                        "What kind of pasta is shaped like tubes?",
-                        "What cooking method is used to make soup?",
-                        "What is the crustacean found in shrimp cocktail?",
-                        "What fruit is used to make guacamole?",
-                        "What popular condiment is made from fermented soybeans?",
-                        "What is the main ingredient of traditional Italian polenta?",
-                        "What popular sandwich meat is traditionally cured?",
-                        "What type of nut is used to make marzipan?",
-                        "Which breakfast food comes in plain, everything, or sesame varieties?",
-                        "What is the classic dipping sauce for chips (french fries) in the US?",
-                        "What common household liquid is essential for boiling pasta?",
-                        "What is the primary flavoring in a standard cola drink?",
-                        "What dairy product is aged to develop sharp flavors?",
-                        "What fruit is known for having many small seeds on its surface?",
-                        "What is the main ingredient in hummus?",
-                        "What root vegetable is bright orange?",
-                        "What is the key ingredient in the Japanese soup Miso?",
-                        "What type of bean is used to make coffee?",
-                        "What is the frozen dessert made from fruit puree and no dairy?",
-                        "What is the essential flavor of a key lime pie?",
-                        "What meat is cured and often served for breakfast in thin strips?",
-                        "What beverage is often served hot with a slice of lemon?",
-                        "What food item is a collection of various vegetables, often served with dressing?",
-                        "What type of pepper is known for being extremely hot?",
-                        "What common food comes in cans and is known as 'The king of fish'?",
-                        "What grain is typically used to make beer?",
-                        "What type of vegetable is found in split pea soup?",
-                        "What dish is made from boiled rice that is then stirred with flavoring and other ingredients?",
-                        "What is the typical color of balsamic vinegar?",
-                        "What is the name for uncooked fish used in sushi?",
-                        "What spice is derived from the stigma of a crocus flower?",
-                        "What is the main carbohydrate found in rice and potatoes?",
-                        "What food is often made from dough, topped with sauce and cheese, and baked?"
-                    ]
-                },
-                {
-                    "n": "Geography",
-                    "p": [
-                        "What is the capital of France?", 
-                        "Name an ocean.", 
-                        "Name a country in North America.", 
-                        "What is the largest continent?", 
-                        "What is located on your wrist?",
-                        "What is the tallest mountain in the world?",
-                        "Which river flows through Cairo?",
-                        "What is the world's most populous country?",
-                        "What famous monument is in Rome, Italy?",
-                        "What imaginary line divides the Earth into North and South hemispheres?",
-                        "What do you call a vast, treeless area of grass?",
-                        "What is the currency used in Japan?",
-                        "What large country spans both Europe and Asia?",
-                        "What is the smallest country by land area?",
-                        "In which country is the Sydney Opera House located?",
-                        "What continent is known as 'The Land Down Under'?",
-                        "Name the famous waterfall on the border of the US and Canada.",
-                        "What is a narrow strip of land connecting two larger landmasses?",
-                        "What language is primarily spoken in Brazil?",
-                        "What is the capital city of Australia?",
-                        "What is the capital of Spain?",
-                        "What is the name of the desert in northern Africa?",
-                        "What country is shaped like a boot?",
-                        "What famous body of water separates Europe and Africa?",
-                        "What is a natural opening in a mountain that allows passage?",
-                        "What is the large body of water that covers much of the Arctic?",
-                        "What city is home to the Brandenburg Gate?",
-                        "What is the term for land completely surrounded by water?",
-                        "What is the currency of the United Kingdom?",
-                        "What river runs through London?",
-                        "What famous clock tower is in London?",
-                        "What country is Mount Fuji located in?",
-                        "What is the term for a tropical storm that forms over the Atlantic Ocean?",
-                        "What large desert is found in southern Africa?",
-                        "What is the capital of Russia?",
-                        "What major city is located at the confluence of the Mississippi and Missouri Rivers?",
-                        "What Scandinavian country is famous for fjords?",
-                        "What is the term for a flat, high piece of land?",
-                        "What is the longest river in the world?",
-                        "What is the capital city of Germany?",
-                        "What country is known for the tango and the Andes mountains?",
-                        "What is the name of the massive barrier reef off the coast of Australia?",
-                        "What is the capital of Canada?",
-                        "What is the term for the height of land above sea level?",
-                        "What state is the Grand Canyon located in?",
-                        "What is the name of the sea bordered by Europe, Africa, and Asia?",
-                        "What major canal connects the Atlantic and Pacific Oceans?",
-                        "What is the largest island in the world?",
-                        "What large body of saltwater is bordered by Russia and Iran?",
-                        "What is the capital of Italy?"
-                    ]
-                },
-                {
-                    "n": "Pop Culture",
-                    "p": [
-                        "Name a superhero.", 
-                        "Which famous character says 'To infinity, and beyond!'?",
-                        "What is Mario known for?", 
-                        "What brand makes the iPhone?", 
-                        "Name a major social media platform.",
-                        "What band wrote the song 'Bohemian Rhapsody'?",
-                        "What is the name of Harry Potter's owl?",
-                        "Which actor played Iron Man in the Marvel films?",
-                        "Who hosts the podcast 'The Joe Rogan Experience'?",
-                        "What object does Cinderella lose at the ball?",
-                        "What is the main rivalry in the *Star Wars* franchise?",
-                        "Who sings the hit song 'Shake It Off'?",
-                        "What classic video game features four colored ghosts?",
-                        "What is the name of the yellow cartoon family that lives in Springfield?",
-                        "What reality TV show features celebrities dancing?",
-                        "What major film studio has a castle in its logo?",
-                        "Name a popular character from the show *Friends*.",
-                        "What animal is the main character in the movie *The Lion King*?",
-                        "What genre of music is Ed Sheeran known for?",
-                        "Which popular streaming service is known for original content like *Stranger Things*?",
-                        "What is the name of the wizard in *The Lord of the Rings*?",
-                        "What famous pop star is known for her 'Material Girl' song?",
-                        "What kind of fictional animal is Mickey Mouse?",
-                        "Which company developed the Xbox console?",
-                        "What is the title of the first book in the *Twilight* series?",
-                        "Who is the lead singer of the rock band U2?",
-                        "What famous ship does Jack Sparrow captain?",
-                        "Which iconic 90s TV show was set in a high school in Bayside, California?",
-                        "What movie features a talking snowman named Olaf?",
-                        "What color is the Hulk when he transforms?",
-                        "What famous detective lives at 221B Baker Street?",
-                        "What singer is known for their album *Thriller*?",
-                        "What is the name of the famous purple dinosaur character?",
-                        "What comic book company publishes Superman and Batman?",
-                        "What is the highest-grossing film of all time (globally)?",
-                        "Who created the comic strip *Peanuts*?",
-                        "What is the main setting of the TV show *Game of Thrones*?",
-                        "What famous doll is often paired with Ken?",
-                        "Which video game console introduced motion controls with the Wii Remote?",
-                        "What is the name of the main ship in the *Star Trek* series?",
-                        "Who is the author of the *A Song of Ice and Fire* series?",
-                        "What character uses a shield made of vibranium?",
-                        "Which movie studio made the *Toy Story* films?",
-                        "What TV show is known for the catchphrase 'D'oh!'?",
-                        "What is the title of the final *Avengers* movie?",
-                        "What fictional character lives in a pineapple under the sea?",
-                        "What singer's real name is Stefani Germanotta?",
-                        "What website is the primary source for video game speedruns?",
-                        "Which actor is famous for starring in *The Fast and the Furious* series?",
-                        "What creature guards the Philosopher's Stone in *Harry Potter*?"
-                    ]
-                },
-                {
-                    "n": "Science & Nature",
-                    "p": [
-                        "What is the closest star to Earth?",
-                        "Which gas do humans primarily breathe in?",
-                        "What process do plants use to make food?",
-                        "What force keeps us on the ground?",
-                        "Name a planet in our solar system.",
-                        "What is the chemical symbol for water?",
-                        "What temperature does water boil at (at sea level)?",
-                        "What is the largest organ in the human body?",
-                        "Which type of rock is formed from cooled lava?",
-                        "What is a scientist who studies stars and galaxies called?",
-                        "What is the common name for the reaction of iron with oxygen and water?",
-                        "What animal is known for building dams in rivers?",
-                        "What are the three states of matter?",
-                        "What is the main material that makes up a tree trunk?",
-                        "What is the unit of measurement for electrical resistance?",
-                        "Which part of the cell controls all its activities?",
-                        "How long does it take for the Earth to orbit the Sun?",
-                        "What is the purpose of a chameleon changing color?",
-                        "What group of animals includes snakes and lizards?",
-                        "What is the primary function of chlorophyll in plants?",
-                        "What type of energy is generated by splitting atoms?",
-                        "What is the name for the basic unit of hereditary information?",
-                        "What is the main component of Earth's atmosphere?",
-                        "Which element is represented by the symbol $\\text{Au}$?",
-                        "What do you call an animal that eats only plants?",
-                        "What is the chemical process of turning grape juice into wine?",
-                        "What causes the tides in the ocean?",
-                        "What is the name of the galaxy that contains our solar system?",
-                        "What instrument is used to measure air pressure?",
-                        "What is the process of water vapor turning back into liquid water?",
-                        "What group of fish are characterized by a skeleton made of cartilage?",
-                        "What planet is known for its prominent ring system?",
-                        "What is the name of the small particles that make up all matter?",
-                        "What is the study of weather called?",
-                        "What is the unit of energy used in food?",
-                        "What is the name of the long, whip-like tail on some single-celled organisms?",
-                        "What famous experiment involves a pendulum to show the Earth's rotation?",
-                        "What type of lens is thinner in the center and thicker at the edges?",
-                        "What is the speed of light in a vacuum, in kilometers per second?",
-                        "What is the substance that forms the main structure of insect exoskeletons?",
-                        "What is the main difference between magma and lava?",
-                        "What is the collective term for a group of stars held together by gravity?",
-                        "What is the name of the scientist famous for the theory of relativity?",
-                        "What metal is liquid at room temperature?",
-                        "Which blood type is considered the 'universal recipient'?",
-                        "What geological feature is created when tectonic plates collide and lift?",
-                        "What is the process of a solid turning directly into a gas?",
-                        "What does $\\text{DNA}$ stand for?",
-                        "What is the name of the bone that protects the brain?",
-                        "What is the primary product of the combustion of a hydrocarbon fuel?"
-                    ]
-                },
-                {
-                    "n": "History & Lore",
-                    "p": [
-                        "Who was the first President of the United States?",
-                        "What is the Great Wall of China made of?",
-                        "What year did the Titanic sink?",
-                        "Which creature is associated with Halloween?",
-                        "Name a mythological god or goddess.",
-                        "Who famously crossed the Alps with elephants?",
-                        "What war was fought between the North and South of the US?",
-                        "What city was the Roman Empire's capital?",
-                        "Who invented the telephone?",
-                        "What ancient structure was built as a tomb for Pharaohs?",
-                        "What object is King Arthur famously said to have pulled from a stone?",
-                        "What major world event occurred from 1939 to 1945?",
-                        "Who wrote the famous diary while hiding during WWII?",
-                        "What famous structure was torn down in Berlin in 1989?",
-                        "What civilization is known for its hieroglyphics?",
-                        "What was the name of the ship Charles Darwin sailed on?",
-                        "Who is traditionally credited with discovering America?",
-                        "What is the name of the monster defeated by the hero Beowulf?",
-                        "What was the main purpose of the Medieval knight?",
-                        "What did the ancient Greeks invent that is still used in politics today?",
-                        "What was the name of the queen who ruled England during the Spanish Armada defeat?",
-                        "What material was used to build the original Globe Theatre?",
-                        "Who was the famous Roman general who conquered Gaul?",
-                        "What happened in 1066 at the Battle of Hastings?",
-                        "Who invented the printing press?",
-                        "What city was destroyed by the eruption of Mount Vesuvius in $\\text{AD 79}$?",
-                        "What famous ship brought the Pilgrims to America?",
-                        "Who wrote the *Iliad* and the *Odyssey*?",
-                        "What country gifted the Statue of Liberty to the United States?",
-                        "What was the period of transition between the Middle Ages and modern history called?",
-                        "What is the name of the sun god in Egyptian mythology?",
-                        "What ancient wonder was located in Giza, Egypt?",
-                        "What famous document declared the US colonies independent from Great Britain?",
-                        "What famous figure was assassinated in Sarajevo, triggering WWI?",
-                        "What was the primary economic system of the Middle Ages?",
-                        "What is the collective name for the Norse gods?",
-                        "Who led the revolution in India against British rule through non-violence?",
-                        "What was the famous trade route connecting the East and West called?",
-                        "What civilization built Machu Picchu?",
-                        "What is the name of the legendary city supposedly lost beneath the sea?",
-                        "What religious figure is credited with nailing 95 Theses to a church door?",
-                        "What type of structure did the Romans use to carry water across long distances?",
-                        "What war involved the use of a giant wooden horse?",
-                        "Who was the young Egyptian Pharaoh whose intact tomb was discovered in 1922?",
-                        "What mythological beast is half-man, half-bull?",
-                        "What famous explorer was the first to circumnavigate the Earth?",
-                        "What was the name of the first major law code developed in ancient Mesopotamia?",
-                        "What empire controlled a vast territory in South America before the Spanish conquest?",
-                        "Who developed the theory of evolution by natural selection?",
-                        "What is the name of the legendary Greek hero who killed the Medusa?"
-                    ]
-                },
-                {
-                    "n": "Music & Arts",
-                    "p": [
-                        "How many strings does a standard guitar have?",
-                        "What is the color of a typical school bus?",
-                        "Which instrument has black and white keys?",
-                        "Who painted the Mona Lisa?",
-                        "What is a group of musicians called?",
-                        "What is a musical composition written for a full orchestra called?",
-                        "What is the primary tool used in the art of sculpting?",
-                        "What do the letters 'D-O-R-E-M-I' represent?",
-                        "What type of art is done on wet plaster?",
-                        "Name the famous playwright who wrote *Romeo and Juliet*.",
-                        "What is the top note in the treble clef staff called?",
-                        "What is the term for a song sung by one person?",
-                        "What is the main difference between drawing and painting?",
-                        "What is the curved wooden instrument played with a bow?",
-                        "Which color is made by mixing red and blue?",
-                        "What are the three primary colors (in light)?",
-                        "What art movement is characterized by 'melting' clocks?",
-                        "What device is used to amplify sound in music performances?",
-                        "What is the name of the rhythmic art of movement set to music?",
-                        "What tool does a cartoonist typically use to ink their drawings?",
-                        "What is the term for the speed at which music is played?",
-                        "Who composed the famous 'Moonlight Sonata'?",
-                        "What are the three secondary colors in pigment?",
-                        "What is the name of the sheet on which an artist mixes colors?",
-                        "What type of performing art involves speaking dialogue and acting out a story?",
-                        "What is the name of the clef used for low-pitched instruments like the cello?",
-                        "What is the art of folding paper called?",
-                        "What famous opera composer created *The Marriage of Figaro*?",
-                        "What is the term for a piece of music played at the end of a performance?",
-                        "What style of painting uses small, distinct dots of color?",
-                        "What famous ballet features a young girl and a nutcracker prince?",
-                        "What instrument is traditionally used to accompany a ukulele?",
-                        "What part of a camera controls the amount of light that hits the sensor?",
-                        "What is the literary term for a brief and humorous poem of five lines?",
-                        "What major annual event is held in California featuring many music acts?",
-                        "What is the name of the musical symbol that indicates silence?",
-                        "What type of painting creates the illusion of three dimensions on a flat surface?",
-                        "Who sculpted the famous statue of David?",
-                        "What is the name of the long, wooden stick used to conduct an orchestra?",
-                        "What is the smallest interval between two notes on a piano called?",
-                        "What famous Dutch painter cut off his own ear?",
-                        "What is a short, popular song written in a simple style called?",
-                        "What element is used to create texture in a piece of visual art?",
-                        "What famous building in New York is home to a world-renowned art museum?",
-                        "What type of visual art often uses ink and a pointed tool to scratch lines onto a surface?",
-                        "What are the standard sizes of photographs measured in?",
-                        "What is the process of creating images using light-sensitive materials?",
-                        "What is the name for the written set of rules and stage directions for a play?",
-                        "What famous rock and roll musician was known as 'The King'?",
-                        "What type of art uses light and shadow to create dramatic effect?"
-                    ]
-                },
-                {
-                    "n": "Sports & Games",
-                    "p": [
-                        "How many players are on a soccer team (on the field)?",
-                        "What is the object used to hit the ball in tennis?",
-                        "Where do you typically swim?",
-                        "What shape is a basketball hoop?",
-                        "Name a piece of equipment used in bowling.",
-                        "What color is the '8-ball' in pool?",
-                        "How many bases are there in baseball?",
-                        "What term is used in chess to put the opponent's king in immediate danger?",
-                        "What type of club is used to start a round in golf?",
-                        "What martial art uses a colored belt system?",
-                        "What is the official distance of a marathon in miles?",
-                        "What sport uses a puck instead of a ball?",
-                        "What piece of equipment is worn on your feet for ice skating?",
-                        "What is the highest score possible on a single dart throw?",
-                        "What famous athletic event is held every four years, featuring many sports?",
-                        "What is the objective of the game of Tetris?",
-                        "What are the four suits in a standard deck of cards?",
-                        "Which sport is played on a pitch and features wickets and bails?",
-                        "What is the highest-scoring play in American football?",
-                        "What is the only instrument used in the game of checkers?",
-                        "What is the common term for a score of zero in tennis?",
-                        "How many holes are in a standard game of golf?",
-                        "What color flag is waved to signal the winner of a car race?",
-                        "In what sport do players perform 'spikes' and 'blocks'?",
-                        "What is the term for a perfect game in bowling?",
-                        "What famous cycling race takes place in France every July?",
-                        "What is the name of the ring-shaped object thrown in the sport of quoits?",
-                        "What sport involves vaulting over a horizontal bar using a flexible pole?",
-                        "What is the name of the court where badminton is played?",
-                        "What piece of equipment is used to protect a baseball catcher's face?",
-                        "What color is the center bullseye on a standard dartboard?",
-                        "What card game is known for having a 'wild' card rule?",
-                        "What is the term for tying the score in a game?",
-                        "What sport uses a small, dimpled white ball and long clubs?",
-                        "What is the name of the board game where you buy and sell properties?",
-                        "In what position does a baseball pitcher stand?",
-                        "What sport involves throwing a heavy metal ball as far as possible?",
-                        "What is the maximum number of people on the court in a standard game of basketball?",
-                        "What is the main objective of the video game *Minecraft* in survival mode?",
-                        "What is the name of the penalty area in a soccer field?",
-                        "What sport requires competitors to complete three continuous and sequential disciplines?",
-                        "What piece of gear is worn on the head for American football?",
-                        "What game uses small, domino-like tiles that are drawn from a bag?",
-                        "What is the name of the traditional German nine-pin bowling game?",
-                        "What is the term for a basket scored outside the three-point line in basketball?",
-                        "What board game features pieces that can only move diagonally?",
-                        "What famous prize is awarded to the winner of the World Series in baseball?",
-                        "What is the primary material of a ping-pong ball?",
-                        "What color is the cue ball in a game of billiards?",
-                        "What is the name of the ring in boxing and wrestling?"
-                    ]
-                }
-            ]
-        };
-        // ===========================================
+        // === REMOVED: EMBEDDED CATEGORY DATA ===
+        // Data will now be fetched from the URL.
 
         const GLOBAL_STORAGE_KEY = 'chirpss_wao_data'; // Unique key for this game's persistence
+        const CATEGORY_URL = 'https://chirpss.my.to/WrongAnswersOnly/Question-Free.json';
 
         let players = [];
         let selectedCategories = [];
-        let availableCategories = []; 
+        let availableCategories = []; // This will be populated by the fetch
         let timePerQuestion = 10;
 
         // --- Persistent Storage Functions (Consolidated) ---
@@ -602,11 +163,13 @@
             const count = players.length;
             const catCount = selectedCategories.length;
             
-            document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
-            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${WAO_CATEGORIES_DATA.c.length || 0} categories.`;
+            document.getElementById('player-count-display').textContent = `Players: ${count} (Min 2)`;
+            
+            // *** CHANGED: Use availableCategories.length instead of the old constant ***
+            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${availableCategories.length || 0} categories.`;
             
             const startBtn = document.getElementById('start-game-btn');
-            const isReady = count >= 3 && catCount > 0;
+            const isReady = count >= 2 && catCount > 0;
             startBtn.disabled = !isReady;
 
             if (isReady) {
@@ -631,6 +194,12 @@
         function renderPlayers() {
             const listEl = document.getElementById('player-list');
             listEl.innerHTML = '';
+
+            // *** NEW: Add placeholder if no players ***
+            if (players.length === 0) {
+                 listEl.innerHTML = `<p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 2 players to begin.</p>`;
+            }
+
             players.forEach((name) => {
                 const playerEl = document.createElement('div');
                 playerEl.className = 'flex justify-between items-center p-2 bg-input-bg rounded-md border border-subtle-gray/50';
@@ -673,8 +242,33 @@
             }
         }
         
-        function loadCategories() {
-            availableCategories = WAO_CATEGORIES_DATA.c; 
+        // *** NEW: Async function to fetch and render categories ***
+        async function fetchAndRenderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
+
+            try {
+                const response = await fetch(CATEGORY_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (!data || !data.c) {
+                     throw new Error("Invalid JSON structure.");
+                }
+
+                availableCategories = data.c; // Populate the global variable
+
+                renderCategories(); // Now call render
+                updatePlayerCount(); // And update the count display
+
+            } catch (error) {
+                console.error("Failed to load categories:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load question categories. Please try refreshing.</p>`;
+                // Disable start button as categories failed
+                document.getElementById('start-game-btn').disabled = true;
+            }
         }
 
         function renderCategories() {
@@ -682,7 +276,8 @@
             container.innerHTML = ''; 
 
             if (!availableCategories || availableCategories.length === 0) {
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: No categories found in embedded data.</p>`;
+                // This case is now handled by the fetch function's error state
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: No categories found.</p>`;
                 return;
             }
 
@@ -698,13 +293,13 @@
                 
                 // Apply persistence coloring/selection during rendering
                 if (selectedCategories.includes(categoryName)) {
-                    button.classList.add('primary-action-bg', 'text-deep-twilight', 'border-success-green');
+                    button.classList.add('primary-action-bg', 'text-deep-twilight', 'border-warm-dusk');
                     button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
                 }
                 
                 container.appendChild(button);
             });
-            updatePlayerCount();
+            // Note: updatePlayerCount() is called by the fetch function AFTER renderCategories() completes
         }
 
         function toggleCategory(button, categoryName) {
@@ -712,12 +307,12 @@
             if (index > -1) {
                 // Deselect
                 selectedCategories.splice(index, 1);
-                button.classList.remove('primary-action-bg', 'text-deep-twilight', 'border-success-green');
+                button.classList.remove('primary-action-bg', 'text-deep-twilight', 'border-warm-dusk');
                 button.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             } else {
                 // Select
                 selectedCategories.push(categoryName);
-                button.classList.add('primary-action-bg', 'text-deep-twilight', 'border-success-green');
+                button.classList.add('primary-action-bg', 'text-deep-twilight', 'border-warm-dusk');
                 button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             }
             updatePlayerCount(); 
@@ -737,16 +332,17 @@
             
             initializeSettings(globalData); 
             
-            loadCategories(); 
-            renderCategories(); 
-            renderPlayers(); 
+            // *** CHANGED: Call the fetch function instead of load/render directly ***
+            fetchAndRenderCategories(); 
+            
+            renderPlayers(); // This is independent and can run
         });
 
         document.getElementById('wao-settings-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            if (players.length < 3) {
-                alert("Please add a minimum of 3 players.");
+            if (players.length < 2) {
+                alert("Please add a minimum of 2 players.");
                 return;
             }
             if (selectedCategories.length === 0) {
@@ -766,10 +362,17 @@
             saveGlobalData(finalSettings);
 
             // 2. Prepare Game Data for Session
+            // *** This logic remains the same, as availableCategories is populated by the fetch ***
             const finalPrompts = availableCategories
                 .filter(cat => selectedCategories.includes(cat.n))
                 .map(cat => cat.p) // Only pull the array of prompts (p)
                 .flat(); // Flatten the array of arrays into one list of prompts
+            
+            // *** NEW: Add a check in case fetch failed and user somehow clicked submit ***
+            if (finalPrompts.length === 0) {
+                 alert("Error: No prompts were loaded from the selected categories. Cannot start game.");
+                 return;
+            }
             
             const gameData = {
                 players: players,
