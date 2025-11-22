@@ -6,6 +6,8 @@
     <title>Imposter Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV2022ERX5"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -170,7 +172,7 @@
             const startingPlayer = allPlayerNames[randomIndex];
             
             const announcementElement = document.getElementById('start-player-announcement');
-            announcementElement.textContent = `📢 Player ${startingPlayer} starts!`;
+            announcementElement.textContent = `Player ${startingPlayer} starts!`;
             announcementElement.classList.remove('hidden');
         }
         // ------------------------------------------
@@ -188,7 +190,7 @@
             isPaused = false;
             
             // Update button text and state
-            document.getElementById('pause-button').textContent = '⏸️ PAUSE';
+            document.getElementById('pause-button').textContent = ' PAUSE';
             document.getElementById('timer-heading').textContent = 'DISCUSSION ROUND';
 
             // Clear any existing interval
@@ -211,7 +213,7 @@
             if (!isPaused) {
                 clearInterval(timerInterval);
                 isPaused = true;
-                document.getElementById('pause-button').textContent = '▶️ RESUME';
+                document.getElementById('pause-button').textContent = ' RESUME';
                 document.getElementById('timer-heading').textContent = 'ROUND PAUSED';
             } else {
                 startTimer();
