@@ -173,7 +173,7 @@
     </main>
 
     <script>
-        // === REMOVED: EMBEDDED CATEGORY DATA ===
+                // === REMOVED: EMBEDDED CATEGORY DATA ===
 
         // === NEW: Define constants for URL and storage keys ===
         const CATEGORY_URL = 'https://chirpss.my.to/Imposter/categories.json';
@@ -221,12 +221,12 @@
 
         // --- Setup Logic ---
 
+        // *** THIS FUNCTION CONTAINS THE LATEST FIX ***
         function updatePlayerCount() {
             const count = players.length;
             const catCount = selectedCategories.length;
             document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
             
-            // *** CHANGED: Use availableCategories.length instead of the old constant ***
             document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${availableCategories.length || 0} categories.`;
             
             const startBtn = document.getElementById('start-game-btn');
@@ -242,7 +242,14 @@
                 startBtn.classList.remove('bg-warm-dusk');
             }
 
-            document.getElementById('player-list-placeholder').style.display = count === 0 ? 'block' : 'none';
+            // *** THE FIX IS HERE ***
+            // We must check if the placeholder element exists, because
+            // renderPlayers() might have removed it.
+            const placeholder = document.getElementById('player-list-placeholder');
+            if (placeholder) {
+                placeholder.style.display = count === 0 ? 'block' : 'none';
+            }
+            // *** END OF FIX ***
             
             saveSettingsToStorage(getCurrentSettings());
         }
@@ -339,7 +346,7 @@
 
             } catch (error) {
                 console.error("Failed to load categories:", error);
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load word categories. Please try refreshing.</p>`;
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load word categories. Please try refreshing. Sometimes removing all the players or clearing the cookies also works.</p>`;
                 document.getElementById('start-game-btn').disabled = true;
             }
         }
@@ -390,10 +397,13 @@
             }
             updatePlayerCount(); // Triggers settings save
         }
-
+        // *** THIS FUNCTION CONTAINS THE FIRST FIX ***
         function initializeSettings() {
             const settings = loadSettingsFromStorage();
             
+            // *** FIX 1: Populate selectedCategories IMMEDIATELY ***
+            selectedCategories = settings ? settings.selectedCategories || [] : [];
+
             // 1. Imposters Slider
             const imposterSlider = document.getElementById('imposter-count-slider');
             const imposterCount = settings ? settings.imposterCount || 1 : 1;
@@ -405,21 +415,20 @@
             const timeSlider = document.getElementById('game-time-slider');
             const gameTimeMinutes = settings ? settings.gameTimeMinutes || 5 : 5;
             timeSlider.value = gameTimeMinutes;
-            updateGameTimeDisplay(timeSlider.value); // This initial call sets the text display
+            updateGameTimeDisplay(timeSlider.value); // This call is now safe
             timeSlider.oninput = (e) => updateGameTimeDisplay(e.target.value);
 
             // 3. Hint Toggle
             const hintEnabled = settings ? settings.hintEnabled !== false : true;
             document.getElementById('imposter-hint-toggle').checked = hintEnabled; 
             document.getElementById('imposter-hint-toggle').onclick = updatePlayerCount;
-
-            // 4. Selected Categories (Array used for logic)
-            selectedCategories = settings ? settings.selectedCategories || [] : [];
             
             if (!settings) {
                 saveSettingsToStorage(getCurrentSettings());
             }
         }
+
+
         // --- Initialization and Submit ---
         document.addEventListener('DOMContentLoaded', () => {
             // 1. Load and apply persistent settings to the form controls (Sliders, Toggles, Categories array)
