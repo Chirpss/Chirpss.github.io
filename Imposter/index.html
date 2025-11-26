@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imposter Setup - Chirpss</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV2022ERX5"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -154,10 +153,17 @@
                 </div>
 
                 <div class="mb-10">
-                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Word Categories</label>
-                    <div id="categories-container" class="flex flex-wrap gap-3">
+                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Word Categories (Set 1)</label>
+                    <div id="categories-container-1" class="flex flex-wrap gap-3">
                         </div>
-                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message">Select one or more categories.</p>
+                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message-1">Select one or more categories.</p>
+                </div>
+
+                <div class="mb-10">
+                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Word Categories (Set 2)</label>
+                    <div id="categories-container-2" class="flex flex-wrap gap-3">
+                        </div>
+                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message-2">Select one or more categories.</p>
                 </div>
 
                 <button type="submit" id="start-game-btn" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
@@ -173,16 +179,21 @@
     </main>
 
     <script>
-                // === REMOVED: EMBEDDED CATEGORY DATA ===
-
-        // === NEW: Define constants for URL and storage keys ===
-        const CATEGORY_URL = 'https://chirpss.my.to/Imposter/categories.json';
+        // === Define constants for URL and storage keys ===
+        const CATEGORY_URL_1 = 'https://chirpss.my.to/Imposter/categories.json';
+        const CATEGORY_URL_2 = 'https://chirpss.my.to/Imposter/categories2.json'; // New URL as requested
         const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings'; 
         const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players';
 
         let players = [];
-        let selectedCategories = [];
-        let availableCategories = []; // Will be populated by fetch
+        
+        // State for list 1
+        let selectedCategories_1 = [];
+        let availableCategories_1 = [];
+
+        // State for list 2
+        let selectedCategories_2 = [];
+        let availableCategories_2 = [];
 
         // --- Persistence Helper Function ---
         function getCurrentSettings() {
@@ -194,7 +205,8 @@
                 imposterCount: imposterSlider ? imposterSlider.value : 1,
                 gameTimeMinutes: timeSlider ? parseFloat(timeSlider.value) : 5,
                 hintEnabled: hintToggle ? hintToggle.checked : true,
-                selectedCategories: selectedCategories 
+                selectedCategories_1: selectedCategories_1,
+                selectedCategories_2: selectedCategories_2
             };
         }
 
@@ -221,17 +233,21 @@
 
         // --- Setup Logic ---
 
-        // *** THIS FUNCTION CONTAINS THE LATEST FIX ***
         function updatePlayerCount() {
             const count = players.length;
-            const catCount = selectedCategories.length;
+            const catCount_1 = selectedCategories_1.length;
+            const catCount_2 = selectedCategories_2.length;
+            
             document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
             
-            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${availableCategories.length || 0} categories.`;
+            // Update both category count messages
+            document.getElementById('category-count-message-1').textContent = `Selected: ${catCount_1} of ${availableCategories_1.length || 0} categories.`;
+            document.getElementById('category-count-message-2').textContent = `Selected: ${catCount_2} of ${availableCategories_2.length || 0} categories.`;
             
             const startBtn = document.getElementById('start-game-btn');
             
-            const isReady = count >= 3 && catCount > 0;
+            // Enable start if 3+ players AND at least one category from EITHER list is selected
+            const isReady = count >= 3 && (catCount_1 > 0 || catCount_2 > 0);
             startBtn.disabled = !isReady;
 
             if (isReady) {
@@ -242,14 +258,10 @@
                 startBtn.classList.remove('bg-warm-dusk');
             }
 
-            // *** THE FIX IS HERE ***
-            // We must check if the placeholder element exists, because
-            // renderPlayers() might have removed it.
             const placeholder = document.getElementById('player-list-placeholder');
             if (placeholder) {
                 placeholder.style.display = count === 0 ? 'block' : 'none';
             }
-            // *** END OF FIX ***
             
             saveSettingsToStorage(getCurrentSettings());
         }
@@ -261,7 +273,6 @@
             if (minutes === 0.5) {
                 timeDisplay.textContent = '30 Seconds';
             } else {
-                 // Simplified: Just show minutes, e.g., "2.5 Minutes"
                 timeDisplay.textContent = `${minutes} Minutes`;
             }
             updatePlayerCount(); // Triggers settings save
@@ -299,7 +310,7 @@
                 players.push(name);
                 input.value = '';
                 renderPlayers();
-                savePlayersToStorage(); // Save and update UI/settings
+                savePlayersToStorage();
                 document.getElementById('player-list').scrollTop = document.getElementById('player-list').scrollHeight;
             }
         }
@@ -307,7 +318,7 @@
         function removePlayer(nameToRemove) {
             players = players.filter(name => name !== nameToRemove);
             renderPlayers();
-            savePlayersToStorage(); // Save and update UI/settings
+            savePlayersToStorage();
         }
 
         function handlePlayerInput(event) {
@@ -323,13 +334,14 @@
             updatePlayerCount(); // Triggers settings save
         }
 
-        // *** NEW: Async function to fetch and render categories ***
-        async function fetchAndRenderCategories() {
-            const container = document.getElementById('categories-container');
+        // --- Category Functions (List 1) ---
+
+        async function fetchAndRenderCategories_1() {
+            const container = document.getElementById('categories-container-1');
             container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
 
             try {
-                const response = await fetch(CATEGORY_URL);
+                const response = await fetch(CATEGORY_URL_1);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -339,29 +351,27 @@
                      throw new Error("Invalid JSON structure.");
                 }
 
-                availableCategories = data.c; // Populate the global variable
-
-                renderCategories(); // Now call render
-                updatePlayerCount(); // And update the count display
+                availableCategories_1 = data.c;
+                renderCategories_1();
+                updatePlayerCount();
 
             } catch (error) {
-                console.error("Failed to load categories:", error);
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load word categories. Please try refreshing. Sometimes removing all the players or clearing the cookies also works.</p>`;
-                document.getElementById('start-game-btn').disabled = true;
+                console.error("Failed to load categories 1:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 1).</p>`;
+                updatePlayerCount(); // Still update counts even on error
             }
         }
 
-        function renderCategories() {
-            const container = document.getElementById('categories-container');
+        function renderCategories_1() {
+            const container = document.getElementById('categories-container-1');
             container.innerHTML = ''; 
 
-            if (!availableCategories || availableCategories.length === 0) {
-                // This is now mainly a fallback, as the fetch function handles the primary error
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: No categories found.</p>`;
+            if (!availableCategories_1 || availableCategories_1.length === 0) {
+                container.innerHTML = `<p class="text-subtle-gray">No categories found for Set 1.</p>`;
                 return;
             }
 
-            availableCategories.forEach(category => {
+            availableCategories_1.forEach(category => {
                 const categoryName = category.n; 
                 
                 const button = document.createElement('button');
@@ -369,40 +379,109 @@
                 button.className = 'category-btn bg-input-bg text-soft-horizon py-2 px-4 rounded-full border border-subtle-gray/50';
                 button.textContent = categoryName;
                 
-                button.onclick = () => toggleCategory(button, categoryName);
+                button.onclick = () => toggleCategory_1(button, categoryName);
                 
-                // Apply persistence coloring/selection during rendering
-                if (selectedCategories.includes(categoryName)) {
+                if (selectedCategories_1.includes(categoryName)) {
                     button.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
                     button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
                 }
                 
                 container.appendChild(button);
             });
-            // updatePlayerCount() is called by fetchAndRenderCategories after this runs
         }
 
-        function toggleCategory(button, categoryName) {
-            const index = selectedCategories.indexOf(categoryName);
+        function toggleCategory_1(button, categoryName) {
+            const index = selectedCategories_1.indexOf(categoryName);
             if (index > -1) {
-                // Deselect
-                selectedCategories.splice(index, 1);
+                selectedCategories_1.splice(index, 1);
                 button.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
                 button.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             } else {
-                // Select
-                selectedCategories.push(categoryName);
+                selectedCategories_1.push(categoryName);
                 button.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
                 button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             }
-            updatePlayerCount(); // Triggers settings save
+            updatePlayerCount();
         }
-        // *** THIS FUNCTION CONTAINS THE FIRST FIX ***
+
+        // --- Category Functions (List 2) ---
+
+        async function fetchAndRenderCategories_2() {
+            const container = document.getElementById('categories-container-2');
+            container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
+
+            try {
+                const response = await fetch(CATEGORY_URL_2);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (!data || !data.c) {
+                     throw new Error("Invalid JSON structure.");
+                }
+
+                availableCategories_2 = data.c;
+                renderCategories_2();
+                updatePlayerCount();
+
+            } catch (error) {
+                console.error("Failed to load categories 2:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 2).</p>`;
+                updatePlayerCount(); // Still update counts even on error
+            }
+        }
+
+        function renderCategories_2() {
+            const container = document.getElementById('categories-container-2');
+            container.innerHTML = ''; 
+
+            if (!availableCategories_2 || availableCategories_2.length === 0) {
+                container.innerHTML = `<p class="text-subtle-gray">No categories found for Set 2.</p>`;
+                return;
+            }
+
+            availableCategories_2.forEach(category => {
+                const categoryName = category.n; 
+                
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'category-btn bg-input-bg text-soft-horizon py-2 px-4 rounded-full border border-subtle-gray/50';
+                button.textContent = categoryName;
+                
+                button.onclick = () => toggleCategory_2(button, categoryName);
+                
+                if (selectedCategories_2.includes(categoryName)) {
+                    button.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
+                    button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+                }
+                
+                container.appendChild(button);
+            });
+        }
+
+        function toggleCategory_2(button, categoryName) {
+            const index = selectedCategories_2.indexOf(categoryName);
+            if (index > -1) {
+                selectedCategories_2.splice(index, 1);
+                button.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
+                button.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+            } else {
+                selectedCategories_2.push(categoryName);
+                button.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk');
+                button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+            }
+            updatePlayerCount();
+        }
+
+        // --- Initialization and Submit ---
+
         function initializeSettings() {
             const settings = loadSettingsFromStorage();
             
-            // *** FIX 1: Populate selectedCategories IMMEDIATELY ***
-            selectedCategories = settings ? settings.selectedCategories || [] : [];
+            // Populate selected categories for both lists
+            selectedCategories_1 = settings ? settings.selectedCategories_1 || [] : [];
+            selectedCategories_2 = settings ? settings.selectedCategories_2 || [] : [];
 
             // 1. Imposters Slider
             const imposterSlider = document.getElementById('imposter-count-slider');
@@ -415,7 +494,7 @@
             const timeSlider = document.getElementById('game-time-slider');
             const gameTimeMinutes = settings ? settings.gameTimeMinutes || 5 : 5;
             timeSlider.value = gameTimeMinutes;
-            updateGameTimeDisplay(timeSlider.value); // This call is now safe
+            updateGameTimeDisplay(timeSlider.value);
             timeSlider.oninput = (e) => updateGameTimeDisplay(e.target.value);
 
             // 3. Hint Toggle
@@ -429,17 +508,17 @@
         }
 
 
-        // --- Initialization and Submit ---
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Load and apply persistent settings to the form controls (Sliders, Toggles, Categories array)
+            // 1. Load and apply persistent settings
             initializeSettings(); 
 
-            // 2. Load and render players (Updates the global 'players' array and UI list)
+            // 2. Load and render players
             players = getPlayersFromStorage();
-            renderPlayers(); // Renders the list
+            renderPlayers();
 
-            // 3. ***CHANGED: Fetch categories, then render them and update UI***
-            fetchAndRenderCategories();
+            // 3. Fetch and render BOTH category lists
+            fetchAndRenderCategories_1();
+            fetchAndRenderCategories_2();
         });
 
         document.getElementById('imposter-settings-form').addEventListener('submit', function(e) {
@@ -449,23 +528,28 @@
                 alert("Please add a minimum of 3 players.");
                 return;
             }
-            if (selectedCategories.length === 0) {
-                alert("Please select at least one word category.");
+            // Check if at least one category is selected from EITHER list
+            if (selectedCategories_1.length === 0 && selectedCategories_2.length === 0) {
+                alert("Please select at least one word category from either list.");
                 return;
             }
 
             const currentSettings = getCurrentSettings();
             
-            // Final save just in case
             saveSettingsToStorage(currentSettings);
 
-            // Prepare Game Data for Session
-            const finalCategories = availableCategories
-                .filter(cat => selectedCategories.includes(cat.n))
-                .map(cat => ({ name: cat.n, words: cat.w })); 
+            // Prepare Game Data: Combine categories from both lists
+            const finalCategories_1 = availableCategories_1
+                .filter(cat => selectedCategories_1.includes(cat.n))
+                .map(cat => ({ name: cat.n, words: cat.w }));
             
-            // *** NEW: Check if categories actually loaded ***
-            if (finalCategories.length === 0 || finalCategories.every(cat => cat.words.length === 0)) {
+            const finalCategories_2 = availableCategories_2
+                .filter(cat => selectedCategories_2.includes(cat.n))
+                .map(cat => ({ name: cat.n, words: cat.w }));
+            
+            const allFinalCategories = finalCategories_1.concat(finalCategories_2);
+            
+            if (allFinalCategories.length === 0 || allFinalCategories.every(cat => cat.words.length === 0)) {
                 alert("Error: No words were loaded from the selected categories. Cannot start game.");
                 return;
             }
@@ -475,7 +559,7 @@
                 imposterCount: currentSettings.imposterCount,
                 gameTimeSeconds: currentSettings.gameTimeMinutes * 60, 
                 hintEnabled: currentSettings.hintEnabled,
-                categories: finalCategories 
+                categories: allFinalCategories // Use the combined list
             };
 
             sessionStorage.setItem('chirpss_imposter_game_data', JSON.stringify(gameData));
