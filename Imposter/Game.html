@@ -261,16 +261,10 @@
         }
 
         function playAgain() {
-            // The /Imposter/ page uses localStorage for players and sessionStorage for game settings.
-            // Since the settings page loads fresh, it will automatically use the last entered player list.
-            
-            // Clear current game session data to force a fresh assignment, but keep player list.
-            sessionStorage.removeItem('chirpss_imposter_game_data');
-            sessionStorage.removeItem('chirpss_imposter_assigned_roles');
-            
-            // Redirect to setup page
-            // window.location.href = '/Imposter/'; // Uncomment if this path is valid
+            // Redirect to the specified URL
+            window.location.href = 'https://chirpss.my.to/Imposter/';
         }
+
 
         // --- Initialization ---
 
