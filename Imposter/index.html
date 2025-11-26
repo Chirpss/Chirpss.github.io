@@ -85,6 +85,25 @@
             margin-top: -6px;
             cursor: pointer;
         }
+
+        /* Styling for details/summary to match theme */
+        details > summary {
+            list-style: none; /* Remove default marker */
+        }
+        details > summary::-webkit-details-marker {
+            display: none; /* Remove default marker (Safari) */
+        }
+        /* Custom marker */
+        details > summary::before {
+            content: '►';
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 0.8em;
+            transition: transform 0.2s ease-in-out;
+        }
+        details[open] > summary::before {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased">
@@ -152,18 +171,30 @@
                     </label>
                 </div>
 
-                <div class="mb-10">
-                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Word Categories (Set 1)</label>
-                    <div id="categories-container-1" class="flex flex-wrap gap-3">
+                <div class="mb-4">
+                    <details id="category-section-1" class="rounded-lg border border-subtle-gray/30 overflow-hidden">
+                        <summary class="block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none">
+                            Select Word Categories (Set 1)
+                        </summary>
+                        <div class="p-4 pt-3 border-t border-subtle-gray/30">
+                            <div id="categories-container-1" class="flex flex-wrap gap-3">
+                                </div>
+                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-1">Select one or more categories.</p>
                         </div>
-                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message-1">Select one or more categories.</p>
+                    </details>
                 </div>
 
                 <div class="mb-10">
-                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Word Categories (Set 2)</label>
-                    <div id="categories-container-2" class="flex flex-wrap gap-3">
+                    <details id="category-section-2" class="rounded-lg border border-subtle-gray/30 overflow-hidden">
+                        <summary class="block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none">
+                            Select Word Categories (Set 2)
+                        </summary>
+                        <div class="p-4 pt-3 border-t border-subtle-gray/30">
+                            <div id="categories-container-2" class="flex flex-wrap gap-3">
+                                </div>
+                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-2">Select one or more categories.</p>
                         </div>
-                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message-2">Select one or more categories.</p>
+                    </details>
                 </div>
 
                 <button type="submit" id="start-game-btn" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
@@ -181,9 +212,10 @@
     <script>
         // === Define constants for URL and storage keys ===
         const CATEGORY_URL_1 = 'https://chirpss.my.to/Imposter/categories.json';
-        const CATEGORY_URL_2 = 'https://chirpss.my.to/Imposter/categories2.json'; // New URL as requested
+        const CATEGORY_URL_2 = '/Imposter/categories2.json';
         const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings'; 
         const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players';
+        const UI_STATE_STORAGE_KEY = 'chirpss_imposter_ui_state'; // NEW for collapsible state
 
         let players = [];
         
@@ -231,6 +263,25 @@
             return data ? JSON.parse(data) : null;
         }
 
+        // UI State Persistence
+        function saveUiState() {
+            const state = {
+                section1Open: document.getElementById('category-section-1').open,
+                section2Open: document.getElementById('category-section-2').open
+            };
+            localStorage.setItem(UI_STATE_STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadUiState() {
+            const data = localStorage.getItem(UI_STATE_STORAGE_KEY);
+            const state = data ? JSON.parse(data) : null;
+            
+            // Set defaults: section 1 open, section 2 closed
+            document.getElementById('category-section-1').open = state ? state.section1Open : true;
+            document.getElementById('category-section-2').open = state ? state.section2Open : false;
+        }
+
+
         // --- Setup Logic ---
 
         function updatePlayerCount() {
@@ -240,13 +291,11 @@
             
             document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
             
-            // Update both category count messages
             document.getElementById('category-count-message-1').textContent = `Selected: ${catCount_1} of ${availableCategories_1.length || 0} categories.`;
             document.getElementById('category-count-message-2').textContent = `Selected: ${catCount_2} of ${availableCategories_2.length || 0} categories.`;
             
             const startBtn = document.getElementById('start-game-btn');
             
-            // Enable start if 3+ players AND at least one category from EITHER list is selected
             const isReady = count >= 3 && (catCount_1 > 0 || catCount_2 > 0);
             startBtn.disabled = !isReady;
 
@@ -275,7 +324,7 @@
             } else {
                 timeDisplay.textContent = `${minutes} Minutes`;
             }
-            updatePlayerCount(); // Triggers settings save
+            updatePlayerCount(); 
         }
         
         function renderPlayers() {
@@ -331,7 +380,7 @@
         function updateSliderValue(sliderId, valueId) {
             const slider = document.getElementById(sliderId);
             document.getElementById(valueId).textContent = slider.value;
-            updatePlayerCount(); // Triggers settings save
+            updatePlayerCount(); 
         }
 
         // --- Category Functions (List 1) ---
@@ -358,7 +407,7 @@
             } catch (error) {
                 console.error("Failed to load categories 1:", error);
                 container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 1).</p>`;
-                updatePlayerCount(); // Still update counts even on error
+                updatePlayerCount(); 
             }
         }
 
@@ -428,7 +477,7 @@
             } catch (error) {
                 console.error("Failed to load categories 2:", error);
                 container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 2).</p>`;
-                updatePlayerCount(); // Still update counts even on error
+                updatePlayerCount(); 
             }
         }
 
@@ -479,7 +528,6 @@
         function initializeSettings() {
             const settings = loadSettingsFromStorage();
             
-            // Populate selected categories for both lists
             selectedCategories_1 = settings ? settings.selectedCategories_1 || [] : [];
             selectedCategories_2 = settings ? settings.selectedCategories_2 || [] : [];
 
@@ -509,16 +557,23 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Load and apply persistent settings
+            // 1. Load UI state (collapsible sections)
+            loadUiState();
+
+            // 2. Load and apply persistent settings
             initializeSettings(); 
 
-            // 2. Load and render players
+            // 3. Load and render players
             players = getPlayersFromStorage();
             renderPlayers();
 
-            // 3. Fetch and render BOTH category lists
+            // 4. Fetch and render BOTH category lists
             fetchAndRenderCategories_1();
             fetchAndRenderCategories_2();
+            
+            // 5. Add event listeners for saving UI state
+            document.getElementById('category-section-1').addEventListener('toggle', saveUiState);
+            document.getElementById('category-section-2').addEventListener('toggle', saveUiState);
         });
 
         document.getElementById('imposter-settings-form').addEventListener('submit', function(e) {
@@ -528,7 +583,6 @@
                 alert("Please add a minimum of 3 players.");
                 return;
             }
-            // Check if at least one category is selected from EITHER list
             if (selectedCategories_1.length === 0 && selectedCategories_2.length === 0) {
                 alert("Please select at least one word category from either list.");
                 return;
@@ -538,7 +592,6 @@
             
             saveSettingsToStorage(currentSettings);
 
-            // Prepare Game Data: Combine categories from both lists
             const finalCategories_1 = availableCategories_1
                 .filter(cat => selectedCategories_1.includes(cat.n))
                 .map(cat => ({ name: cat.n, words: cat.w }));
@@ -559,7 +612,7 @@
                 imposterCount: currentSettings.imposterCount,
                 gameTimeSeconds: currentSettings.gameTimeMinutes * 60, 
                 hintEnabled: currentSettings.hintEnabled,
-                categories: allFinalCategories // Use the combined list
+                categories: allFinalCategories
             };
 
             sessionStorage.setItem('chirpss_imposter_game_data', JSON.stringify(gameData));
