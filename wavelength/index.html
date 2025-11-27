@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavelength Setup - Chirpss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind Configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',       
+                        'fiery-core': '#FFC35B',      
+                        'soft-horizon': '#F5F1E6',    
+                        'subtle-gray': '#5A6F82',     
+                        'input-bg': '#2A3C50',
+                        'primary-teal': '#38B2AC', /* New primary color for this game */
+                        'team1': '#FF6B6B',
+                        'team2': '#6CCF6C',
+                    },
+                    boxShadow: {
+                        'input-focus': '0 0 0 3px rgba(56, 178, 172, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1C2A39;
+            color: #F5F1E6;
+        }
+        .custom-input {
+            background-color: #2A3C50; 
+            color: #F5F1E6;
+            border: 1px solid #5A6F82;
+            transition: all 0.2s;
+        }
+        .custom-input:focus {
+            border-color: #38B2AC; 
+            box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.4); 
+            outline: none;
+        }
+        .primary-action-bg {
+            background-color: #38B2AC; 
+            color: #F5F1E6;
+        }
+        .primary-action-bg:hover {
+            background-color: #2C7A7B;
+        }
+        .toggle-track {
+            background-color: #5A6F82; 
+            transition: background-color 0.4s ease;
+        }
+        .peer:checked + .toggle-track {
+            background-color: #38B2AC; 
+        }
+        .slider {
+            background-color: #F5F1E6; 
+            transition: transform 0.4s ease;
+        }
+        .peer:checked + .toggle-track > .slider {
+            transform: translateX(20px); 
+        }
+        .player-item {
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        .player-item:hover {
+            background-color: rgba(56, 178, 172, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+    
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto p-4 sm:p-8">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2">Setup: Wavelength</h2>
+            <p class="text-lg text-subtle-gray">Give hints to get your team to guess the target on the dial.</p>
+        </div>
+
+        <div class="bg-deep-twilight/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-subtle-gray/30">
+            <form id="wavelength-settings-form">
+                
+                <div class="mb-8">
+                    <label for="player-input" class="block text-lg font-semibold mb-2 text-fiery-core">Add Players</label>
+                    <p class="text-sm text-subtle-gray mb-3">Add at least 2 players to start the teams.</p>
+                    <div class="flex space-x-2 mb-4">
+                        <input type="text" id="player-input" placeholder="Enter player name" 
+                            class="custom-input flex-grow p-3 rounded-lg placeholder-subtle-gray/70" onkeydown="handlePlayerInput(event)">
+                        <button type="button" onclick="addPlayer()" class="primary-action-bg p-3 rounded-lg font-semibold">
+                            + Add
+                        </button>
+                    </div>
+                    
+                    <p class="text-xs text-subtle-gray mt-1" id="player-count-display">Players: 0 (Min 2)</p>
+                </div>
+                
+                <div class="mb-8 flex items-center justify-between p-3 bg-input-bg rounded-lg border border-subtle-gray/50">
+                    <label for="manual-team-toggle" class="block text-lg font-semibold text-fiery-core">
+                        Manual Team Selection
+                    </label>
+                    
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="manual-team-toggle" onclick="toggleTeamMode()" class="sr-only peer toggle-switch">
+                        <div class="w-10 h-5 bg-subtle-gray rounded-full toggle-track">
+                            <div class="absolute top-0.5 start-[2px] border border-subtle-gray rounded-full h-4 w-4 bg-soft-horizon slider"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <div id="team-assignment-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    
+                    <div id="unassigned-players-box" class="space-y-2 max-h-40 overflow-y-auto pr-2 border-r border-subtle-gray/30 md:pr-4 hidden">
+                        <h3 class="text-lg font-semibold text-fiery-core/80 mb-2">Unassigned Players</h3>
+                        <div id="unassigned-list" class="space-y-1">
+                            </div>
+                    </div>
+
+                    <div id="manual-teams-box" class="grid grid-cols-1 gap-4 hidden">
+                        <div class="bg-team1/10 p-3 rounded-lg border border-team1">
+                            <h3 class="font-bold text-team1 mb-2">Team 1</h3>
+                            <div id="team1-list" class="space-y-1 min-h-[30px] max-h-[150px] overflow-y-auto">
+                                </div>
+                        </div>
+                        <div class="bg-team2/10 p-3 rounded-lg border border-team2">
+                            <h3 class="font-bold text-team2 mb-2">Team 2</h3>
+                            <div id="team2-list" class="space-y-1 min-h-[30px] max-h-[150px] overflow-y-auto">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div id="automatic-players-box" class="md:col-span-2 space-y-2 max-h-40 overflow-y-auto pr-2">
+                        <h3 class="text-lg font-semibold text-fiery-core/80 mb-2">Player List (Auto Split)</h3>
+                        <div id="player-list" class="space-y-1">
+                            <p class="text-sm text-subtle-gray" id="auto-list-placeholder">Players will be split automatically.</p>
+                            </div>
+                    </div>
+                </div>
+
+
+                <div class="mb-10">
+                    <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Wavelength Categories</label>
+                    <div id="categories-container" class="flex flex-wrap gap-3">
+                        <p class="text-subtle-gray">Loading categories...</p>
+                    </div>
+                    <p class="text-xs text-subtle-gray mt-2" id="category-count-message">Select one or more categories.</p>
+                </div>
+
+                <button type="submit" id="start-game-btn" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
+                    START GAME
+                </button>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const GLOBAL_STORAGE_KEY = 'chirpss_wavelength_data';
+
+        let allPlayers = []; 
+        let team1Players = [];
+        let team2Players = [];
+        let unassignedPlayers = [];
+        let isManualTeamMode = false;
+
+        let selectedCategories = [];
+        let availableCategories = []; // This will be populated by fetch()
+        
+        const MIN_PLAYERS = 2;
+
+        // --- Persistent Storage and Initialization ---
+
+        function loadGlobalData() {
+            const data = localStorage.getItem(GLOBAL_STORAGE_KEY);
+            const globalData = data ? JSON.parse(data) : {};
+            
+            allPlayers = globalData.allPlayers || [];
+            selectedCategories = globalData.selectedCategories || [];
+            isManualTeamMode = globalData.isManualTeamMode || false;
+            
+            if (isManualTeamMode) {
+                team1Players = globalData.team1Players || [];
+                team2Players = globalData.team2Players || [];
+                const assigned = [...team1Players, ...team2Players];
+                unassignedPlayers = allPlayers.filter(p => !assigned.includes(p));
+            } else {
+                 unassignedPlayers = [...allPlayers];
+            }
+            
+            return globalData;
+        }
+
+        function saveGlobalData(settings = {}) {
+            const dataToSave = {
+                allPlayers: allPlayers,
+                selectedCategories: selectedCategories,
+                isManualTeamMode: isManualTeamMode,
+                team1Players: isManualTeamMode ? team1Players : [],
+                team2Players: isManualTeamMode ? team2Players : [],
+            };
+            localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(dataToSave));
+        }
+
+        // --- UI & State Management ---
+
+        function toggleTeamMode() {
+            isManualTeamMode = document.getElementById('manual-team-toggle').checked;
+            
+            document.getElementById('automatic-players-box').classList.toggle('hidden', isManualTeamMode);
+            document.getElementById('unassigned-players-box').classList.toggle('hidden', !isManualTeamMode);
+            document.getElementById('manual-teams-box').classList.toggle('hidden', !isManualTeamMode);
+            
+            if (isManualTeamMode) {
+                unassignedPlayers = [...allPlayers];
+                team1Players = [];
+                team2Players = [];
+            } else {
+                unassignedPlayers = [];
+                team1Players = [];
+                team2Players = [];
+            }
+            
+            renderAllLists();
+            saveGlobalData();
+        }
+
+        function updatePlayerCount() {
+            const playerCount = allPlayers.length;
+            const catCount = selectedCategories.length;
+            
+            document.getElementById('player-count-display').textContent = `Players: ${playerCount} (Min ${MIN_PLAYERS})`;
+            // *** CHANGED *** Use availableCategories variable
+            document.getElementById('category-count-message').textContent = `Selected: ${catCount} of ${availableCategories.length || 0} categories.`;
+            
+            const startBtn = document.getElementById('start-game-btn');
+            let isReady = playerCount >= MIN_PLAYERS && catCount > 0;
+            
+            if (isManualTeamMode) {
+                const manualReady = team1Players.length >= 1 && team2Players.length >= 1;
+                isReady = isReady && manualReady;
+            } else {
+                isReady = isReady && playerCount >= 2;
+            }
+
+            startBtn.disabled = !isReady;
+
+            if (isReady) {
+                startBtn.classList.remove('bg-subtle-gray');
+                startBtn.classList.add('primary-action-bg');
+            } else {
+                startBtn.classList.add('bg-subtle-gray');
+                startBtn.classList.remove('primary-action-bg');
+            }
+            
+            document.getElementById('auto-list-placeholder').classList.toggle('hidden', allPlayers.length > 0);
+        }
+
+        function renderAllLists() {
+            if (isManualTeamMode) {
+                renderManualLists();
+            } else {
+                renderAutomaticList();
+            }
+            updatePlayerCount();
+            saveGlobalData();
+        }
+        
+        // --- Automatic Mode Rendering ---
+        function renderAutomaticList() {
+            const listEl = document.getElementById('player-list');
+            listEl.innerHTML = '';
+            
+            allPlayers.forEach((name, index) => {
+                const teamNum = (index % 2 === 0) ? 1 : 2;
+                const teamColor = (teamNum === 1) ? 'text-team1' : 'text-team2';
+                
+                const playerEl = document.createElement('div');
+                playerEl.className = 'flex justify-between items-center p-2 bg-input-bg rounded-md border border-subtle-gray/50';
+                playerEl.innerHTML = `
+                    <span>${name}</span>
+                    <span class="${teamColor} font-bold">Team ${teamNum}</span>
+                    <button type="button" onclick="removePlayer('${name}')" class="text-subtle-gray text-lg font-bold leading-none">
+                        &times;
+                    </button>
+                `;
+                listEl.appendChild(playerEl);
+            });
+        }
+        
+        // --- Manual Mode Rendering ---
+        function renderManualLists() {
+            const unassignedList = document.getElementById('unassigned-list');
+            const team1List = document.getElementById('team1-list');
+            const team2List = document.getElementById('team2-list');
+            
+            unassignedList.innerHTML = '';
+            team1List.innerHTML = '';
+            team2List.innerHTML = '';
+
+            unassignedPlayers.forEach(name => {
+                unassignedList.innerHTML += `
+                    <div class="player-item flex justify-between items-center p-1 rounded-md bg-input-bg">
+                        <span>${name}</span>
+                        <div class="flex space-x-2">
+                            <button type="button" class="text-xs font-semibold text-team1 bg-team1/30 px-2 py-0.5 rounded" onclick="assignPlayer('${name}', 1)">
+                                To T1
+                            </button>
+                            <button type="button" class="text-xs font-semibold text-team2 bg-team2/30 px-2 py-0.5 rounded" onclick="assignPlayer('${name}', 2)">
+                                To T2
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            team1Players.forEach(name => {
+                team1List.innerHTML += `
+                    <div class="player-item flex justify-between items-center p-1 rounded-md bg-team1/30" onclick="unassignPlayer('${name}', 1)">
+                        <span class="font-semibold">${name}</span>
+                        <span class="text-xs text-soft-horizon/80">Remove</span>
+                    </div>
+                `;
+            });
+
+            team2Players.forEach(name => {
+                team2List.innerHTML += `
+                    <div class="player-item flex justify-between items-center p-1 rounded-md bg-team2/30" onclick="unassignPlayer('${name}', 2)">
+                        <span class="font-semibold">${name}</span>
+                        <span class="text-xs text-soft-horizon/80">Remove</span>
+                    </div>
+                `;
+            });
+        }
+
+        // --- Player Management ---
+        function addPlayer() {
+            const input = document.getElementById('player-input');
+            let name = input.value.trim();
+            
+            if (name && !allPlayers.includes(name)) {
+                if (name.length > 20) {
+                    name = name.substring(0, 20) + '...'; 
+                }
+                allPlayers.push(name);
+                unassignedPlayers.push(name); 
+                input.value = '';
+                
+                renderAllLists();
+                document.getElementById('player-list').scrollTop = document.getElementById('player-list').scrollHeight;
+            }
+        }
+
+        function removePlayer(nameToRemove) {
+            allPlayers = allPlayers.filter(name => name !== nameToRemove);
+            unassignedPlayers = unassignedPlayers.filter(name => name !== nameToRemove);
+            team1Players = team1Players.filter(name => name !== nameToRemove);
+            team2Players = team2Players.filter(name => name !== nameToRemove);
+            
+            renderAllLists();
+        }
+        
+        function assignPlayer(name, teamNum) {
+            unassignedPlayers = unassignedPlayers.filter(p => p !== name);
+            if (teamNum === 1) {
+                team1Players.push(name);
+                team2Players = team2Players.filter(p => p !== name);
+            } else if (teamNum === 2) {
+                team2Players.push(name);
+                team1Players = team1Players.filter(p => p !== name);
+            }
+            renderManualLists();
+        }
+        
+        function unassignPlayer(name, teamNum) {
+            if (teamNum === 1) {
+                team1Players = team1Players.filter(p => p !== name);
+            } else if (teamNum === 2) {
+                team2Players = team2Players.filter(p => p !== name);
+            }
+            if (allPlayers.includes(name) && !unassignedPlayers.includes(name)) {
+                 unassignedPlayers.push(name);
+            }
+            renderManualLists();
+        }
+
+        function handlePlayerInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addPlayer();
+            }
+        }
+        
+        // --- Category Management ---
+        
+        // *** REMOVED loadCategories() function ***
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = ''; 
+
+            if (!availableCategories || availableCategories.length === 0) {
+                // This message will show until fetch() completes
+                container.innerHTML = `<p class="text-subtle-gray">Loading categories...</p>`;
+                return;
+            }
+
+            availableCategories.forEach(category => {
+                const categoryName = category.n; 
+                
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'category-btn bg-input-bg text-soft-horizon py-2 px-4 rounded-full border border-subtle-gray/50';
+                button.textContent = categoryName;
+                
+                button.onclick = () => toggleCategory(button, categoryName);
+                
+                if (selectedCategories.includes(categoryName)) {
+                    button.classList.add('primary-action-bg', 'border-primary-teal');
+                    button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+                }
+                
+                container.appendChild(button);
+            });
+            updatePlayerCount(); // Update count once categories are rendered
+        }
+
+        function toggleCategory(button, categoryName) {
+            const index = selectedCategories.indexOf(categoryName);
+            if (index > -1) {
+                selectedCategories.splice(index, 1);
+                button.classList.remove('primary-action-bg', 'border-primary-teal');
+                button.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+            } else {
+                selectedCategories.push(categoryName);
+                button.classList.add('primary-action-bg', 'border-primary-teal');
+                button.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+            }
+            updatePlayerCount(); 
+        }
+
+        function initializeSettings() {
+            const globalData = loadGlobalData();
+            document.getElementById('manual-team-toggle').checked = globalData.isManualTeamMode;
+            isManualTeamMode = globalData.isManualTeamMode;
+        }
+
+        // --- Initialization and Submit ---
+
+        // *** CHANGED ***
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize settings that don't depend on data
+            initializeSettings(); 
+            toggleTeamMode(); 
+
+            // Fetch the game data, then render the parts that depend on it
+            fetch('https://chirpss.my.to/wavelength/data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    availableCategories = data.c; // Store the loaded categories
+                    renderCategories(); // Now render them
+                })
+                .catch(error => {
+                    console.error('Error loading game data:', error);
+                    document.getElementById('categories-container').innerHTML = `<p class="text-red-500 font-semibold">Error: Could not load data.json. Please refresh.</p>`;
+                });
+        });
+
+        document.getElementById('wavelength-settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (allPlayers.length < MIN_PLAYERS) {
+                alert(`Please add at least ${MIN_PLAYERS} players.`);
+                return;
+            }
+            if (selectedCategories.length === 0) {
+                alert("Please select at least one word category.");
+                return;
+            }
+
+            let finalTeam1, finalTeam2;
+            
+            if (isManualTeamMode) {
+                if (team1Players.length === 0 || team2Players.length === 0) {
+                     alert("In Manual mode, both Team 1 and Team 2 must have at least one player assigned.");
+                     return;
+                }
+                if (unassignedPlayers.length > 0) {
+                    const confirmation = confirm(`${unassignedPlayers.length} player(s) are unassigned. Continue with assigned teams only?`);
+                    if (!confirmation) return;
+                }
+                finalTeam1 = team1Players;
+                finalTeam2 = team2Players;
+            } else {
+                finalTeam1 = allPlayers.filter((_, index) => index % 2 === 0);
+                finalTeam2 = allPlayers.filter((_, index) => index % 2 !== 0);
+                if (finalTeam1.length === 0 || finalTeam2.length === 0) {
+                     alert("The automatic split resulted in an empty team. Please add more players.");
+                     return;
+                }
+            }
+
+            const finalSettings = {
+                isManualTeamMode: isManualTeamMode,
+                team1Players: finalTeam1,
+                team2Players: finalTeam2,
+                selectedCategories: selectedCategories
+            };
+            
+            saveGlobalData(finalSettings); 
+
+            // *** CHANGED *** Use the 'availableCategories' variable to build the card deck
+            const finalCards = availableCategories
+                .filter(cat => selectedCategories.includes(cat.n))
+                .map(cat => cat.cards)
+                .flat(); 
+            
+            shuffleArray(finalCards);
+
+            const gameData = {
+                team1: finalTeam1,
+                team2: finalTeam2,
+                cards: finalCards
+            };
+
+            sessionStorage.setItem('wavelength_game_data', JSON.stringify(gameData));
+            window.location.href = '/Wavelength/Game';
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>
