@@ -1,0 +1,33 @@
+{
+    "c": [
+        {
+            "n": "Concepts",
+            "cards": [
+                { "k1": "Bad", "k2": "Good" },
+                { "k1": "Useless", "k2": "Useful" },
+                { "k1": "Boring", "k2": "Exciting" },
+                { "k1": "Normal", "k2": "Weird" },
+                { "k1": "Underrated", "k2": "Overrated" }
+            ]
+        },
+        {
+            "n": "Qualities",
+            "cards": [
+                { "k1": "Bad Date", "k2": "Good Date" },
+                { "k1": "Weak", "k2": "Strong" },
+                { "k1": "Temporary", "k2": "Permanent" },
+                { "k1": "Ugly", "k2": "Beautiful" },
+                { "k1": "Unhealthy", "k2": "Healthy" }
+            ]
+        },
+        {
+            "n": "Culture",
+            "cards": [
+                { "k1": "Bad Movie", "k2": "Good Movie" },
+                { "k1": "Nerd", "k2": "Jock" },
+                { "k1": "Comedy", "k2": "Drama" },
+                { "k1": "Niche", "k2": "Mainstream" }
+            ]
+        }
+    ]
+}
