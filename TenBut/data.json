@@ -13,7 +13,7 @@
                     "she reapplies deodorant without showering first.",
                     "she wears mismatched shoes, but only sometimes."
                 ],
-                "non-binary": [
+                "trans": [
                     "they use comic sans font for all text messages.",
                     "they communicate primarily through bird calls.",
                     "they leave their phone charger plugged in forever."
@@ -33,7 +33,7 @@
                     "she tells the ending of every book she recommends.",
                     "she uses 'oof' in real-life conversations."
                 ],
-                "non-binary": [
+                "trans": [
                     "they only listen to music played on a toy accordion.",
                     "they communicate only through interpretive dance.",
                     "they have a personal theme song that plays when they enter a room."
@@ -42,4 +42,3 @@
         }
     ]
 }
-
