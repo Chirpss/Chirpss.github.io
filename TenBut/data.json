@@ -1,0 +1,45 @@
+{
+    "categories": [
+        {
+            "name": "Hygiene & Appearance",
+            "prompts": {
+                "boy": [
+                    "he owns one pair of socks, and they are wet.",
+                    "he uses a two-in-one shampoo and dish soap.",
+                    "he leaves wet towels on the floor forever."
+                ],
+                "girl": [
+                    "she never replaces her worn-out hair tie.",
+                    "she reapplies deodorant without showering first.",
+                    "she wears mismatched shoes, but only sometimes."
+                ],
+                "non-binary": [
+                    "they use comic sans font for all text messages.",
+                    "they communicate primarily through bird calls.",
+                    "they leave their phone charger plugged in forever."
+                ]
+            }
+        },
+        {
+            "name": "Habits & Behavior",
+            "prompts": {
+                "boy": [
+                    "he insists on correcting your pronunciation of 'bagel'.",
+                    "he talks exclusively about their fantasy football team.",
+                    "he owns a pet roomba named 'Gary'."
+                ],
+                "girl": [
+                    "she believes all movie plots are about her.",
+                    "she tells the ending of every book she recommends.",
+                    "she uses 'oof' in real-life conversations."
+                ],
+                "non-binary": [
+                    "they only listen to music played on a toy accordion.",
+                    "they communicate only through interpretive dance.",
+                    "they have a personal theme song that plays when they enter a room."
+                ]
+            }
+        }
+    ]
+}
+
