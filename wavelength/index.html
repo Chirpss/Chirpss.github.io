@@ -273,7 +273,7 @@
             } else {
                 renderAutomaticList();
             }
-            updatePlayerCount();
+            // updatePlayerCount(); // No longer called here
             saveGlobalData();
         }
         
@@ -526,10 +526,17 @@
             saveGlobalData(finalSettings); 
 
             // *** CHANGED *** Use the 'availableCategories' variable to build the card deck
+            // New (Correct) Logic: Map k1/k2 to left/right for the game
             const finalCards = availableCategories
                 .filter(cat => selectedCategories.includes(cat.n))
-                .map(cat => cat.cards)
-                .flat(); 
+                .map(cat => cat.cards.map(card => ({
+                 // Map the k1 property from the JSON to the 'left' property for the game
+                    left: card.k1, 
+                // Map the k2 property from the JSON to the 'right' property for the game
+                    right: card.k2 
+                })))
+                .flat();
+
             
             shuffleArray(finalCards);
 
