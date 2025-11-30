@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10/10 Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; }
+        .category-btn { transition: all 0.2s; background-color: #2A3C50; border: 1px solid #5A6F82; }
+        .category-btn.selected { 
+            background-color: #E87040; 
+            border-color: #E87040;
+            color: #1C2A39; 
+            box-shadow: 0 4px 10px rgba(232, 112, 64, 0.4); 
+        }
+        .start-btn-ready {
+            background-color: #FFC35B;
+            color: #1C2A39;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased p-4 sm:p-8">
+    <div class="max-w-xl mx-auto">
+        <h1 class="text-3xl font-extrabold text-fiery-core mb-2 text-center">Set Up The Vibe</h1>
+        <p class="text-lg text-subtle-gray mb-10 text-center">Choose the categories of flaws to include.</p>
+
+        <div class="bg-deep-twilight/50 p-6 rounded-xl shadow-lg border border-subtle-gray/30">
+            
+            <!-- Category Selection -->
+            <div class="mb-10">
+                <label class="block text-xl font-semibold mb-3 text-fiery-core">Flaw Categories</label>
+                <div id="categories-container" class="flex flex-wrap gap-3">
+                    <p class="text-subtle-gray">Loading categories...</p>
+                </div>
+                <p id="category-error" class="text-sm text-red-400 mt-2 hidden">Select at least one category.</p>
+            </div>
+
+            <!-- Start Button -->
+            <button id="start-game-btn" onclick="startGame()" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
+                Start Judging
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const DATA_URL = 'https://chirpss.my.to/TenBut/data.json';
+        
+        let allCategories = [];
+        let selectedCategoryNames = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCategories();
+        });
+
+        async function fetchCategories() {
+            try {
+                const response = await fetch(DATA_URL); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                allCategories = data.categories;
+                renderCategories();
+            } catch (error) {
+                console.error("Error fetching data.json:", error);
+                document.getElementById('categories-container').innerHTML = '<p class="text-red-400">Error loading prompts. (Check console for network error)</p>';
+            }
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+            allCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'category-btn py-2 px-4 rounded-full font-semibold';
+                btn.textContent = cat.name;
+                btn.onclick = () => toggleCategory(cat.name, btn);
+                container.appendChild(btn);
+            });
+            checkReady();
+        }
+
+        function toggleCategory(name, btn) {
+            const index = selectedCategoryNames.indexOf(name);
+            if (index > -1) {
+                selectedCategoryNames.splice(index, 1);
+                btn.classList.remove('selected');
+            } else {
+                selectedCategoryNames.push(name);
+                btn.classList.add('selected');
+            }
+            checkReady();
+        }
+
+        function checkReady() {
+            const ready = selectedCategoryNames.length > 0;
+            const startBtn = document.getElementById('start-game-btn');
+            
+            startBtn.disabled = !ready;
+            startBtn.classList.toggle('bg-subtle-gray', !ready);
+            startBtn.classList.toggle('start-btn-ready', ready);
+        }
+
+        function startGame() {
+            if (selectedCategoryNames.length === 0) {
+                document.getElementById('category-error').classList.remove('hidden');
+                return;
+            }
+
+            // 2. NEW LOGIC: Compile prompts and shuffle each list
+            const promptsByGender = { boy: [], girl: [], trans: [] };
+            
+            allCategories
+                .filter(cat => selectedCategoryNames.includes(cat.name))
+                .forEach(cat => {
+                    if (cat.prompts.boy) promptsByGender.boy.push(...cat.prompts.boy);
+                    if (cat.prompts.girl) promptsByGender.girl.push(...cat.prompts.girl);
+                    if (cat.prompts.trans) promptsByGender.trans.push(...cat.prompts.trans);
+                });
+            
+            // Shuffle each gender's list independently
+            shuffleArray(promptsByGender.boy);
+            shuffleArray(promptsByGender.girl);
+            shuffleArray(promptsByGender.trans);
+            
+            const gameData = {
+                promptsByGender: promptsByGender,
+                // NEW: Track index per gender
+                currentIndex: { boy: 0, girl: 0, trans: 0 },
+                gender: null // Selected in Game.html
+            };
+            sessionStorage.setItem('tenbut_game_data', JSON.stringify(gameData));
+            
+            window.location.href = '/TenBut/Game.html';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>
