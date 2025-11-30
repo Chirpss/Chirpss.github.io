@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate The Flaw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase includes -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="firebase-config.js"></script> 
+    
+    <style>
+        body { 
+            background-color: #1C2A39; 
+            color: #F5F1E6; 
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .gender-btn { 
+            transition: all 0.2s; 
+            background-color: #E87040; /* warm-dusk */
+            color: #1C2A39; /* deep-twilight (high contrast) */
+            font-weight: bold;
+        }
+        .gender-btn:disabled { 
+            opacity: 0.5; 
+            background-color: #5A6F82; /* subtle-gray */
+            color: #F5F1E6;
+        }
+        
+        /* Custom styling for the slider track */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            background: #2A3C50;
+            border-radius: 5px;
+            cursor: grab;
+            margin: 10px 0;
+        }
+        
+        /* Custom styling for the slider thumb */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background: #FFC35B; /* fiery-core */
+            cursor: grabbing;
+            margin-top: -10px; 
+            box-shadow: 0 0 8px rgba(255, 195, 91, 0.7);
+        }
+        
+        /* --- Visualization Grid --- */
+        #visualization-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            height: 120px; 
+            border-radius: 8px;
+            background: #2A3C50;
+            padding: 5px 8px;
+            align-items: flex-end; 
+            gap: 4px;
+        }
+        .vis-bar {
+            width: 100%;
+            margin: 0 auto;
+            background-color: #5A6F82; 
+            transition: height 0.3s ease, background-color 0.3s ease;
+            border-radius: 2px 2px 0 0;
+            position: relative;
+        }
+        .vis-bar-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #5A6F82;
+        }
+
+        /* Prompt Flash Animation */
+        @keyframes promptFlash {
+            0% { transform: scale(1); opacity: 1; border-color: #38B2AC; }
+            50% { transform: scale(1.01); opacity: 0.8; border-color: #FFC35B; }
+            100% { transform: scale(1); opacity: 1; border-color: #5A6F82; }
+        }
+        .prompt-box.flash {
+            animation: promptFlash 0.3s ease-out 1;
+        }
+
+    </style>
+</head>
+<body class="antialiased p-4 sm:p-8">
+    <div class="max-w-xl mx-auto">
+        
+        <!-- --- Initial Gender Chooser State (Only shown once) --- -->
+        <div id="gender-chooser" class="state-chooser">
+             <h1 class="text-3xl font-extrabold text-fiery-core mb-8 text-center">Rate The Flaw</h1>
+             <p class="text-xl font-semibold mb-6 text-center">Which gender are we rating?</p>
+             <div class="flex justify-center space-x-3 mb-10">
+                <button id="select-boy" onclick="setGender('boy')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Boy</button>
+                <button id="select-trans" onclick="setGender('trans')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Trans</button>
+                <button id="select-girl" onclick="setGender('girl')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Girl</button>
+            </div>
+             <p class="text-sm text-subtle-gray text-center">Select one to begin the first prompt.</p>
+        </div>
+
+        <!-- --- Main Game State --- -->
+        <div id="game-display" class="state-game hidden opacity-0">
+            
+            <!-- The Prompt Area -->
+            <div id="prompt-box" class="prompt-box bg-deep-twilight/50 p-6 rounded-xl shadow-lg border border-subtle-gray/30 mb-8 min-h-[150px]">
+                <h2 id="main-prompt" class="text-2xl font-bold text-soft-horizon mb-4">
+                    Loading...
+                </h2>
+                <p id="but-prompt" class="text-xl text-warm-dusk/90 italic">
+                    ...
+                </p>
+            </div>
+
+            <!-- The Slider and Rating Display -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2 flex justify-between">
+                    <span>My Rating: <span id="current-rating" class="text-warm-dusk">5</span>/10</span>
+                </h3>
+                <input type="range" id="rating-slider" min="1" max="10" value="5" oninput="updateRatingDisplay(this.value)">
+            </div>
+            
+            <!-- --- STEP 1 ACTION: Initial Submission (Visible on load of every flaw) --- -->
+            <div id="initial-rate-container" class="mb-6">
+                 <button id="initial-rate-btn" onclick="lockInRating()" class="w-full py-4 bg-fiery-core text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg" disabled>
+                    Lock In My Rating
+                </button>
+                <p id="initial-feedback" class="text-center mt-4 text-subtle-gray hidden">Move the slider to enable rating.</p>
+            </div>
+
+
+            <!-- --- STEP 2: REVEALED CONTENT (Hidden on load of every flaw) --- -->
+            <div id="reveal-content" class="hidden">
+                 <!-- Visualization Grid -->
+                <div id="visualization-grid" class="mb-12">
+                    <!-- Bars and labels dynamically injected here -->
+                </div>
+
+                <!-- Three Submission Buttons -->
+                <div id="submit-buttons-container" class="flex justify-center space-x-3">
+                     <button id="rate-boy-btn" onclick="submitAndSetNextGender('boy')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                        Next Boy
+                    </button>
+                    <button id="rate-trans-btn" onclick="submitAndSetNextGender('trans')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                        Next Trans
+                    </button>
+                    <button id="rate-girl-btn" onclick="submitAndSetNextGender('girl')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                        Next Girl
+                    </button>
+                </div>
+                
+                <p id="feedback-message" class="text-center mt-4 text-green-400 hidden">Rating recorded. Choose the next persona to rate this flaw.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Game Data Variables ---
+        let gameData; 
+        let dbRef; 
+        let currentPromptId; 
+        let votesListener = null;
+        let unsubmittedRating = 5; 
+        let hasUserInteracted = false; 
+        
+        // --- DOM Cache ---
+        const slider = document.getElementById('rating-slider');
+        const rateBoyBtn = document.getElementById('rate-boy-btn');
+        const rateGirlBtn = document.getElementById('rate-girl-btn');
+        const rateTransBtn = document.getElementById('rate-trans-btn');
+        const promptBox = document.getElementById('prompt-box');
+        const initialRateBtn = document.getElementById('initial-rate-btn');
+        const initialRateContainer = document.getElementById('initial-rate-container');
+        const initialFeedback = document.getElementById('initial-feedback');
+        const revealContent = document.getElementById('reveal-content');
+
+
+        // --- UI Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataString = sessionStorage.getItem('tenbut_game_data');
+            if (!dataString) {
+                const chooser = document.getElementById('gender-chooser');
+                chooser.innerHTML = `<h1 class="text-3xl font-extrabold text-red-500 mb-4 text-center">ERROR: Setup Incomplete</h1><p class="text-center text-lg">Please start the game from the <a href="/TenBut/" class="text-fiery-core underline">setup page</a>.</p>`;
+                return;
+            }
+            gameData = JSON.parse(dataString);
+            
+            if (typeof firebase === 'undefined' || !firebase.database) {
+                 alert("Firebase failed to load. Check firebase-config.js and network.");
+                 return;
+            }
+
+            dbRef = firebase.database().ref('ratings');
+            renderVisualizationGrid();
+
+            if (gameData.gender) {
+                setupGameForGender(gameData.gender, false); 
+            }
+        });
+
+        function renderVisualizationGrid() {
+            const grid = document.getElementById('visualization-grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const barContainer = document.createElement('div');
+                barContainer.className = 'flex flex-col justify-end h-full relative';
+                const bar = document.createElement('div');
+                bar.className = 'vis-bar';
+                bar.id = `bar-${i}`;
+                bar.style.height = '0%';
+                const label = document.createElement('span');
+                label.className = 'vis-bar-label';
+                label.textContent = i;
+                barContainer.appendChild(bar);
+                barContainer.appendChild(label);
+                grid.appendChild(barContainer);
+            }
+        }
+        
+        // --- Gender/Setup Logic ---
+        function setGender(gender) {
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`select-${gender}`).classList.add('selected');
+            gameData.gender = gender;
+            sessionStorage.setItem('tenbut_game_data', JSON.stringify(gameData));
+            setupGameForGender(gender, true);
+        }
+        
+        function setupGameForGender(gender, isInitialSelection) {
+            if (isInitialSelection || !gameData.promptsByGender[gender]) {
+                const genderPrompts = gameData.promptsByGender[gender];
+                if (!genderPrompts || genderPrompts.length === 0) {
+                    console.error(`No prompts found for gender: ${gender}.`);
+                    alert(`No prompts found for ${gender}. Please return to setup and select more categories.`);
+                    return; 
+                }
+                // We only need to set the index to 0 if it's the very first selection
+                if (isInitialSelection) {
+                    gameData.currentIndex[gender] = 0;
+                }
+            }
+            
+            document.getElementById('gender-chooser').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('gender-chooser').classList.add('hidden');
+                document.getElementById('game-display').classList.remove('hidden');
+                document.getElementById('game-display').classList.remove('opacity-0');
+                loadCurrentPrompt();
+            }, 300);
+        }
+
+        // --- Game Flow Logic ---
+
+        function loadCurrentPrompt() {
+            const gender = gameData.gender;
+            const index = gameData.currentIndex[gender];
+            const genderPrompts = gameData.promptsByGender[gender];
+
+            if (index >= genderPrompts.length) {
+                showEndGame(gender); 
+                return;
+            }
+            
+            promptBox.classList.remove('flash');
+            setTimeout(() => promptBox.classList.add('flash'), 5);
+
+            const promptText = genderPrompts[index];
+            
+            // --- FIX: Use new getPronoun function ---
+            const pronounInfo = getPronoun(gender);
+            currentPromptId = `p_${gender}_${hashString(promptText)}`; 
+            
+            document.getElementById('main-prompt').textContent = `${pronounInfo.main} ${pronounInfo.verb} a 10/10, but...`;
+            document.getElementById('but-prompt').textContent = promptText;
+            
+            // --- Reset UI to STEP 1 (Initial Rating) ---
+            unsubmittedRating = 5;
+            slider.value = 5;
+            document.getElementById('current-rating').textContent = 5;
+            hasUserInteracted = false; 
+
+            initialRateContainer.classList.remove('hidden');
+            revealContent.classList.add('hidden');
+            
+            initialRateBtn.disabled = true;
+            initialRateBtn.classList.remove('bg-fiery-core');
+            initialRateBtn.classList.add('bg-subtle-gray');
+            initialRateBtn.textContent = 'Lock In My Rating';
+            initialFeedback.textContent = 'Move the slider to enable rating.';
+            initialFeedback.classList.remove('hidden');
+            
+            document.getElementById('feedback-message').classList.add('hidden');
+
+            attachVotesListener(); 
+        }
+        
+        // --- STEP 1: Lock in personal rating (Vote submitted here) ---
+        function lockInRating() {
+            if (!hasUserInteracted) return;
+
+            initialRateBtn.disabled = true;
+            initialRateBtn.textContent = 'Submitting...';
+            initialFeedback.classList.add('hidden');
+
+            submitRatingForGender(gameData.gender, unsubmittedRating, (success) => {
+                initialRateBtn.textContent = 'Locked In!';
+                
+                if (success) {
+                    initialRateContainer.classList.add('hidden');
+                    revealContent.classList.remove('hidden');
+                    
+                    rateBoyBtn.disabled = false;
+                    rateGirlBtn.disabled = false;
+                    rateTransBtn.disabled = false;
+                    
+                    document.getElementById('feedback-message').classList.remove('hidden');
+                    document.getElementById('feedback-message').textContent = 'Rating recorded. Choose the next persona to rate this flaw.';
+                } else {
+                    initialRateBtn.disabled = false;
+                    initialRateBtn.textContent = 'Failed! Try Again';
+                    initialFeedback.classList.remove('hidden');
+                    initialFeedback.textContent = 'Submission failed. Please try again.';
+                }
+            });
+        }
+        
+        // --- STEP 2: Set Next Gender Context ---
+        function submitAndSetNextGender(nextGenderContext) {
+            // 1. Increment the index for the gender we just rated
+            gameData.currentIndex[gameData.gender]++;
+            
+            // 2. Set the new gender context for the next prompt display
+            gameData.gender = nextGenderContext; 
+            sessionStorage.setItem('tenbut_game_data', JSON.stringify(gameData));
+            
+            loadCurrentPrompt(); 
+        }
+        
+        // --- Utility Functions ---
+
+        // --- FIX: Updated getPronoun function ---
+        function getPronoun(gender) {
+             switch (gender) {
+                case 'boy': return { main: 'He', verb: 'is', possessive: 'his' };
+                case 'girl': return { main: 'She', verb: 'is', possessive: 'her' };
+                case 'trans': return { main: 'They', verb: 'are', possessive: 'their' };
+                default: return { main: 'Person', verb: 'is', possessive: 'their' };
+            }
+        }
+
+        function updateRatingDisplay(value) {
+            unsubmittedRating = parseInt(value);
+            document.getElementById('current-rating').textContent = value;
+            hasUserInteracted = true; 
+
+            initialRateBtn.disabled = false;
+            initialRateBtn.classList.remove('bg-subtle-gray');
+            initialRateBtn.classList.add('bg-fiery-core');
+            initialFeedback.classList.add('hidden');
+            
+            document.getElementById('feedback-message').classList.add('hidden');
+        }
+        
+        function showEndGame(gender) {
+            document.getElementById('main-prompt').textContent = `No more "${gender}" flaws!`;
+            document.getElementById('but-prompt').textContent = "You've rated all the flaws for this persona. Try another one!";
+            
+            initialRateContainer.classList.add('hidden');
+            revealContent.classList.remove('hidden'); 
+
+            document.getElementById(`rate-${gender}-btn`).disabled = true;
+            if(gender !== 'boy') rateBoyBtn.disabled = false;
+            if(gender !== 'girl') rateGirlBtn.disabled = false;
+            if(gender !== 'trans') rateTransBtn.disabled = false;
+
+            if (rateBoyBtn.disabled && rateGirlBtn.disabled && rateTransBtn.disabled) {
+                document.getElementById('submit-buttons-container').innerHTML = `
+                    <p class="w-full text-center text-fiery-core text-lg">You've rated everything!</p>
+                    <button onclick="window.location.href='/TenBut/'" class="w-full py-3 bg-fiery-core text-deep-twilight font-bold rounded-xl shadow-lg mt-4">
+                        Start New Game
+                    </button>
+                `;
+                slider.style.display = 'none';
+            }
+        }
+
+        // --- Firebase RTDB Integration ---
+        
+        function submitRatingForGender(gender, rating, callback) {
+            if (!dbRef || !currentPromptId) {
+                console.error("submitRatingForGender: dbRef or currentPromptId is missing");
+                return callback(false);
+            }
+            
+            const promptRef = dbRef.child(currentPromptId);
+            const ratingToSubmit = rating.toString();
+            
+            promptRef.child(ratingToSubmit).transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            }, (error, committed) => {
+                if (error) {
+                    console.error('Transaction failed: ', error);
+                    callback(false);
+                } else if (committed) {
+                    callback(true);
+                }
+            });
+        }
+
+        function attachVotesListener() {
+            if (votesListener) {
+                dbRef.child(currentPromptId).off('value', votesListener); 
+            }
+            
+            votesListener = dbRef.child(currentPromptId).on('value', (snapshot) => {
+                const ratings = snapshot.val() || {};
+                updateVisualization(ratings);
+            });
+        }
+
+        function updateVisualization(ratings) {
+            let maxVotes = 0;
+            for (let i = 1; i <= 10; i++) {
+                const count = ratings[i] || 0;
+                if (count > maxVotes) {
+                    maxVotes = count;
+                }
+            }
+            
+            for (let i = 1; i <= 10; i++) {
+                const bar = document.getElementById(`bar-${i}`);
+                if (!bar) continue;
+                
+                const count = ratings[i] || 0;
+                let height = (maxVotes === 0) ? 0 : (count / maxVotes) * 100 * 0.9; 
+                bar.style.height = `${height}%`;
+                
+                if (i <= 4) { bar.style.backgroundColor = '#FF6B6B'; }
+                else if (i <= 7) { bar.style.backgroundColor = '#FFC35B'; }
+                else { bar.style.backgroundColor = '#6CCF6C'; }
+            }
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function hashString(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(36);
+        }
+    </script>
+</body>
+</html>
