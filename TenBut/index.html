@@ -3,45 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>10/10 Setup</title>
+    <title>10/10 Setup - Chirpss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; }
-        .category-btn { transition: all 0.2s; background-color: #2A3C50; border: 1px solid #5A6F82; }
-        .category-btn.selected { 
-            background-color: #E87040; 
-            border-color: #E87040;
-            color: #1C2A39; 
-            box-shadow: 0 4px 10px rgba(232, 112, 64, 0.4); 
+    
+    <script>
+        // Custom Tailwind Configuration (Copied from HTML 2)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',   /* Main Dark Background */
+                        'warm-dusk': '#E87040',       /* Primary Action/Button */
+                        'fiery-core': '#FFC35B',      /* Accent/Highlight */
+                        'soft-horizon': '#F5F1E6',    /* Light Text/Card Background/Input */
+                        'subtle-gray': '#5A6F82',     /* Subtler text/border color */
+                        'input-bg': '#2A3C50',        /* Slightly lighter background for inputs */
+                        'danger-red': '#E53E3E',
+                    },
+                    boxShadow: {
+                        'input-focus': '0 0 0 3px rgba(255, 195, 91, 0.4)', // Focus ring
+                    }
+                }
+            }
         }
+    </script>
+    
+    <style>
+        /* Base styles matched to HTML 2 */
+        body { 
+            background-color: #1C2A39; /* deep-twilight */ 
+            color: #F5F1E6; /* soft-horizon */ 
+            font-family: 'Inter', sans-serif; 
+        }
+        
+        /* Category Button Styling */
+        .category-btn { 
+            transition: all 0.2s; 
+            background-color: #2A3C50; /* input-bg */ 
+            color: #F5F1E6; /* soft-horizon */
+            border: 1px solid #5A6F82; /* subtle-gray */ 
+            box-shadow: none; /* Remove default shadow for cleaner look */
+        }
+        
+        /* Selected State matched to HTML 2's primary action color (warm-dusk) */
+        .category-btn.selected { 
+            background-color: #E87040; /* warm-dusk */ 
+            border-color: #E87040;
+            color: #1C2A39; /* deep-twilight */ 
+            box-shadow: 0 4px 8px rgba(232, 112, 64, 0.3); /* Slightly softer shadow */
+        }
+        
+        /* Ready Start Button matched to HTML 2's primary action color (warm-dusk) */
         .start-btn-ready {
-            background-color: #FFC35B;
-            color: #1C2A39;
+            background-color: #E87040; /* warm-dusk */
+            color: #1C2A39; /* deep-twilight */
+            transition: background-color 0.2s;
+        }
+        
+        /* Default Disabled Button uses subtle-gray, also matched to HTML 2 */
+        #start-game-btn:disabled {
+            background-color: #5A6F82; /* subtle-gray */
+            color: #F5F1E6; /* soft-horizon */
+        }
+
+        /* Custom marker for the fake details/summary look */
+        .summary-header::before {
+            content: '►';
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 0.8em;
+            transition: transform 0.2s ease-in-out;
+        }
+        .summary-header.open::before {
+            transform: rotate(90deg);
         }
     </style>
 </head>
-<body class="min-h-screen antialiased p-4 sm:p-8">
-    <div class="max-w-xl mx-auto">
-        <h1 class="text-3xl font-extrabold text-fiery-core mb-2 text-center">Set Up The Vibe</h1>
-        <p class="text-lg text-subtle-gray mb-10 text-center">Choose the categories of flaws to include.</p>
+<body class="min-h-screen antialiased">
+    
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+        </div>
+    </header>
 
-        <div class="bg-deep-twilight/50 p-6 rounded-xl shadow-lg border border-subtle-gray/30">
+    <main class="max-w-3xl mx-auto p-4 sm:p-8">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2">They're a 10/10 but</h2>
+            <p class="text-lg text-subtle-gray">Choose the categories to include in the game.</p>
+        </div>
+
+        <div class="bg-deep-twilight/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-subtle-gray/30">
             
-            <!-- Category Selection -->
-            <div class="mb-10">
-                <label class="block text-xl font-semibold mb-3 text-fiery-core">Flaw Categories</label>
-                <div id="categories-container" class="flex flex-wrap gap-3">
-                    <p class="text-subtle-gray">Loading categories...</p>
+            <div id="category-section" class="rounded-lg border border-subtle-gray/30 overflow-hidden mb-10">
+                
+                <div id="category-summary" onclick="toggleCategorySection()" 
+                     class="summary-header block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none open">
+                    Select Flaw Categories (Set A)
                 </div>
-                <p id="category-error" class="text-sm text-red-400 mt-2 hidden">Select at least one category.</p>
+                
+                <div id="category-content" class="p-4 pt-3 border-t border-subtle-gray/30">
+                    <div id="categories-container" class="flex flex-wrap gap-3">
+                        <p class="text-subtle-gray">Loading categories...</p>
+                    </div>
+                    <p id="category-error" class="text-sm text-danger-red mt-2 hidden">Select at least one category.</p>
+                    <p id="category-count-message" class="text-xs text-subtle-gray mt-2">Select one or more categories.</p>
+                </div>
             </div>
 
-            <!-- Start Button -->
-            <button id="start-game-btn" onclick="startGame()" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
+            <button id="start-game-btn" onclick="startGame()" class="w-full py-4 text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
                 Start Judging
             </button>
         </div>
-    </div>
+    </main>
 
     <script>
         const DATA_URL = 'https://chirpss.my.to/TenBut/data.json';
@@ -52,6 +127,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchCategories();
         });
+
+        // Function to handle the visual collapse/expand (mimicking HTML 2's details tag)
+        function toggleCategorySection() {
+            const content = document.getElementById('category-content');
+            const summary = document.getElementById('category-summary');
+
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                summary.classList.add('open');
+            } else {
+                content.style.display = 'none';
+                summary.classList.remove('open');
+            }
+        }
 
         async function fetchCategories() {
             try {
@@ -64,16 +153,24 @@
                 renderCategories();
             } catch (error) {
                 console.error("Error fetching data.json:", error);
-                document.getElementById('categories-container').innerHTML = '<p class="text-red-400">Error loading prompts. (Check console for network error)</p>';
+                document.getElementById('categories-container').innerHTML = '<p class="text-danger-red">Error loading prompts. (Check console for network error)</p>';
+                checkReady(); // Ensure status is updated even on error
             }
         }
 
         function renderCategories() {
             const container = document.getElementById('categories-container');
             container.innerHTML = '';
+            
+            if (allCategories.length === 0) {
+                 container.innerHTML = `<p class="text-subtle-gray">No categories found.</p>`;
+                 return;
+            }
+
             allCategories.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
+                // Using the custom class and standard Tailwind classes
                 btn.className = 'category-btn py-2 px-4 rounded-full font-semibold';
                 btn.textContent = cat.name;
                 btn.onclick = () => toggleCategory(cat.name, btn);
@@ -97,10 +194,18 @@
         function checkReady() {
             const ready = selectedCategoryNames.length > 0;
             const startBtn = document.getElementById('start-game-btn');
+            const catCountMessage = document.getElementById('category-count-message');
             
             startBtn.disabled = !ready;
-            startBtn.classList.toggle('bg-subtle-gray', !ready);
+            
+            // Toggle the custom ready class defined in <style>
             startBtn.classList.toggle('start-btn-ready', ready);
+            
+            // Update the count message to match the style of HTML 2
+            const availableCount = allCategories.length;
+            catCountMessage.textContent = ready 
+                ? `Selected: ${selectedCategoryNames.length} of ${availableCount} categories.`
+                : 'Select one or more categories.';
         }
 
         function startGame() {
@@ -108,6 +213,7 @@
                 document.getElementById('category-error').classList.remove('hidden');
                 return;
             }
+            document.getElementById('category-error').classList.add('hidden'); // Hide if successful
 
             // 2. NEW LOGIC: Compile prompts and shuffle each list
             const promptsByGender = { boy: [], girl: [], trans: [] };
