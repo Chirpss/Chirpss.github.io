@@ -69,7 +69,7 @@
             // Updated path mapping: "Imposter" -> /Imposter/, "Wrong Answers Only" -> /WrongAnswersOnly/
             const pathMap = {
                 'Imposter': '/Imposter/',
-                'WrongAnswersOnly': '/WrongAnswersOnly/'
+                'TenBut': '/TenBut/'
             };
             
             const urlPath = pathMap[gameName] || '/';
@@ -120,6 +120,25 @@
                             <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Wrong Answers Only</h3>
                             <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
                                 Answer the question wrong if you get one right you're out!
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
+                                Launch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('TenBut')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">They're a 10/10 But</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
+                                Rate a 10/10 but with a funny, horrible, and spicy twist, you can also see how other people react.
                             </p>
                         </div>
                         <div class="mt-4">
