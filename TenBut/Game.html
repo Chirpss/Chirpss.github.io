@@ -3,39 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rate The Flaw</title>
+    <title>Rate The Flaw - Chirpss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase includes -->
+    
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="firebase-config.js"></script> 
-    
+
+    <script>
+        // Custom Tailwind Configuration (Copied from HTML 2/4)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',   /* Main Dark Background */
+                        'warm-dusk': '#E87040',       /* Primary Action/Button */
+                        'fiery-core': '#FFC35B',      /* Accent/Highlight */
+                        'soft-horizon': '#F5F1E6',    /* Light Text/Card Background/Input */
+                        'subtle-gray': '#5A6F82',     /* Subtler text/border color */
+                        'input-bg': '#2A3C50',        /* Slightly lighter background for inputs (used for bar background) */
+                        'danger-red': '#E53E3E',
+                        'success-green': '#38A169',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        /* Base styles matched to the brand */
         body { 
-            background-color: #1C2A39; 
-            color: #F5F1E6; 
+            background-color: #1C2A39; /* deep-twilight */ 
+            color: #F5F1E6; /* soft-horizon */ 
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
+        
+        /* Primary Action Button Style (Copied from HTML 4 primary-btn logic) */
+        .primary-action-btn {
+            transition: all 0.15s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
+        }
+        .primary-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+        }
+        .primary-action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Gender/Next Buttons (warm-dusk background, deep-twilight text) */
         .gender-btn { 
             transition: all 0.2s; 
             background-color: #E87040; /* warm-dusk */
             color: #1C2A39; /* deep-twilight (high contrast) */
             font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
         .gender-btn:disabled { 
             opacity: 0.5; 
-            background-color: #5A6F82; /* subtle-gray */
-            color: #F5F1E6;
+            background-color: #5A6F82 !important; /* subtle-gray */
+            color: #F5F1E6 !important;
+            box-shadow: none;
+        }
+        .gender-btn:hover:not(:disabled) {
+            background-color: #f08355; 
         }
         
         /* Custom styling for the slider track */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
-            height: 10px;
-            background: #2A3C50;
-            border-radius: 5px;
+            height: 8px; 
+            background: #2A3C50; /* input-bg */
+            border-radius: 4px;
             cursor: grab;
             margin: 10px 0;
         }
@@ -43,12 +86,12 @@
         /* Custom styling for the slider thumb */
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 30px;
-            width: 30px;
+            height: 20px; 
+            width: 20px; 
             border-radius: 50%;
             background: #FFC35B; /* fiery-core */
             cursor: grabbing;
-            margin-top: -10px; 
+            margin-top: -6px; 
             box-shadow: 0 0 8px rgba(255, 195, 91, 0.7);
         }
         
@@ -58,7 +101,7 @@
             grid-template-columns: repeat(10, 1fr);
             height: 120px; 
             border-radius: 8px;
-            background: #2A3C50;
+            background: #2A3C50; /* input-bg */
             padding: 5px 8px;
             align-items: flex-end; 
             gap: 4px;
@@ -77,90 +120,117 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 0.8rem;
-            color: #5A6F82;
+            color: #5A6F82; 
         }
 
         /* Prompt Flash Animation */
         @keyframes promptFlash {
-            0% { transform: scale(1); opacity: 1; border-color: #38B2AC; }
+            0% { transform: scale(1); opacity: 1; border-color: #5A6F82; }
             50% { transform: scale(1.01); opacity: 0.8; border-color: #FFC35B; }
             100% { transform: scale(1); opacity: 1; border-color: #5A6F82; }
         }
         .prompt-box.flash {
             animation: promptFlash 0.3s ease-out 1;
         }
+        
+        /* NEW: Share Icon Styling */
+        #share-icon-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #share-icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
 
     </style>
 </head>
-<body class="antialiased p-4 sm:p-8">
+<body class="antialiased flex flex-col min-h-screen">
+    
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 sm:p-8">
     <div class="max-w-xl mx-auto">
         
-        <!-- --- Initial Gender Chooser State (Only shown once) --- -->
-        <div id="gender-chooser" class="state-chooser">
-             <h1 class="text-3xl font-extrabold text-fiery-core mb-8 text-center">Rate The Flaw</h1>
-             <p class="text-xl font-semibold mb-6 text-center">Which gender are we rating?</p>
+        <div id="gender-chooser" class="state-chooser text-center">
+             <h1 class="text-3xl font-extrabold text-soft-horizon mb-2">Rate The Flaw</h1>
+             <p class="text-lg text-subtle-gray mb-8">Which persona are we rating?</p>
+             
              <div class="flex justify-center space-x-3 mb-10">
-                <button id="select-boy" onclick="setGender('boy')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Boy</button>
-                <button id="select-trans" onclick="setGender('trans')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Trans</button>
-                <button id="select-girl" onclick="setGender('girl')" class="gender-btn p-3 flex-1 rounded-xl font-bold bg-subtle-gray text-soft-horizon">Girl</button>
+                <button id="select-boy" onclick="setGender('boy')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn">Boy</button>
+                <button id="select-trans" onclick="setGender('trans')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn">Trans</button>
+                <button id="select-girl" onclick="setGender('girl')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn">Girl</button>
             </div>
-             <p class="text-sm text-subtle-gray text-center">Select one to begin the first prompt.</p>
+             <p class="text-sm text-subtle-gray">Select one to begin the first prompt.</p>
         </div>
 
-        <!-- --- Main Game State --- -->
         <div id="game-display" class="state-game hidden opacity-0">
             
-            <!-- The Prompt Area -->
-            <div id="prompt-box" class="prompt-box bg-deep-twilight/50 p-6 rounded-xl shadow-lg border border-subtle-gray/30 mb-8 min-h-[150px]">
-                <h2 id="main-prompt" class="text-2xl font-bold text-soft-horizon mb-4">
+            <div id="prompt-box" class="prompt-box bg-deep-twilight/50 p-6 rounded-xl shadow-2xl border border-subtle-gray/30 mb-8 min-h-[150px] relative">
+                
+                <button id="share-icon-btn" onclick="generateShareLink()" title="Share this Flaw">
+                    <svg id="share-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5F1E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+                <h2 id="main-prompt" class="text-2xl font-bold text-fiery-core mb-4">
                     Loading...
                 </h2>
-                <p id="but-prompt" class="text-xl text-warm-dusk/90 italic">
+                <p id="but-prompt" class="text-xl text-soft-horizon italic">
                     ...
                 </p>
             </div>
-
-            <!-- The Slider and Rating Display -->
+            
             <div class="mb-6">
-                <h3 class="text-xl font-semibold mb-2 flex justify-between">
+                <h3 class="text-xl font-semibold mb-2 flex justify-between text-fiery-core">
                     <span>My Rating: <span id="current-rating" class="text-warm-dusk">5</span>/10</span>
                 </h3>
                 <input type="range" id="rating-slider" min="1" max="10" value="5" oninput="updateRatingDisplay(this.value)">
             </div>
             
-            <!-- --- STEP 1 ACTION: Initial Submission (Visible on load of every flaw) --- -->
             <div id="initial-rate-container" class="mb-6">
-                 <button id="initial-rate-btn" onclick="lockInRating()" class="w-full py-4 bg-fiery-core text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg" disabled>
+                 <button id="initial-rate-btn" onclick="lockInRating()" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl primary-action-btn" disabled>
                     Lock In My Rating
                 </button>
                 <p id="initial-feedback" class="text-center mt-4 text-subtle-gray hidden">Move the slider to enable rating.</p>
             </div>
 
 
-            <!-- --- STEP 2: REVEALED CONTENT (Hidden on load of every flaw) --- -->
             <div id="reveal-content" class="hidden">
-                 <!-- Visualization Grid -->
-                <div id="visualization-grid" class="mb-12">
-                    <!-- Bars and labels dynamically injected here -->
-                </div>
+                 <div id="visualization-grid" class="mb-12">
+                    </div>
 
-                <!-- Three Submission Buttons -->
                 <div id="submit-buttons-container" class="flex justify-center space-x-3">
-                     <button id="rate-boy-btn" onclick="submitAndSetNextGender('boy')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                     <button id="rate-boy-btn" onclick="submitAndSetNextGender('boy')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn" disabled>
                         Next Boy
                     </button>
-                    <button id="rate-trans-btn" onclick="submitAndSetNextGender('trans')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                    <button id="rate-trans-btn" onclick="submitAndSetNextGender('trans')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn" disabled>
                         Next Trans
                     </button>
-                    <button id="rate-girl-btn" onclick="submitAndSetNextGender('girl')" class="gender-btn p-3 flex-1 rounded-xl shadow-md" disabled>
+                    <button id="rate-girl-btn" onclick="submitAndSetNextGender('girl')" class="gender-btn p-3 flex-1 rounded-xl primary-action-btn" disabled>
                         Next Girl
                     </button>
                 </div>
                 
-                <p id="feedback-message" class="text-center mt-4 text-green-400 hidden">Rating recorded. Choose the next persona to rate this flaw.</p>
+                <p id="feedback-message" class="text-center mt-4 text-success-green hidden">Rating recorded. Choose the next persona to rate this flaw.</p>
             </div>
         </div>
     </div>
+    </main>
 
     <script>
         // --- Game Data Variables ---
@@ -188,7 +258,7 @@
             const dataString = sessionStorage.getItem('tenbut_game_data');
             if (!dataString) {
                 const chooser = document.getElementById('gender-chooser');
-                chooser.innerHTML = `<h1 class="text-3xl font-extrabold text-red-500 mb-4 text-center">ERROR: Setup Incomplete</h1><p class="text-center text-lg">Please start the game from the <a href="/TenBut/" class="text-fiery-core underline">setup page</a>.</p>`;
+                chooser.innerHTML = `<h1 class="text-3xl font-extrabold text-danger-red mb-4 text-center">ERROR: Setup Incomplete</h1><p class="text-center text-lg text-subtle-gray">Please start the game from the <a href="/TenBut/" class="text-fiery-core underline">setup page</a>.</p>`;
                 return;
             }
             gameData = JSON.parse(dataString);
@@ -227,8 +297,9 @@
         
         // --- Gender/Setup Logic ---
         function setGender(gender) {
-            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById(`select-${gender}`).classList.add('selected');
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('bg-fiery-core', 'text-deep-twilight'));
+            document.getElementById(`select-${gender}`).classList.add('bg-fiery-core', 'text-deep-twilight');
+            
             gameData.gender = gender;
             sessionStorage.setItem('tenbut_game_data', JSON.stringify(gameData));
             setupGameForGender(gender, true);
@@ -242,7 +313,6 @@
                     alert(`No prompts found for ${gender}. Please return to setup and select more categories.`);
                     return; 
                 }
-                // We only need to set the index to 0 if it's the very first selection
                 if (isInitialSelection) {
                     gameData.currentIndex[gender] = 0;
                 }
@@ -274,11 +344,11 @@
 
             const promptText = genderPrompts[index];
             
-            // --- FIX: Use new getPronoun function ---
             const pronounInfo = getPronoun(gender);
             currentPromptId = `p_${gender}_${hashString(promptText)}`; 
             
-            document.getElementById('main-prompt').textContent = `${pronounInfo.main} ${pronounInfo.verb} a 10/10, but...`;
+            // NOTE: Removed '...' from main-prompt text
+            document.getElementById('main-prompt').textContent = `${pronounInfo.main} ${pronounInfo.verb} a 10/10 but`;
             document.getElementById('but-prompt').textContent = promptText;
             
             // --- Reset UI to STEP 1 (Initial Rating) ---
@@ -291,13 +361,16 @@
             revealContent.classList.add('hidden');
             
             initialRateBtn.disabled = true;
-            initialRateBtn.classList.remove('bg-fiery-core');
-            initialRateBtn.classList.add('bg-subtle-gray');
+            initialRateBtn.classList.remove('bg-fiery-core', 'text-deep-twilight');
+            initialRateBtn.classList.add('bg-subtle-gray', 'text-soft-horizon');
             initialRateBtn.textContent = 'Lock In My Rating';
             initialFeedback.textContent = 'Move the slider to enable rating.';
             initialFeedback.classList.remove('hidden');
             
             document.getElementById('feedback-message').classList.add('hidden');
+
+            // NEW: Reset share icon color to default soft-horizon
+            document.getElementById('share-svg').setAttribute('stroke', '#F5F1E6'); 
 
             attachVotesListener(); 
         }
@@ -334,19 +407,14 @@
         
         // --- STEP 2: Set Next Gender Context ---
         function submitAndSetNextGender(nextGenderContext) {
-            // 1. Increment the index for the gender we just rated
             gameData.currentIndex[gameData.gender]++;
-            
-            // 2. Set the new gender context for the next prompt display
             gameData.gender = nextGenderContext; 
             sessionStorage.setItem('tenbut_game_data', JSON.stringify(gameData));
-            
             loadCurrentPrompt(); 
         }
         
         // --- Utility Functions ---
 
-        // --- FIX: Updated getPronoun function ---
         function getPronoun(gender) {
              switch (gender) {
                 case 'boy': return { main: 'He', verb: 'is', possessive: 'his' };
@@ -362,8 +430,8 @@
             hasUserInteracted = true; 
 
             initialRateBtn.disabled = false;
-            initialRateBtn.classList.remove('bg-subtle-gray');
-            initialRateBtn.classList.add('bg-fiery-core');
+            initialRateBtn.classList.remove('bg-subtle-gray', 'text-soft-horizon');
+            initialRateBtn.classList.add('bg-fiery-core', 'text-deep-twilight');
             initialFeedback.classList.add('hidden');
             
             document.getElementById('feedback-message').classList.add('hidden');
@@ -384,15 +452,66 @@
             if (rateBoyBtn.disabled && rateGirlBtn.disabled && rateTransBtn.disabled) {
                 document.getElementById('submit-buttons-container').innerHTML = `
                     <p class="w-full text-center text-fiery-core text-lg">You've rated everything!</p>
-                    <button onclick="window.location.href='/TenBut/'" class="w-full py-3 bg-fiery-core text-deep-twilight font-bold rounded-xl shadow-lg mt-4">
+                    <button onclick="window.location.href='/TenBut/'" class="w-full py-3 bg-warm-dusk text-deep-twilight font-bold rounded-xl primary-action-btn mt-4">
                         Start New Game
                     </button>
                 `;
                 slider.style.display = 'none';
             }
         }
+        
+        // --- NEW: Share Logic (Adapted for icon) ---
+        function generateShareLink() {
+            if (!currentPromptId || !gameData.gender) {
+                alert("Cannot share until a flaw is fully loaded.");
+                return;
+            }
+            
+            const flawText = document.getElementById('but-prompt').textContent;
+            const uniqueFlawId = `${gameData.gender}:${encodeURIComponent(flawText)}`;
+            const shareUrl = `${window.location.origin}/TenBut/Share.html?id=${uniqueFlawId}`;
 
-        // --- Firebase RTDB Integration ---
+            const shareSVG = document.getElementById('share-svg');
+            
+            // Set temporary success color on SVG stroke
+            const successColor = '#38A169'; 
+            const defaultColor = '#F5F1E6';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Rate The Flaw',
+                    text: `${document.getElementById('main-prompt').textContent} ${flawText}`,
+                    url: shareUrl,
+                })
+                .then(() => {
+                    shareSVG.setAttribute('stroke', successColor);
+                    setTimeout(() => shareSVG.setAttribute('stroke', defaultColor), 1500); // Flash green then return
+                })
+                .catch((error) => {
+                    console.error('Native sharing failed', error);
+                    copyLinkToClipboard(shareUrl, shareSVG);
+                });
+            } else {
+                copyLinkToClipboard(shareUrl, shareSVG);
+            }
+        }
+        
+        function copyLinkToClipboard(text, svgElement) {
+            const successColor = '#38A169'; 
+            const defaultColor = '#F5F1E6';
+            
+            navigator.clipboard.writeText(text).then(() => {
+                svgElement.setAttribute('stroke', successColor);
+                setTimeout(() => svgElement.setAttribute('stroke', defaultColor), 1500);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert("Could not copy link.");
+            });
+        }
+        // --- End NEW: Share Logic ---
+
+
+        // --- Firebase RTDB Integration (Unchanged) ---
         
         function submitRatingForGender(gender, rating, callback) {
             if (!dbRef || !currentPromptId) {
@@ -443,16 +562,9 @@
                 let height = (maxVotes === 0) ? 0 : (count / maxVotes) * 100 * 0.9; 
                 bar.style.height = `${height}%`;
                 
-                if (i <= 4) { bar.style.backgroundColor = '#FF6B6B'; }
-                else if (i <= 7) { bar.style.backgroundColor = '#FFC35B'; }
-                else { bar.style.backgroundColor = '#6CCF6C'; }
-            }
-        }
-        
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                if (i <= 4) { bar.style.backgroundColor = '#E53E3E'; } 
+                else if (i <= 7) { bar.style.backgroundColor = '#FFC35B'; } 
+                else { bar.style.backgroundColor = '#38A169'; } 
             }
         }
 
