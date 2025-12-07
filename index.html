@@ -55,6 +55,7 @@
         .game-card-link {
             outline: none; 
             transition: all 0.2s ease-in-out;
+            cursor: pointer; /* Added for clarity that it's clickable */
         }
         .game-card-link:hover, .game-card-link:focus-visible {
             transform: translateY(-4px);
@@ -66,11 +67,12 @@
 
     <script>
         window.startPlay = function(gameName) {
-            // Updated path mapping: "Imposter" -> /Imposter/, "Wrong Answers Only" -> /WrongAnswersOnly/
+            // Updated path mapping: "Imposter" -> /Imposter/, etc.
             const pathMap = {
                 'Imposter': '/Imposter/',
                 'WrongAnswersOnly': '/WrongAnswersOnly/',
-                'TenBut': '/TenBut/'
+                'TenBut': '/TenBut/',
+                'WhoAmI': '/WhoAmI/'
             };
             
             const urlPath = pathMap[gameName] || '/';
@@ -107,6 +109,25 @@
                         <div class="mt-4">
                             <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
                                 Launch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('WhoAmI')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Who Am I</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
+                                Get a secret word, object, place or person and try to guess who it is.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
+                                Lauch / Party Up
                             </button>
                         </div>
                     </div>
@@ -151,7 +172,6 @@
                 </div>
             </div>
 
-            
             <div class="relative cursor-default p-1">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
                     <div class="text-center text-soft-horizon">
@@ -161,6 +181,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="relative cursor-default p-1">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
                     <div class="text-center text-soft-horizon">
@@ -170,6 +191,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </main>
 </body>
