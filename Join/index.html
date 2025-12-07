@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        // Import config from parent or define here
+        // Config
         const firebaseConfig = {
             apiKey: "AIzaSyAdgoyDsUteoRBIQ74NXvg5Xfj8V105Dnw",
             authDomain: "chirpssgames.firebaseapp.com",
@@ -48,7 +48,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Check if code is in URL (?code=ABCD)
+        // Check URL params
         const urlParams = new URLSearchParams(window.location.search);
         const urlCode = urlParams.get('code');
         if (urlCode) {
@@ -69,41 +69,43 @@
             errorMsg.classList.add('hidden');
 
             try {
+                // Look up the game code in Firebase
                 const snapshot = await db.ref('games/' + code).once('value');
+                
                 if (snapshot.exists()) {
                     const gameData = snapshot.val();
-                    const gameType = gameData.gameType;
+                    const gameType = gameData.gameType || 'whoami'; // Default fallback
 
-                    // ROUTING LOGIC
+                    // --- ROUTING LOGIC ---
+                    // This is where we direct traffic based on the game type
                     if (gameType === 'whoami') {
+                        // Redirect to Who Am I joiner view
                         window.location.href = `/WhoAmI/Game.html?mode=joiner&code=${code}`;
                     } else if (gameType === 'tenbut') {
-                        // Future proofing for 10 But
+                        // Future proofing for "10 But"
                         window.location.href = `/TenBut/Game.html?mode=joiner&code=${code}`;
                     } else {
-                        // Default fallback
+                        // Fallback
                         window.location.href = `/WhoAmI/Game.html?mode=joiner&code=${code}`;
                     }
                 } else {
-                    errorMsg.textContent = "Game code not found";
-                    errorMsg.classList.remove('hidden');
-                    btn.textContent = "Join";
-                    btn.disabled = false;
+                    throw new Error("Game not found");
                 }
             } catch (e) {
                 console.error(e);
-                errorMsg.textContent = "Connection error";
+                errorMsg.textContent = "Room not found";
                 errorMsg.classList.remove('hidden');
                 btn.textContent = "Join";
                 btn.disabled = false;
             }
         }
         
-        // Auto-uppercase input
+        // Auto-uppercase
         document.getElementById('game-code').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
     </script>
 </body>
 </html>
+
 

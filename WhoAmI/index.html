@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Who Am I? - Setup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -17,10 +16,9 @@
             border: 2px solid #5A6F82; 
         }
         .category-btn.selected { 
-            background-color: #E87040; /* warm-dusk */
+            background-color: #E87040; 
             border-color: #E87040;
             color: #1C2A39; 
-            box-shadow: 0 0 15px rgba(232, 112, 64, 0.4);
             transform: scale(1.05);
         }
         .mode-btn { opacity: 0.5; border: 2px solid transparent; }
@@ -60,11 +58,9 @@
         let db;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Init Firebase
             if (typeof firebase !== 'undefined' && firebase.database) {
                 db = firebase.database();
             }
-
             fetch('data.json')
                 .then(res => res.json())
                 .then(data => {
@@ -77,11 +73,7 @@
             gameMode = mode;
             document.getElementById('mode-single').classList.toggle('active', mode === 'single');
             document.getElementById('mode-multi').classList.toggle('active', mode === 'multi');
-            
-            const btn = document.getElementById('start-btn');
-            if(selectedCategories.length > 0) {
-                 btn.textContent = mode === 'single' ? "Start Game" : "Create Room";
-            }
+            updateStartButton();
         }
 
         function renderCategories() {
@@ -124,34 +116,29 @@
         }
 
         async function initGame() {
-            // 1. Compile Words
+            // Compile words for single player immediately
             let gameWords = [];
             allCategories.forEach(cat => {
                 if (selectedCategories.includes(cat.name)) {
                     gameWords.push(...cat.words);
                 }
             });
-            // Shuffle
             gameWords.sort(() => Math.random() - 0.5);
 
             if (gameMode === 'single') {
-                // SINGLE PLAYER: Save to session and go
                 sessionStorage.setItem('whoami_data', JSON.stringify(gameWords));
                 window.location.href = 'Game.html?mode=single';
             } else {
-                // MULTI PLAYER: Create Room in Firebase
+                // Multi Player: Just create room with categories selected
                 const code = generateCode();
                 const roomRef = db.ref('games/' + code);
                 
                 await roomRef.set({
                     gameType: 'whoami',
                     status: 'lobby',
-                    words: gameWords,
-                    currentIndex: 0,
-                    currentWord: "Waiting...",
-                    score: 0,
-                    timeLeft: 60,
-                    hostConnected: true
+                    categories: selectedCategories, // Store chosen categories
+                    wordsPool: gameWords, // Store the pool
+                    startTime: 0
                 });
 
                 // Redirect Host
@@ -160,7 +147,7 @@
         }
 
         function generateCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Removed I, O for clarity
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
             let result = '';
             for (let i = 0; i < 4; i++) {
                 result += chars.charAt(Math.floor(Math.random() * chars.length));

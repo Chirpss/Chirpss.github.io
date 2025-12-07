@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Who Am I?</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
@@ -32,288 +31,300 @@
             transition: transform 0.2s ease-out; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .correct-bg { background-color: #6CCF6C !important; }
-        .pass-bg { background-color: #FF6B6B !important; }
-        
-        /* Specific state styles */
-        .host-view #word-display { font-size: 2rem; color: #5A6F82; } /* Host shouldn't see clear word */
+        /* QR Code container style */
+        .qr-container img {
+            border-radius: 0.5rem;
+            border: 4px solid white;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Header -->
-    <div class="p-4 flex justify-between items-center text-xl font-bold z-10">
-        <div id="timer" class="text-fiery-core">60</div>
-        <div id="room-code-display" class="hidden text-subtle-gray text-sm">Code: <span class="text-white text-lg"></span></div>
-        <div class="text-subtle-gray">Score: <span id="score" class="text-white">0</span></div>
+    <!-- Header (Minimal) -->
+    <div class="p-4 flex justify-between items-center text-xl font-bold z-10 h-16">
+        <div id="room-code-display" class="hidden text-subtle-gray text-sm">Room: <span class="text-white text-lg font-mono"></span></div>
     </div>
 
-    <!-- Main Card Area -->
-    <div class="flex-grow flex items-center justify-center p-6 relative">
+    <!-- Main Card Area (Takes maximum space) -->
+    <div class="flex-grow flex items-center justify-center p-4 relative">
         
-        <!-- Instructions / Lobby Overlay -->
-        <div id="overlay" class="absolute inset-0 z-50 bg-deep-twilight/95 flex flex-col items-center justify-center text-center p-6">
-            <h2 id="overlay-title" class="text-3xl font-bold mb-4">Ready?</h2>
+        <!-- 1. Lobby Overlay (Host Only) -->
+        <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
+            <h2 class="text-4xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
-            <!-- Room Code (For Multi) -->
-            <div id="lobby-info" class="hidden mb-6">
-                <p class="text-subtle-gray mb-2">Join at <span class="text-fiery-core">chirpss.my.to/Join</span></p>
-                <div class="text-5xl font-mono font-bold tracking-widest bg-white/10 p-4 rounded-xl select-all" id="lobby-code">ABCD</div>
+            <!-- QR Code Area -->
+            <div id="qr-area" class="qr-container mb-4">
+                <!-- QR Injected Here -->
             </div>
-
-            <p id="overlay-desc" class="text-lg mb-8 text-subtle-gray">Place device on your forehead</p>
             
-            <button id="start-round-btn" onclick="startRound()" class="px-8 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-full shadow-lg">
-                Start Timer
+            <div id="lobby-info" class="mb-8">
+                <p class="text-subtle-gray text-lg">Scan to join</p>
+                <div class="text-6xl font-mono font-bold tracking-widest text-white mt-2" id="lobby-code">...</div>
+            </div>
+            <div id="player-count" class="text-xl mb-8 text-subtle-gray">Players: 0</div>
+            
+            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-sm px-8 py-6 bg-fiery-core text-deep-twilight font-bold text-2xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
+                Start Game
             </button>
-            <p id="waiting-msg" class="hidden text-fiery-core animate-pulse mt-4">Waiting for host to start...</p>
         </div>
 
-        <!-- The Card -->
-        <div id="game-card" class="card w-full h-full max-h-[500px] bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative">
-            
-            <!-- Host Mask (Prevents Host from cheating in Multi) -->
-            <div id="host-mask" class="hidden absolute inset-0 bg-deep-twilight rounded-2xl flex items-center justify-center">
-                <p class="text-3xl font-bold text-fiery-core">GUESS!</p>
-                <p class="absolute bottom-10 text-subtle-gray">Listen to your friends</p>
-            </div>
+        <!-- 2. Waiting Overlay (Joiner Only) -->
+        <div id="waiting-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
+             <h2 class="text-3xl font-bold mb-4 text-white">You're In!</h2>
+             <div class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
+        </div>
 
-            <h1 id="word-display" class="text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg relative z-10">
+        <!-- 3. Countdown Overlay -->
+        <div id="countdown-overlay" class="absolute inset-0 z-40 bg-warm-dusk flex flex-col items-center justify-center text-center p-6 hidden">
+            <h2 class="text-3xl font-bold mb-8 text-deep-twilight">Phone on Forehead!</h2>
+            <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
+        </div>
+
+        <!-- 4. The Game Card -->
+        <div id="game-card" class="card w-full h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative">
+            <!-- The Main Event: BIG TEXT -->
+            <h1 id="word-display" class="text-7xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full">
                 ...
             </h1>
-            <p id="category-label" class="text-white/50 mt-4 text-sm font-semibold tracking-widest uppercase relative z-10">Who Am I?</p>
+            <p id="category-label" class="text-white/50 mt-8 text-xl font-semibold tracking-widest uppercase relative z-10">Who Am I?</p>
         </div>
 
     </div>
 
-    <!-- Controls (Bottom) - Only visible for Guesser (Single or Host) -->
-    <div id="controls-area" class="h-1/4 min-h-[120px] grid grid-cols-2">
-        <button onclick="handlePass()" class="bg-danger-red/20 border-t border-danger-red/50 text-danger-red font-bold text-2xl flex flex-col items-center justify-center active:bg-danger-red active:text-white transition-colors">
-            PASS
-        </button>
-        <button onclick="handleCorrect()" class="bg-success-green/20 border-t border-success-green/50 text-success-green font-bold text-2xl flex flex-col items-center justify-center active:bg-success-green active:text-white transition-colors">
-            CORRECT
-        </button>
-    </div>
-
-    <!-- Game Over Screen -->
-    <div id="game-over" class="hidden absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center p-8 text-center">
-        <h2 class="text-5xl font-extrabold text-fiery-core mb-2">Time's Up!</h2>
-        <p class="text-2xl mb-8">Final Score: <span id="final-score" class="font-bold text-white">0</span></p>
+    <!-- Controls (Bottom) -->
+    <div id="controls-area" class="h-1/5 min-h-[100px] flex items-center justify-center p-4">
         
-        <button onclick="window.location.href='/WhoAmI/'" class="w-full max-w-sm py-4 bg-soft-horizon text-deep-twilight font-bold text-xl rounded-xl mb-4">
-            New Game
+        <!-- Single Player Next Button -->
+        <button id="single-next-btn" onclick="handleNextSingle()" class="hidden w-full h-full bg-success-green text-deep-twilight font-bold text-4xl rounded-2xl shadow-lg active:scale-95 transition-transform">
+            NEXT CARD
         </button>
+
+        <!-- Host Next Round Button -->
+        <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden w-full h-full bg-fiery-core text-deep-twilight font-bold text-3xl rounded-2xl shadow-lg active:scale-95 transition-transform">
+            START NEXT ROUND
+        </button>
+
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
+        
+        // Generate a stable ID for this session so refreshing doesn't create a ghost player
+        let myId = sessionStorage.getItem('whoami_id');
+        if (!myId) {
+            myId = 'player_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('whoami_id', myId);
+        }
 
-        let words = [];
-        let currentIndex = 0;
-        let score = 0;
-        let timeLeft = 60;
-        let timerInterval;
-        let isPlaying = false;
+        let wordsPool = [];
         let dbRef;
+        let playerRef;
+        let gameStatus = 'loading';
 
         document.addEventListener('DOMContentLoaded', () => {
             if (mode === 'single') {
                 initSingle();
-            } else if (mode === 'host') {
-                initHost();
-            } else if (mode === 'joiner') {
-                initJoiner();
             } else {
-                window.location.href = 'index.html';
+                initMulti();
             }
         });
 
         // --- SINGLE PLAYER LOGIC ---
         function initSingle() {
+            document.getElementById('lobby-overlay').classList.add('hidden');
+            document.getElementById('single-next-btn').classList.remove('hidden');
+            
             const data = sessionStorage.getItem('whoami_data');
             if (!data) window.location.href = 'index.html';
-            words = JSON.parse(data);
+            wordsPool = JSON.parse(data);
             
-            document.getElementById('overlay-desc').textContent = "Place device on your forehead";
-            loadLocalWord();
+            showNextWordSingle();
         }
 
-        // --- HOST LOGIC (Multi) ---
-        function initHost() {
+        function handleNextSingle() {
+            // Visual feedback
+            const card = document.getElementById('game-card');
+            card.classList.add('scale-95', 'opacity-80');
+            setTimeout(() => {
+                showNextWordSingle();
+                card.classList.remove('scale-95', 'opacity-80');
+            }, 150);
+        }
+
+        function showNextWordSingle() {
+            if (wordsPool.length === 0) {
+                 document.getElementById('word-display').textContent = "Done!";
+                 return;
+            }
+            const word = wordsPool[Math.floor(Math.random() * wordsPool.length)];
+            // Optional: remove word so it doesn't repeat immediately
+            // wordsPool = wordsPool.filter(w => w !== word); 
+            
+            document.getElementById('word-display').textContent = word;
+            fitText(word);
+        }
+
+
+        // --- MULTIPLAYER LOGIC ---
+        function initMulti() {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
             dbRef = db.ref('games/' + code);
+            playerRef = dbRef.child('players/' + myId);
 
-            // Fetch words from DB initially
-            dbRef.once('value').then(snap => {
-                const game = snap.val();
-                words = game.words || [];
-                // Host setup UI
-                document.getElementById('lobby-info').classList.remove('hidden');
-                document.getElementById('lobby-code').textContent = code;
-                document.getElementById('overlay-desc').textContent = "Wait for friends to join, then start!";
-                
-                // Mask the word for the host
-                document.getElementById('host-mask').classList.remove('hidden');
-            });
-        }
-
-        // --- JOINER LOGIC (Multi) ---
-        function initJoiner() {
-            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            const db = firebase.database();
-            dbRef = db.ref('games/' + code);
-
-            // UI Setup
-            document.getElementById('controls-area').classList.add('hidden'); // Joiners don't control
-            document.getElementById('start-round-btn').classList.add('hidden'); // Joiners don't start
-            document.getElementById('waiting-msg').classList.remove('hidden');
-            document.getElementById('overlay-desc').textContent = "You are giving clues!";
             document.getElementById('room-code-display').classList.remove('hidden');
             document.querySelector('#room-code-display span').textContent = code;
 
-            // Listen to Game State
+            if (mode === 'host') {
+                setupHostLobby();
+            } else {
+                setupJoinerLobby();
+            }
+
+            // Join the game in DB
+            playerRef.set({
+                id: myId,
+                name: 'Player',
+                status: 'joined',
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+            playerRef.onDisconnect().remove(); 
+
+            // Game State Listener
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
-                // Sync Timer & Score
-                document.getElementById('timer').textContent = game.timeLeft;
-                document.getElementById('score').textContent = game.score;
+                // Update Player Count
+                const players = game.players || {};
+                document.getElementById('player-count').textContent = `Players: ${Object.keys(players).length}`;
 
-                // Handle Game Status
-                if (game.status === 'playing') {
-                    document.getElementById('overlay').classList.add('hidden');
-                    document.getElementById('word-display').textContent = game.currentWord;
-                    adjustFontSize(game.currentWord);
-                } else if (game.status === 'finished') {
-                    endGameLocal(game.score);
+                // Check Status Transitions
+                if (game.status === 'countdown' && gameStatus !== 'countdown') {
+                    startSyncedCountdown(game.startTime);
+                } 
+                else if (game.status === 'playing') {
+                    // Update word logic is handled inside enterGame
+                    enterGame(game);
                 }
             });
         }
 
-        // --- SHARED GAMEPLAY ---
-
-        function startRound() {
-            document.getElementById('overlay').classList.add('hidden');
-            isPlaying = true;
-
-            if (mode === 'single') {
-                startLocalTimer();
-            } else if (mode === 'host') {
-                // Update DB to start game for everyone
-                dbRef.update({ status: 'playing', currentWord: words[0] });
-                startHostTimer();
-            }
+        function setupHostLobby() {
+            document.getElementById('lobby-overlay').classList.remove('hidden');
+            document.getElementById('lobby-code').textContent = code;
+            
+            // Generate QR Code pointing to the Joiner URL
+            // Using logic: current domain + /Join/?code=CODE
+            const joinUrl = `${window.location.origin}/Join/?code=${code}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6`;
+            
+            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-48 h-48 mx-auto shadow-xl">`;
         }
 
-        function handleCorrect() {
-            if (!isPlaying) return;
-            score++;
-            document.getElementById('score').textContent = score;
-            flashCard('correct-bg');
-
-            if (mode === 'single') {
-                nextLocal();
-            } else if (mode === 'host') {
-                nextMulti();
-            }
+        function setupJoinerLobby() {
+            document.getElementById('waiting-overlay').classList.remove('hidden');
         }
 
-        function handlePass() {
-            if (!isPlaying) return;
-            flashCard('pass-bg');
-            if (mode === 'single') {
-                nextLocal();
-            } else if (mode === 'host') {
-                nextMulti();
-            }
-        }
 
-        // --- LOCAL HELPERS ---
-        function startLocalTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').textContent = timeLeft;
-                if (timeLeft <= 0) endGameLocal(score);
-            }, 1000);
-        }
+        // --- HOST: START ROUND ---
+        function hostStartCountdown() {
+            dbRef.once('value').then(snap => {
+                const game = snap.val();
+                const players = game.players || {};
+                let pool = game.wordsPool || [];
+                let poolIndex = game.nextWordIndex || 0;
 
-        function loadLocalWord() {
-            if (currentIndex >= words.length) { endGameLocal(score); return; }
-            const word = words[currentIndex];
-            document.getElementById('word-display').textContent = word;
-            adjustFontSize(word);
-        }
-
-        function nextLocal() {
-            currentIndex++;
-            loadLocalWord();
-        }
-
-        // --- MULTI HELPERS ---
-        function startHostTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                // Update DB so joiners see timer
-                dbRef.update({ timeLeft: timeLeft });
-                document.getElementById('timer').textContent = timeLeft;
+                // We need to reshuffle logic or just iterate
+                // Simple iteration for now ensures everyone gets a word
                 
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    dbRef.update({ status: 'finished' });
-                    endGameLocal(score);
-                }
-            }, 1000);
+                const updates = {};
+                
+                Object.keys(players).forEach(pid => {
+                    // Pick a word
+                    const word = pool[poolIndex % pool.length];
+                    updates[`players/${pid}/currentWord`] = word;
+                    poolIndex++;
+                });
+
+                // Target time: Now + 10 seconds
+                // Use firebase server timestamp offset ideally, but local time is usually "okay" for casual games
+                const targetTime = Date.now() + 10000;
+                
+                updates['startTime'] = targetTime;
+                updates['status'] = 'countdown';
+                updates['nextWordIndex'] = poolIndex;
+
+                dbRef.update(updates);
+            });
         }
 
-        function nextMulti() {
-            currentIndex++;
-            if (currentIndex >= words.length) {
-                dbRef.update({ status: 'finished' });
-                endGameLocal(score);
-                return;
+        // --- ALL: SYNCED COUNTDOWN ---
+        function startSyncedCountdown(targetTime) {
+            gameStatus = 'countdown';
+            
+            // Hide Lobbies
+            document.getElementById('lobby-overlay').classList.add('hidden');
+            document.getElementById('waiting-overlay').classList.add('hidden');
+            
+            // Hide Buttons
+            document.getElementById('host-next-btn').classList.add('hidden');
+            
+            // Show Countdown
+            document.getElementById('countdown-overlay').classList.remove('hidden');
+
+            const timerDisplay = document.getElementById('countdown-display');
+            
+            const interval = setInterval(() => {
+                const now = Date.now();
+                const diff = Math.ceil((targetTime - now) / 1000);
+
+                if (diff > 0) {
+                    timerDisplay.textContent = diff;
+                } else {
+                    clearInterval(interval);
+                    // Countdown finished locally
+                    if (mode === 'host') {
+                        // Host triggers the state change to 'playing'
+                        // Joiners wait for this DB update to reveal card
+                        dbRef.update({ status: 'playing' }); 
+                    }
+                }
+            }, 100);
+        }
+
+        // --- ALL: GAME PLAYING ---
+        function enterGame(game) {
+            gameStatus = 'playing';
+            document.getElementById('countdown-overlay').classList.add('hidden');
+            
+            // Reveal Word
+            const myData = game.players[myId];
+            if (myData && myData.currentWord) {
+                const word = myData.currentWord;
+                document.getElementById('word-display').textContent = word;
+                fitText(word);
             }
-            // Update DB
-            dbRef.update({ 
-                currentWord: words[currentIndex],
-                score: score
-            });
+
+            // Show controls ONLY for Host
+            if (mode === 'host') {
+                document.getElementById('host-next-btn').classList.remove('hidden');
+            }
         }
 
         // --- UTILS ---
-        function flashCard(cssClass) {
-            const card = document.getElementById('game-card');
-            // Flash color only visible if mask is hidden (Single/Joiner), 
-            // OR we apply it to the mask itself for the Host.
-            if(mode === 'host') {
-                 const mask = document.getElementById('host-mask');
-                 mask.classList.add(cssClass);
-                 setTimeout(() => mask.classList.remove(cssClass), 200);
-            } else {
-                 card.classList.add(cssClass);
-                 setTimeout(() => card.classList.remove(cssClass), 200);
-            }
-        }
-
-        function adjustFontSize(word) {
-            if (!word) return;
+        function fitText(word) {
             const display = document.getElementById('word-display');
-            if (word.length > 12) {
-                display.className = "text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg relative z-10";
+            // Rough logic to size text based on length
+            if (word.length > 15) {
+                display.className = "text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
+            } else if (word.length > 8) {
+                display.className = "text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
             } else {
-                display.className = "text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg relative z-10";
+                display.className = "text-8xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
             }
-        }
-
-        function endGameLocal(finalScore) {
-            clearInterval(timerInterval);
-            isPlaying = false;
-            document.getElementById('final-score').textContent = finalScore;
-            document.getElementById('game-over').classList.remove('hidden');
         }
     </script>
 </body>
