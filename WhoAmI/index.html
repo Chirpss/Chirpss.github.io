@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Am I? - Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; }
+        .category-btn { 
+            transition: all 0.2s; 
+            background-color: #2A3C50; 
+            border: 2px solid #5A6F82; 
+        }
+        .category-btn.selected { 
+            background-color: #E87040; /* warm-dusk */
+            border-color: #E87040;
+            color: #1C2A39; 
+            box-shadow: 0 0 15px rgba(232, 112, 64, 0.4);
+            transform: scale(1.05);
+        }
+        .mode-btn { opacity: 0.5; border: 2px solid transparent; }
+        .mode-btn.active { opacity: 1; border-color: #FFC35B; background-color: #2A3C50; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+    
+    <h1 class="text-4xl font-extrabold text-fiery-core mb-2">Who Am I?</h1>
+    
+    <!-- Game Mode Selector -->
+    <div class="flex space-x-4 mb-8 bg-deep-twilight p-2 rounded-xl">
+        <button onclick="setMode('single')" id="mode-single" class="mode-btn active px-6 py-3 rounded-lg font-bold text-soft-horizon">
+            Single Device
+        </button>
+        <button onclick="setMode('multi')" id="mode-multi" class="mode-btn px-6 py-3 rounded-lg font-bold text-soft-horizon">
+            Multi Device
+        </button>
+    </div>
+
+    <p class="text-subtle-gray mb-4">Select decks to play with</p>
+
+    <!-- Categories Grid -->
+    <div id="categories-container" class="grid grid-cols-2 gap-4 w-full max-w-md mb-10">
+        <p>Loading categories...</p>
+    </div>
+
+    <!-- Start Button -->
+    <button id="start-btn" onclick="initGame()" class="w-full max-w-md py-4 bg-subtle-gray text-soft-horizon font-bold text-xl rounded-xl shadow-lg transition-all" disabled>
+        Pick a Category
+    </button>
+
+    <script>
+        let allCategories = [];
+        let selectedCategories = [];
+        let gameMode = 'single';
+        let db;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Init Firebase
+            if (typeof firebase !== 'undefined' && firebase.database) {
+                db = firebase.database();
+            }
+
+            fetch('data.json')
+                .then(res => res.json())
+                .then(data => {
+                    allCategories = data.categories;
+                    renderCategories();
+                });
+        });
+
+        function setMode(mode) {
+            gameMode = mode;
+            document.getElementById('mode-single').classList.toggle('active', mode === 'single');
+            document.getElementById('mode-multi').classList.toggle('active', mode === 'multi');
+            
+            const btn = document.getElementById('start-btn');
+            if(selectedCategories.length > 0) {
+                 btn.textContent = mode === 'single' ? "Start Game" : "Create Room";
+            }
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+            
+            allCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn py-6 rounded-xl font-bold text-lg flex flex-col items-center justify-center';
+                btn.textContent = cat.name;
+                btn.onclick = () => toggleCategory(cat.name, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleCategory(name, btn) {
+            if (selectedCategories.includes(name)) {
+                selectedCategories = selectedCategories.filter(c => c !== name);
+                btn.classList.remove('selected');
+            } else {
+                selectedCategories.push(name);
+                btn.classList.add('selected');
+            }
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            const btn = document.getElementById('start-btn');
+            if (selectedCategories.length > 0) {
+                btn.disabled = false;
+                btn.classList.remove('bg-subtle-gray');
+                btn.classList.add('bg-fiery-core', 'text-deep-twilight');
+                btn.textContent = gameMode === 'single' ? "Start Game" : "Create Room";
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-subtle-gray');
+                btn.classList.remove('bg-fiery-core', 'text-deep-twilight');
+                btn.textContent = "Pick a Category";
+            }
+        }
+
+        async function initGame() {
+            // 1. Compile Words
+            let gameWords = [];
+            allCategories.forEach(cat => {
+                if (selectedCategories.includes(cat.name)) {
+                    gameWords.push(...cat.words);
+                }
+            });
+            // Shuffle
+            gameWords.sort(() => Math.random() - 0.5);
+
+            if (gameMode === 'single') {
+                // SINGLE PLAYER: Save to session and go
+                sessionStorage.setItem('whoami_data', JSON.stringify(gameWords));
+                window.location.href = 'Game.html?mode=single';
+            } else {
+                // MULTI PLAYER: Create Room in Firebase
+                const code = generateCode();
+                const roomRef = db.ref('games/' + code);
+                
+                await roomRef.set({
+                    gameType: 'whoami',
+                    status: 'lobby',
+                    words: gameWords,
+                    currentIndex: 0,
+                    currentWord: "Waiting...",
+                    score: 0,
+                    timeLeft: 60,
+                    hostConnected: true
+                });
+
+                // Redirect Host
+                window.location.href = `Game.html?mode=host&code=${code}`;
+            }
+        }
+
+        function generateCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Removed I, O for clarity
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+    </script>
+</body>
+</html>
+
+

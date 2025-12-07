@@ -1,0 +1,20 @@
+{
+  "categories": [
+    {
+      "name": "Movies & TV",
+      "words": ["Harry Potter", "Darth Vader", "SpongeBob", "Batman", "The Joker", "Shrek", "Walter White", "Eleven", "Buzz Lightyear", "Mario", "Spiderman", "Mickey Mouse"]
+    },
+    {
+      "name": "Famous People",
+      "words": ["Taylor Swift", "Albert Einstein", "Elon Musk", "Beyoncé", "Lincoln", "Gordon Ramsay", "The Rock", "Queen Elizabeth II", "Michael Jordan", "Shakespeare"]
+    },
+    {
+      "name": "Animals",
+      "words": ["Giraffe", "Penguin", "Sloth", "T-Rex", "Narwhal", "Platypus", "Shark", "Kangaroo", "Lion", "Human", "Chicken", "Cow"]
+    },
+    {
+      "name": "Objects",
+      "words": ["Toaster", "Traffic Cone", "Toilet Paper", "Iphone", "Banana", "Statue of Liberty", "Eiffel Tower", "Microwave", "Socks", "Pizza"]
+    }
+  ]
+}

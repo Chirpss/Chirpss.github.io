@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Who Am I?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                        'success-green': '#6CCF6C',
+                        'danger-red': '#FF6B6B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; overflow: hidden; }
+        .card { 
+            transition: transform 0.2s ease-out; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .correct-bg { background-color: #6CCF6C !important; }
+        .pass-bg { background-color: #FF6B6B !important; }
+        
+        /* Specific state styles */
+        .host-view #word-display { font-size: 2rem; color: #5A6F82; } /* Host shouldn't see clear word */
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+
+    <!-- Header -->
+    <div class="p-4 flex justify-between items-center text-xl font-bold z-10">
+        <div id="timer" class="text-fiery-core">60</div>
+        <div id="room-code-display" class="hidden text-subtle-gray text-sm">Code: <span class="text-white text-lg"></span></div>
+        <div class="text-subtle-gray">Score: <span id="score" class="text-white">0</span></div>
+    </div>
+
+    <!-- Main Card Area -->
+    <div class="flex-grow flex items-center justify-center p-6 relative">
+        
+        <!-- Instructions / Lobby Overlay -->
+        <div id="overlay" class="absolute inset-0 z-50 bg-deep-twilight/95 flex flex-col items-center justify-center text-center p-6">
+            <h2 id="overlay-title" class="text-3xl font-bold mb-4">Ready?</h2>
+            
+            <!-- Room Code (For Multi) -->
+            <div id="lobby-info" class="hidden mb-6">
+                <p class="text-subtle-gray mb-2">Join at <span class="text-fiery-core">chirpss.my.to/Join</span></p>
+                <div class="text-5xl font-mono font-bold tracking-widest bg-white/10 p-4 rounded-xl select-all" id="lobby-code">ABCD</div>
+            </div>
+
+            <p id="overlay-desc" class="text-lg mb-8 text-subtle-gray">Place device on your forehead</p>
+            
+            <button id="start-round-btn" onclick="startRound()" class="px-8 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-full shadow-lg">
+                Start Timer
+            </button>
+            <p id="waiting-msg" class="hidden text-fiery-core animate-pulse mt-4">Waiting for host to start...</p>
+        </div>
+
+        <!-- The Card -->
+        <div id="game-card" class="card w-full h-full max-h-[500px] bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative">
+            
+            <!-- Host Mask (Prevents Host from cheating in Multi) -->
+            <div id="host-mask" class="hidden absolute inset-0 bg-deep-twilight rounded-2xl flex items-center justify-center">
+                <p class="text-3xl font-bold text-fiery-core">GUESS!</p>
+                <p class="absolute bottom-10 text-subtle-gray">Listen to your friends</p>
+            </div>
+
+            <h1 id="word-display" class="text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg relative z-10">
+                ...
+            </h1>
+            <p id="category-label" class="text-white/50 mt-4 text-sm font-semibold tracking-widest uppercase relative z-10">Who Am I?</p>
+        </div>
+
+    </div>
+
+    <!-- Controls (Bottom) - Only visible for Guesser (Single or Host) -->
+    <div id="controls-area" class="h-1/4 min-h-[120px] grid grid-cols-2">
+        <button onclick="handlePass()" class="bg-danger-red/20 border-t border-danger-red/50 text-danger-red font-bold text-2xl flex flex-col items-center justify-center active:bg-danger-red active:text-white transition-colors">
+            PASS
+        </button>
+        <button onclick="handleCorrect()" class="bg-success-green/20 border-t border-success-green/50 text-success-green font-bold text-2xl flex flex-col items-center justify-center active:bg-success-green active:text-white transition-colors">
+            CORRECT
+        </button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over" class="hidden absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center p-8 text-center">
+        <h2 class="text-5xl font-extrabold text-fiery-core mb-2">Time's Up!</h2>
+        <p class="text-2xl mb-8">Final Score: <span id="final-score" class="font-bold text-white">0</span></p>
+        
+        <button onclick="window.location.href='/WhoAmI/'" class="w-full max-w-sm py-4 bg-soft-horizon text-deep-twilight font-bold text-xl rounded-xl mb-4">
+            New Game
+        </button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
+        const code = urlParams.get('code');
+
+        let words = [];
+        let currentIndex = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let timerInterval;
+        let isPlaying = false;
+        let dbRef;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (mode === 'single') {
+                initSingle();
+            } else if (mode === 'host') {
+                initHost();
+            } else if (mode === 'joiner') {
+                initJoiner();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- SINGLE PLAYER LOGIC ---
+        function initSingle() {
+            const data = sessionStorage.getItem('whoami_data');
+            if (!data) window.location.href = 'index.html';
+            words = JSON.parse(data);
+            
+            document.getElementById('overlay-desc').textContent = "Place device on your forehead";
+            loadLocalWord();
+        }
+
+        // --- HOST LOGIC (Multi) ---
+        function initHost() {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+            dbRef = db.ref('games/' + code);
+
+            // Fetch words from DB initially
+            dbRef.once('value').then(snap => {
+                const game = snap.val();
+                words = game.words || [];
+                // Host setup UI
+                document.getElementById('lobby-info').classList.remove('hidden');
+                document.getElementById('lobby-code').textContent = code;
+                document.getElementById('overlay-desc').textContent = "Wait for friends to join, then start!";
+                
+                // Mask the word for the host
+                document.getElementById('host-mask').classList.remove('hidden');
+            });
+        }
+
+        // --- JOINER LOGIC (Multi) ---
+        function initJoiner() {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+            dbRef = db.ref('games/' + code);
+
+            // UI Setup
+            document.getElementById('controls-area').classList.add('hidden'); // Joiners don't control
+            document.getElementById('start-round-btn').classList.add('hidden'); // Joiners don't start
+            document.getElementById('waiting-msg').classList.remove('hidden');
+            document.getElementById('overlay-desc').textContent = "You are giving clues!";
+            document.getElementById('room-code-display').classList.remove('hidden');
+            document.querySelector('#room-code-display span').textContent = code;
+
+            // Listen to Game State
+            dbRef.on('value', (snapshot) => {
+                const game = snapshot.val();
+                if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
+
+                // Sync Timer & Score
+                document.getElementById('timer').textContent = game.timeLeft;
+                document.getElementById('score').textContent = game.score;
+
+                // Handle Game Status
+                if (game.status === 'playing') {
+                    document.getElementById('overlay').classList.add('hidden');
+                    document.getElementById('word-display').textContent = game.currentWord;
+                    adjustFontSize(game.currentWord);
+                } else if (game.status === 'finished') {
+                    endGameLocal(game.score);
+                }
+            });
+        }
+
+        // --- SHARED GAMEPLAY ---
+
+        function startRound() {
+            document.getElementById('overlay').classList.add('hidden');
+            isPlaying = true;
+
+            if (mode === 'single') {
+                startLocalTimer();
+            } else if (mode === 'host') {
+                // Update DB to start game for everyone
+                dbRef.update({ status: 'playing', currentWord: words[0] });
+                startHostTimer();
+            }
+        }
+
+        function handleCorrect() {
+            if (!isPlaying) return;
+            score++;
+            document.getElementById('score').textContent = score;
+            flashCard('correct-bg');
+
+            if (mode === 'single') {
+                nextLocal();
+            } else if (mode === 'host') {
+                nextMulti();
+            }
+        }
+
+        function handlePass() {
+            if (!isPlaying) return;
+            flashCard('pass-bg');
+            if (mode === 'single') {
+                nextLocal();
+            } else if (mode === 'host') {
+                nextMulti();
+            }
+        }
+
+        // --- LOCAL HELPERS ---
+        function startLocalTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) endGameLocal(score);
+            }, 1000);
+        }
+
+        function loadLocalWord() {
+            if (currentIndex >= words.length) { endGameLocal(score); return; }
+            const word = words[currentIndex];
+            document.getElementById('word-display').textContent = word;
+            adjustFontSize(word);
+        }
+
+        function nextLocal() {
+            currentIndex++;
+            loadLocalWord();
+        }
+
+        // --- MULTI HELPERS ---
+        function startHostTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                // Update DB so joiners see timer
+                dbRef.update({ timeLeft: timeLeft });
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    dbRef.update({ status: 'finished' });
+                    endGameLocal(score);
+                }
+            }, 1000);
+        }
+
+        function nextMulti() {
+            currentIndex++;
+            if (currentIndex >= words.length) {
+                dbRef.update({ status: 'finished' });
+                endGameLocal(score);
+                return;
+            }
+            // Update DB
+            dbRef.update({ 
+                currentWord: words[currentIndex],
+                score: score
+            });
+        }
+
+        // --- UTILS ---
+        function flashCard(cssClass) {
+            const card = document.getElementById('game-card');
+            // Flash color only visible if mask is hidden (Single/Joiner), 
+            // OR we apply it to the mask itself for the Host.
+            if(mode === 'host') {
+                 const mask = document.getElementById('host-mask');
+                 mask.classList.add(cssClass);
+                 setTimeout(() => mask.classList.remove(cssClass), 200);
+            } else {
+                 card.classList.add(cssClass);
+                 setTimeout(() => card.classList.remove(cssClass), 200);
+            }
+        }
+
+        function adjustFontSize(word) {
+            if (!word) return;
+            const display = document.getElementById('word-display');
+            if (word.length > 12) {
+                display.className = "text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg relative z-10";
+            } else {
+                display.className = "text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg relative z-10";
+            }
+        }
+
+        function endGameLocal(finalScore) {
+            clearInterval(timerInterval);
+            isPlaying = false;
+            document.getElementById('final-score').textContent = finalScore;
+            document.getElementById('game-over').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+
+
