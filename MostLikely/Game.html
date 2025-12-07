@@ -18,6 +18,8 @@
                         'fiery-core': '#FFC35B',
                         'soft-horizon': '#F5F1E6',
                         'subtle-gray': '#5A6F82',
+                        'success-green': '#6CCF6C',
+                        'danger-red': '#FF6B6B'
                     }
                 }
             }
@@ -28,6 +30,7 @@
             background-color: #1C2A39; 
             color: #F5F1E6; 
             font-family: 'Inter', sans-serif; 
+            height: 100vh;
             height: 100dvh;
             overflow: hidden;
         }
@@ -37,51 +40,72 @@
         .player-btn:active {
             transform: scale(0.95);
         }
-        .bar { transition: height 1s ease-out; }
+        
+        /* Modal Animation */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 0.2s, transform 0.2s; }
     </style>
 </head>
 <body class="flex flex-col">
 
     <!-- Header -->
-    <div class="flex-none h-16 px-4 flex justify-between items-center bg-deep-twilight/95 backdrop-blur z-30 border-b border-white/5">
-        <span class="text-fiery-core text-xl font-extrabold">Chirpss</span>
-        <div class="text-sm text-subtle-gray">Room: <span id="room-code" class="text-white font-mono font-bold"></span></div>
+    <div class="flex-none h-16 px-4 flex justify-between items-center bg-deep-twilight/95 backdrop-blur z-30 border-b border-white/5 shadow-md">
+        <div class="flex items-center gap-3">
+            <span class="text-fiery-core text-xl font-extrabold">Chirpss</span>
+            <div class="text-xs text-subtle-gray border-l border-white/20 pl-3 leading-tight">
+                Room <br><span id="room-code" class="text-white font-mono font-bold text-base"></span>
+            </div>
+        </div>
+        
+        <!-- Player List Button -->
+        <button onclick="togglePlayerModal()" class="flex items-center gap-2 px-3 py-1.5 bg-subtle-gray/30 hover:bg-subtle-gray/50 rounded-lg transition-colors border border-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-soft-horizon" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+            </svg>
+            <span id="header-count" class="font-bold text-sm">0</span>
+        </button>
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow flex flex-col p-4 relative overflow-y-auto">
+    <div class="flex-grow flex flex-col p-4 relative overflow-y-auto w-full max-w-2xl mx-auto">
         
         <!-- 1. Lobby Overlay -->
         <div id="lobby-view" class="hidden flex-col items-center justify-center h-full text-center">
-            <h2 class="text-3xl font-bold mb-4 text-fiery-core">Lobby</h2>
-            <div id="qr-area" class="mb-6 rounded-lg overflow-hidden border-4 border-white"></div>
-            <p class="text-lg mb-8 text-subtle-gray">Players joined: <span id="player-count" class="text-white font-bold">0</span></p>
+            <h2 class="text-4xl font-bold mb-6 text-fiery-core">Lobby</h2>
             
-            <button id="host-start-btn" onclick="startGame()" class="hidden w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg">
+            <div id="qr-area" class="mb-8 rounded-xl overflow-hidden border-4 border-white shadow-2xl"></div>
+            
+            <p class="text-lg mb-2 text-subtle-gray">Join at <span class="text-white font-bold">chirpss.my.to/Join</span></p>
+            <p class="text-lg mb-8 text-subtle-gray">Players: <span id="lobby-count" class="text-white font-bold">0</span></p>
+            
+            <button id="host-start-btn" onclick="startGame()" class="hidden w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
                 Start Voting
             </button>
-            <p id="wait-msg" class="hidden animate-pulse text-fiery-core">Waiting for Host...</p>
+            <p id="wait-msg" class="hidden animate-pulse text-fiery-core text-xl">Waiting for Host...</p>
         </div>
 
         <!-- 2. Question View -->
         <div id="game-view" class="hidden flex-col h-full">
-            <!-- Question Card -->
-            <div class="bg-white/10 p-6 rounded-3xl mb-6 text-center shadow-xl">
-                <p class="text-sm text-subtle-gray uppercase tracking-widest mb-2">Most Likely To...</p>
-                <h1 id="question-text" class="text-2xl md:text-4xl font-bold text-white leading-tight">...</h1>
+            <!-- Question Card (Improved Contrast) -->
+            <div class="bg-black/40 backdrop-blur-md p-6 rounded-3xl mb-6 text-center shadow-xl border border-white/10">
+                <p class="text-xs sm:text-sm text-fiery-core uppercase tracking-widest mb-3 font-bold">Most Likely To...</p>
+                <h1 id="question-text" class="text-2xl md:text-4xl font-bold text-white leading-snug drop-shadow-md">...</h1>
             </div>
 
             <!-- Voting Grid -->
-            <div id="voting-grid" class="grid grid-cols-2 gap-3 pb-24">
+            <div id="voting-grid" class="grid grid-cols-2 gap-3 pb-24 content-start">
                 <!-- Player Buttons Injected Here -->
             </div>
 
             <!-- Result View (Hidden initially) -->
             <div id="result-view" class="hidden flex-col items-center justify-center flex-grow">
                 <div id="winner-display" class="text-center mb-8">
-                    <p class="text-subtle-gray">The winner is...</p>
-                    <h2 class="text-5xl font-extrabold text-fiery-core mt-2" id="winner-name">...</h2>
-                    <p class="text-2xl mt-2"><span id="winner-votes">0</span> votes</p>
+                    <p class="text-subtle-gray uppercase tracking-widest mb-2">The Group Voted</p>
+                    <div class="relative inline-block">
+                        <h2 class="text-5xl font-extrabold text-white mt-2 drop-shadow-lg" id="winner-name">...</h2>
+                        <div class="absolute -bottom-2 w-full h-3 bg-fiery-core/50 -z-10 rounded-full"></div>
+                    </div>
+                    <p class="text-3xl mt-4 font-bold text-fiery-core"><span id="winner-votes">0</span> votes</p>
                 </div>
             </div>
         </div>
@@ -89,13 +113,32 @@
     </div>
 
     <!-- Bottom Action Bar (Host Only) -->
-    <div id="host-controls" class="hidden absolute bottom-0 left-0 right-0 p-4 bg-deep-twilight border-t border-white/10">
-        <button id="reveal-btn" onclick="revealVotes()" class="w-full py-4 bg-success-green text-deep-twilight font-bold text-xl rounded-xl shadow-lg">
-            Reveal Votes
-        </button>
-        <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-xl shadow-lg">
-            Next Question
-        </button>
+    <div id="host-controls" class="hidden absolute bottom-0 left-0 right-0 p-4 bg-deep-twilight/95 border-t border-white/10 backdrop-blur z-20">
+        <div class="max-w-2xl mx-auto">
+            <button id="reveal-btn" onclick="revealVotes()" class="w-full py-4 bg-success-green text-deep-twilight font-bold text-xl rounded-xl shadow-lg active:scale-95 transition-transform">
+                Reveal Votes
+            </button>
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-xl shadow-lg active:scale-95 transition-transform">
+                Next Question
+            </button>
+        </div>
+    </div>
+
+    <!-- Player Management Modal -->
+    <div id="player-modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-deep-twilight w-full max-w-sm rounded-2xl shadow-2xl border border-white/10 flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white">Players</h3>
+                <button onclick="togglePlayerModal()" class="p-2 text-subtle-gray hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="player-list" class="p-4 overflow-y-auto space-y-2">
+                <!-- List injected here -->
+            </div>
+        </div>
     </div>
 
     <script>
@@ -103,15 +146,17 @@
         const mode = urlParams.get('mode'); 
         const code = urlParams.get('code');
         
-        let myId = localStorage.getItem('ml_id');
+        let myId = localStorage.getItem('ml_persistent_id');
         if (!myId) {
             myId = 'p_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('ml_id', myId);
+            localStorage.setItem('ml_persistent_id', myId);
         }
-        // Let user set a name if they haven't (Simple prompt for now)
+        
         let myName = localStorage.getItem('ml_name');
         if (!myName) {
             myName = prompt("Enter your name:") || "Player";
+            // Sanitize name length
+            if(myName.length > 12) myName = myName.substring(0, 12);
             localStorage.setItem('ml_name', myName);
         }
 
@@ -120,36 +165,96 @@
         const playerRef = dbRef.child('players/' + myId);
 
         let playersMap = {};
+        let serverTimeOffset = 0;
+        let heartbeatInterval;
 
         document.getElementById('room-code').textContent = code;
 
-        // Init
+        // 1. Sync Clock for accurate timeouts
+        db.ref('.info/serverTimeOffset').on('value', (snap) => {
+            serverTimeOffset = snap.val();
+        });
+
+        // 2. Join Logic
         playerRef.set({
             id: myId,
             name: myName,
-            status: 'active'
+            status: 'active',
+            lastSeen: firebase.database.ServerValue.TIMESTAMP
         });
+        
+        // Disconnect handlers
         playerRef.onDisconnect().remove();
         if (mode === 'host') dbRef.onDisconnect().remove();
 
-        // Listen
+        // Client-side cleanup
+        window.addEventListener('beforeunload', () => {
+            playerRef.remove();
+            if (mode === 'host') dbRef.remove();
+        });
+
+        // Start Heartbeat
+        startHeartbeat();
+
+        // 3. Game State Listener
         dbRef.on('value', snap => {
             const game = snap.val();
             if(!game) { window.location.href = '/Join/'; return; }
 
+            // Ghost Filtering
             playersMap = game.players || {};
-            const playerCount = Object.keys(playersMap).length;
-            document.getElementById('player-count').textContent = playerCount;
+            const activePlayers = filterActivePlayers(playersMap);
+            const count = activePlayers.length;
+            
+            document.getElementById('lobby-count').textContent = count;
+            document.getElementById('header-count').textContent = count;
+
+            // Host Cleanup Logic
+            if (mode === 'host') {
+                cleanupGhosts(playersMap);
+            }
 
             // Route View
             if (game.status === 'lobby') {
                 renderLobby();
             } else if (game.status === 'voting') {
-                renderVoting(game);
+                renderVoting(game, activePlayers);
             } else if (game.status === 'results') {
-                renderResults(game);
+                renderResults(game, activePlayers);
             }
+            
+            // Update Modal List if open
+            renderPlayerModal(activePlayers);
         });
+
+        // --- CORE FUNCTIONS ---
+
+        function startHeartbeat() {
+            heartbeatInterval = setInterval(() => {
+                playerRef.update({ lastSeen: firebase.database.ServerValue.TIMESTAMP });
+            }, 5000);
+        }
+
+        function getServerTime() {
+            return Date.now() + serverTimeOffset;
+        }
+
+        function filterActivePlayers(map) {
+            const now = getServerTime();
+            return Object.values(map).filter(p => (now - p.lastSeen) < 15000);
+        }
+
+        function cleanupGhosts(map) {
+            const now = getServerTime();
+            Object.keys(map).forEach(pid => {
+                const p = map[pid];
+                if ((now - p.lastSeen) > 20000) {
+                    dbRef.child('players/' + pid).remove();
+                }
+            });
+        }
+
+        // --- RENDER FUNCTIONS ---
 
         function renderLobby() {
             document.getElementById('lobby-view').classList.remove('hidden');
@@ -158,16 +263,16 @@
             
             if (mode === 'host') {
                 document.getElementById('host-start-btn').classList.remove('hidden');
-                // QR Code
+                // BIGGER QR Code
                 const joinUrl = `${window.location.origin}/Join/?code=${code}`;
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
-                document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join" class="w-48 h-48">`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
+                document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join" class="w-64 h-64">`;
             } else {
                 document.getElementById('wait-msg').classList.remove('hidden');
             }
         }
 
-        function renderVoting(game) {
+        function renderVoting(game, activePlayers) {
             document.getElementById('lobby-view').classList.add('hidden');
             document.getElementById('lobby-view').classList.remove('flex');
             document.getElementById('game-view').classList.remove('hidden');
@@ -176,23 +281,20 @@
             document.getElementById('result-view').classList.add('hidden');
             document.getElementById('voting-grid').classList.remove('hidden');
 
-            // Question
             const q = game.questions[game.currentQuestionIndex];
             document.getElementById('question-text').textContent = q;
 
-            // Render Players to Vote For
             const grid = document.getElementById('voting-grid');
             grid.innerHTML = '';
             
-            Object.values(playersMap).forEach(p => {
+            activePlayers.forEach(p => {
                 const btn = document.createElement('button');
-                btn.className = "player-btn bg-subtle-gray p-4 rounded-xl font-bold text-white text-lg shadow-md";
+                btn.className = "player-btn bg-subtle-gray p-4 rounded-xl font-bold text-white text-lg shadow-md break-words leading-tight";
                 btn.textContent = p.name;
                 
-                // Highlight if I voted for them
                 if (game.votes && game.votes[myId] === p.id) {
                     btn.classList.remove('bg-subtle-gray');
-                    btn.classList.add('bg-warm-dusk');
+                    btn.classList.add('bg-warm-dusk', 'ring-2', 'ring-white');
                 }
 
                 btn.onclick = () => castVote(p.id);
@@ -206,19 +308,17 @@
             }
         }
 
-        function renderResults(game) {
+        function renderResults(game, activePlayers) {
             document.getElementById('voting-grid').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('result-view').classList.add('flex');
 
-            // Calculate Winner
             const votes = game.votes || {};
             const tally = {};
             Object.values(votes).forEach(targetId => {
                 tally[targetId] = (tally[targetId] || 0) + 1;
             });
 
-            // Find max
             let winnerId = null;
             let maxVotes = -1;
             Object.keys(tally).forEach(id => {
@@ -228,17 +328,61 @@
                 }
             });
 
-            if (winnerId && playersMap[winnerId]) {
-                document.getElementById('winner-name').textContent = playersMap[winnerId].name;
-                document.getElementById('winner-votes').textContent = maxVotes;
-            } else {
-                document.getElementById('winner-name').textContent = "Nobody!";
-                document.getElementById('winner-votes').textContent = "0";
-            }
+            // Find name in current active list or fallback to stored map
+            let winnerName = "Nobody!";
+            if(winnerId && playersMap[winnerId]) winnerName = playersMap[winnerId].name;
+            
+            document.getElementById('winner-name').textContent = winnerName;
+            document.getElementById('winner-votes').textContent = maxVotes > -1 ? maxVotes : 0;
 
             if (mode === 'host') {
                 document.getElementById('reveal-btn').classList.add('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+
+        // --- PLAYER MODAL ---
+
+        function togglePlayerModal() {
+            const modal = document.getElementById('player-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function renderPlayerModal(activePlayers) {
+            const list = document.getElementById('player-list');
+            list.innerHTML = '';
+            
+            if (activePlayers.length === 0) {
+                list.innerHTML = '<p class="text-subtle-gray italic">No players joined yet.</p>';
+                return;
+            }
+
+            activePlayers.forEach(p => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center bg-white/5 p-3 rounded-lg";
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = "text-white font-semibold";
+                nameSpan.textContent = p.name + (p.id === myId ? " (You)" : "");
+                
+                row.appendChild(nameSpan);
+
+                // Add Kick Button only for Host (and not for self)
+                if (mode === 'host' && p.id !== myId) {
+                    const kickBtn = document.createElement('button');
+                    kickBtn.className = "text-xs bg-danger-red/20 text-danger-red px-2 py-1 rounded border border-danger-red/50 hover:bg-danger-red hover:text-white transition-colors";
+                    kickBtn.textContent = "Kick";
+                    kickBtn.onclick = () => kickPlayer(p.id);
+                    row.appendChild(kickBtn);
+                }
+                
+                list.appendChild(row);
+            });
+        }
+
+        function kickPlayer(pid) {
+            if(confirm("Kick this player?")) {
+                dbRef.child('players/' + pid).remove();
             }
         }
 
@@ -260,16 +404,17 @@
             dbRef.once('value').then(snap => {
                 const game = snap.val();
                 let nextIdx = (game.currentQuestionIndex || 0) + 1;
-                if (nextIdx >= game.questions.length) nextIdx = 0; // Loop
+                if (nextIdx >= game.questions.length) nextIdx = 0; 
 
                 dbRef.update({
                     status: 'voting',
                     currentQuestionIndex: nextIdx,
-                    votes: {} // Clear votes
+                    votes: {} 
                 });
             });
         }
     </script>
 </body>
 </html>
+
 
