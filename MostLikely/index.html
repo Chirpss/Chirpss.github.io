@@ -4,39 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vote The Vibe - Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="../WhoAmI/firebase-config.js"></script> <!-- Reusing config -->
-    <style>
-        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; }
-        .category-btn { 
-            transition: all 0.2s; 
-            background-color: #2A3C50; 
-            border: 2px solid #5A6F82; 
+    <script src="../WhoAmI/firebase-config.js"></script> 
+
+    <script>
+        // Custom Tailwind Configuration (Consistent with HTML 2)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',   
+                        'warm-dusk': '#E87040',       
+                        'fiery-core': '#FFC35B',      
+                        'soft-horizon': '#F5F1E6',    
+                        'subtle-gray': '#5A6F82',     
+                        'input-bg': '#2A3C50',        
+                        'danger-red': '#E53E3E',
+                    },
+                    boxShadow: {
+                        'input-focus': '0 0 0 3px rgba(255, 195, 91, 0.4)',
+                    }
+                }
+            }
         }
-        .category-btn.selected { 
-            background-color: #E87040; 
-            border-color: #E87040;
-            color: #1C2A39; 
-            transform: scale(1.05);
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1C2A39;
+            color: #F5F1E6;
+        }
+        
+        /* Custom Input Style from HTML 2 */
+        .custom-input {
+            background-color: #2A3C50; 
+            color: #F5F1E6;
+            border: 1px solid #5A6F82;
+            transition: all 0.2s;
+        }
+        .custom-input:focus {
+            border-color: #FFC35B;
+            box-shadow: 0 0 0 3px rgba(255, 195, 91, 0.4); 
+            outline: none;
+        }
+
+        .category-btn { 
+            transition: all 0.2s ease-in-out; 
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
-    
-    <h1 class="text-4xl font-extrabold text-fiery-core mb-2">Vote The Vibe</h1>
-    <p class="text-subtle-gray mb-8">Who is most likely to...?</p>
+<body class="min-h-screen antialiased flex flex-col">
 
-    <!-- Categories Grid -->
-    <div id="categories-container" class="grid grid-cols-1 gap-4 w-full max-w-md mb-10">
-        <p>Loading...</p>
-    </div>
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+        </div>
+    </header>
 
-    <!-- Start Button -->
-    <button id="start-btn" onclick="createRoom()" class="w-full max-w-md py-4 bg-subtle-gray text-soft-horizon font-bold text-xl rounded-xl shadow-lg transition-all" disabled>
-        Pick a Deck
-    </button>
+    <main class="max-w-3xl mx-auto p-4 sm:p-8 flex-grow w-full">
+        
+        <div class="bg-deep-twilight/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-subtle-gray/30">
+            
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-extrabold text-soft-horizon mb-2">Vote The Vibe</h1>
+                <p class="text-subtle-gray">Who is most likely to...?</p>
+            </div>
+
+            <div class="mb-8">
+                <label for="host-name" class="block text-lg font-semibold mb-2 text-fiery-core">Your Name</label>
+                <input type="text" id="host-name" placeholder="Enter your name" 
+                       class="custom-input w-full p-4 rounded-xl text-lg placeholder-subtle-gray/70"
+                       oninput="validateForm()">
+            </div>
+
+            <div class="mb-10">
+                <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Decks</label>
+                <div id="categories-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                    <p class="text-subtle-gray">Loading categories...</p>
+                </div>
+            </div>
+
+            <button id="start-btn" onclick="createRoom()" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg transition-all transform active:scale-95" disabled>
+                Enter Name & Pick Deck
+            </button>
+
+        </div>
+    </main>
 
     <script>
         let allCategories = [];
@@ -44,14 +100,20 @@
         let db;
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof firebase !== 'undefined' && firebase.database) {
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
                 db = firebase.database();
+            } else {
+                console.error("Firebase not initialized.");
             }
+
             fetch('data.json')
                 .then(res => res.json())
                 .then(data => {
                     allCategories = data.categories;
                     renderCategories();
+                })
+                .catch(err => {
+                    document.getElementById('categories-container').innerHTML = `<p class="text-danger-red">Error loading data.json</p>`;
                 });
         });
 
@@ -61,8 +123,9 @@
             
             allCategories.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className = 'category-btn py-4 rounded-xl font-bold text-lg';
+                btn.className = 'category-btn py-4 px-6 rounded-xl font-bold text-lg bg-input-bg text-soft-horizon border border-subtle-gray/50 hover:border-fiery-core';
                 btn.textContent = cat.name;
+                
                 btn.onclick = () => toggleCategory(cat.name, btn);
                 container.appendChild(btn);
             });
@@ -70,27 +133,55 @@
 
         function toggleCategory(name, btn) {
             if (selectedCategories.includes(name)) {
+                // Deselect
                 selectedCategories = selectedCategories.filter(c => c !== name);
-                btn.classList.remove('selected');
+                btn.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
+                btn.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             } else {
+                // Select
                 selectedCategories.push(name);
-                btn.classList.add('selected');
+                btn.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+                btn.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
             }
-            const btnStart = document.getElementById('start-btn');
-            if(selectedCategories.length > 0) {
-                btnStart.disabled = false;
-                btnStart.classList.remove('bg-subtle-gray');
-                btnStart.classList.add('bg-fiery-core', 'text-deep-twilight');
-                btnStart.textContent = "Create Room";
+            validateForm();
+        }
+
+        function validateForm() {
+            const btn = document.getElementById('start-btn');
+            const nameInput = document.getElementById('host-name');
+            const name = nameInput.value.trim();
+            
+            // Check if name is entered AND at least one category is selected
+            if (selectedCategories.length > 0 && name.length > 0) {
+                btn.disabled = false;
+                btn.classList.remove('bg-subtle-gray', 'text-soft-horizon');
+                btn.classList.add('bg-fiery-core', 'text-deep-twilight');
+                btn.textContent = "Create Room";
             } else {
-                btnStart.disabled = true;
-                btnStart.classList.add('bg-subtle-gray');
-                btnStart.classList.remove('bg-fiery-core', 'text-deep-twilight');
-                btnStart.textContent = "Pick a Deck";
+                btn.disabled = true;
+                btn.classList.add('bg-subtle-gray', 'text-soft-horizon');
+                btn.classList.remove('bg-fiery-core', 'text-deep-twilight');
+                
+                if (name.length === 0) {
+                    btn.textContent = "Enter Your Name";
+                } else {
+                    btn.textContent = "Pick a Deck";
+                }
             }
         }
 
         async function createRoom() {
+            if (!db) {
+                alert("Database connection failed.");
+                return;
+            }
+
+            const hostName = document.getElementById('host-name').value.trim();
+            if (!hostName) return;
+
+            // Save name for the Game page to use
+            sessionStorage.setItem('playerName', hostName);
+
             // Compile Questions
             let questions = [];
             allCategories.forEach(cat => {
@@ -109,7 +200,7 @@
                 questions: questions,
                 currentQuestionIndex: 0,
                 votes: {},
-                players: {}
+                players: {} 
             });
 
             window.location.href = `Game.html?mode=host&code=${code}`;
@@ -126,4 +217,3 @@
     </script>
 </body>
 </html>
-
