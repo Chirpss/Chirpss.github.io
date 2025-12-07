@@ -116,7 +116,7 @@
         }
 
         async function initGame() {
-            // Compile words for single player immediately
+            // Compile words
             let gameWords = [];
             allCategories.forEach(cat => {
                 if (selectedCategories.includes(cat.name)) {
@@ -129,16 +129,17 @@
                 sessionStorage.setItem('whoami_data', JSON.stringify(gameWords));
                 window.location.href = 'Game.html?mode=single';
             } else {
-                // Multi Player: Just create room with categories selected
+                // Multi Player
                 const code = generateCode();
                 const roomRef = db.ref('games/' + code);
                 
                 await roomRef.set({
                     gameType: 'whoami',
                     status: 'lobby',
-                    categories: selectedCategories, // Store chosen categories
-                    wordsPool: gameWords, // Store the pool
-                    startTime: 0
+                    categories: selectedCategories,
+                    wordsPool: gameWords,
+                    startTime: 0,
+                    players: {} // FIX: Explicitly start with 0 players
                 });
 
                 // Redirect Host

@@ -26,14 +26,13 @@
         }
     </script>
     <style>
-        /* Force body to match the dynamic viewport height (fixes address bar issue) */
         body { 
             background-color: #1C2A39; 
             color: #F5F1E6; 
             font-family: 'Inter', sans-serif; 
-            height: 100vh;      /* Fallback */
-            height: 100dvh;     /* Modern Mobile Fix */
-            overflow: hidden;   /* No scrolling allowed */
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
         }
         
         .card { 
@@ -49,10 +48,9 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- Header (Fixed Height) -->
+    <!-- Header -->
     <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
-        <!-- Left: Branding & Room Info -->
         <div class="flex items-center gap-3 overflow-hidden">
             <span class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">Chirpss</span>
             <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
@@ -61,15 +59,12 @@
             </div>
         </div>
 
-        <!-- Right: Action Buttons -->
         <div class="flex-shrink-0">
-            <!-- Single Player Next -->
             <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-4 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
             </button>
 
-            <!-- Host Next Round -->
             <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next Round</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
@@ -77,8 +72,7 @@
         </div>
     </div>
 
-    <!-- Main Content Area (Fills remaining space, prevents overflow) -->
-    <!-- min-h-0 is CRITICAL for flex children to respect height limits -->
+    <!-- Main Content Area -->
     <div class="flex-grow flex flex-col items-center justify-center p-4 relative w-full min-h-0">
         
         <!-- 1. Lobby Overlay (Host Only) -->
@@ -110,11 +104,9 @@
             <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
         </div>
 
-        <!-- 4. The Game Card (Constrained to container) -->
-        <!-- h-full and max-h-full ensure it fits exactly within the flex-grow area -->
+        <!-- 4. The Game Card -->
         <div id="game-card" class="card w-full h-full max-h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative overflow-hidden">
             
-            <!-- Flexible container for text so it centers perfectly -->
             <div class="flex-grow flex items-center justify-center w-full h-full overflow-hidden">
                 <h1 id="word-display" class="text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2">
                     ...
@@ -131,10 +123,12 @@
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
-        let myId = sessionStorage.getItem('whoami_id');
+        // FIX: Use localStorage instead of sessionStorage
+        // This keeps the ID same across tabs/reloads on the same device
+        let myId = localStorage.getItem('whoami_persistent_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
-            sessionStorage.setItem('whoami_id', myId);
+            localStorage.setItem('whoami_persistent_id', myId);
         }
 
         let wordsPool = [];
@@ -198,12 +192,14 @@
                 setupJoinerLobby();
             }
 
+            // Join the game in DB
             playerRef.set({
                 id: myId,
                 name: 'Player',
                 status: 'joined',
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
+            // FIX: Ensure player is removed when they disconnect/close tab
             playerRef.onDisconnect().remove(); 
 
             dbRef.on('value', (snapshot) => {
@@ -310,7 +306,6 @@
         function fitText(word) {
             const display = document.getElementById('word-display');
             
-            // Safer logic for really long words on small screens
             if (word.length > 20) {
                  display.className = "text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             } else if (word.length > 12) {
