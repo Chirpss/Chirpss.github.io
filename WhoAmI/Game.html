@@ -42,7 +42,7 @@
         
         .qr-container img {
             border-radius: 0.5rem;
-            border: 4px solid white;
+            border: 2px solid white;
         }
     </style>
 </head>
@@ -284,9 +284,9 @@
             document.getElementById('lobby-code').textContent = code;
             
             const joinUrl = `${window.location.origin}/Join/?code=${code}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
             
-            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-40 h-40 mx-auto shadow-xl">`;
+            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-60 h-60 mx-auto shadow-xl">`;
         }
 
         function setupJoinerLobby() {
