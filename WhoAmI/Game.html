@@ -40,30 +40,52 @@
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Header (Minimal) -->
-    <div class="p-4 flex justify-between items-center text-xl font-bold z-10 h-16">
-        <div id="room-code-display" class="hidden text-subtle-gray text-sm">Room: <span class="text-white text-lg font-mono"></span></div>
+    <!-- Header -->
+    <div class="flex-none px-4 py-3 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30 h-18">
+        
+        <!-- Left: Branding & Room Info -->
+        <div class="flex items-center gap-4">
+            <span class="text-fiery-core text-2xl font-extrabold tracking-tighter">Chirpss</span>
+            <div id="room-code-display" class="hidden text-subtle-gray text-xs sm:text-sm border-l border-white/20 pl-4 leading-tight">
+                Room <br>
+                <span class="text-white text-lg font-mono tracking-widest font-bold"></span>
+            </div>
+        </div>
+
+        <!-- Right: Action Buttons (Moved from bottom) -->
+        <div>
+            <!-- Single Player Next -->
+            <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-5 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm sm:text-base flex items-center gap-2">
+                <span>Next</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+            </button>
+
+            <!-- Host Next Round -->
+            <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-5 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm sm:text-base flex items-center gap-2">
+                <span>Next Round</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
+            </button>
+        </div>
     </div>
 
-    <!-- Main Card Area (Takes maximum space) -->
-    <div class="flex-grow flex items-center justify-center p-4 relative">
+    <!-- Main Card Area (Takes all remaining space) -->
+    <div class="flex-grow w-full flex items-center justify-center p-4 relative overflow-hidden">
         
         <!-- 1. Lobby Overlay (Host Only) -->
         <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
             <h2 class="text-4xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
-            <!-- QR Code Area -->
             <div id="qr-area" class="qr-container mb-4">
                 <!-- QR Injected Here -->
             </div>
             
-            <div id="lobby-info" class="mb-8">
+            <div id="lobby-info" class="mb-6">
                 <p class="text-subtle-gray text-lg">Scan to join</p>
                 <div class="text-6xl font-mono font-bold tracking-widest text-white mt-2" id="lobby-code">...</div>
             </div>
             <div id="player-count" class="text-xl mb-8 text-subtle-gray">Players: 0</div>
             
-            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-sm px-8 py-6 bg-fiery-core text-deep-twilight font-bold text-2xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
+            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-sm px-8 py-4 bg-fiery-core text-deep-twilight font-bold text-2xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
                 Start Game
             </button>
         </div>
@@ -81,28 +103,18 @@
         </div>
 
         <!-- 4. The Game Card -->
-        <div id="game-card" class="card w-full h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative">
+        <!-- Adjusted sizing logic to fill available space without overflowing -->
+        <div id="game-card" class="card w-full h-full max-h-[85vh] bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-6 text-center border-4 border-white/10 relative">
+            
             <!-- The Main Event: BIG TEXT -->
-            <h1 id="word-display" class="text-7xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full">
-                ...
-            </h1>
-            <p id="category-label" class="text-white/50 mt-8 text-xl font-semibold tracking-widest uppercase relative z-10">Who Am I?</p>
+            <div class="flex-grow flex items-center justify-center w-full">
+                <h1 id="word-display" class="text-7xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full">
+                    ...
+                </h1>
+            </div>
+            
+            <p id="category-label" class="text-white/50 mt-4 text-xl font-semibold tracking-widest uppercase relative z-10 flex-none">Who Am I?</p>
         </div>
-
-    </div>
-
-    <!-- Controls (Bottom) -->
-    <div id="controls-area" class="h-1/5 min-h-[100px] flex items-center justify-center p-4">
-        
-        <!-- Single Player Next Button -->
-        <button id="single-next-btn" onclick="handleNextSingle()" class="hidden w-full h-full bg-success-green text-deep-twilight font-bold text-4xl rounded-2xl shadow-lg active:scale-95 transition-transform">
-            NEXT CARD
-        </button>
-
-        <!-- Host Next Round Button -->
-        <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden w-full h-full bg-fiery-core text-deep-twilight font-bold text-3xl rounded-2xl shadow-lg active:scale-95 transition-transform">
-            START NEXT ROUND
-        </button>
 
     </div>
 
@@ -111,7 +123,7 @@
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
-        // Generate a stable ID for this session so refreshing doesn't create a ghost player
+        // Generate a stable ID for this session
         let myId = sessionStorage.getItem('whoami_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
@@ -144,12 +156,12 @@
         }
 
         function handleNextSingle() {
-            // Visual feedback
+            // Visual feedback on the card itself
             const card = document.getElementById('game-card');
-            card.classList.add('scale-95', 'opacity-80');
+            card.classList.add('scale-[0.98]', 'opacity-80');
             setTimeout(() => {
                 showNextWordSingle();
-                card.classList.remove('scale-95', 'opacity-80');
+                card.classList.remove('scale-[0.98]', 'opacity-80');
             }, 150);
         }
 
@@ -159,9 +171,6 @@
                  return;
             }
             const word = wordsPool[Math.floor(Math.random() * wordsPool.length)];
-            // Optional: remove word so it doesn't repeat immediately
-            // wordsPool = wordsPool.filter(w => w !== word); 
-            
             document.getElementById('word-display').textContent = word;
             fitText(word);
         }
@@ -206,7 +215,6 @@
                     startSyncedCountdown(game.startTime);
                 } 
                 else if (game.status === 'playing') {
-                    // Update word logic is handled inside enterGame
                     enterGame(game);
                 }
             });
@@ -216,10 +224,9 @@
             document.getElementById('lobby-overlay').classList.remove('hidden');
             document.getElementById('lobby-code').textContent = code;
             
-            // Generate QR Code pointing to the Joiner URL
-            // Using logic: current domain + /Join/?code=CODE
+            // Generate QR Code
             const joinUrl = `${window.location.origin}/Join/?code=${code}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
             
             document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-48 h-48 mx-auto shadow-xl">`;
         }
@@ -236,21 +243,15 @@
                 const players = game.players || {};
                 let pool = game.wordsPool || [];
                 let poolIndex = game.nextWordIndex || 0;
-
-                // We need to reshuffle logic or just iterate
-                // Simple iteration for now ensures everyone gets a word
                 
                 const updates = {};
                 
                 Object.keys(players).forEach(pid => {
-                    // Pick a word
                     const word = pool[poolIndex % pool.length];
                     updates[`players/${pid}/currentWord`] = word;
                     poolIndex++;
                 });
 
-                // Target time: Now + 10 seconds
-                // Use firebase server timestamp offset ideally, but local time is usually "okay" for casual games
                 const targetTime = Date.now() + 10000;
                 
                 updates['startTime'] = targetTime;
@@ -269,7 +270,7 @@
             document.getElementById('lobby-overlay').classList.add('hidden');
             document.getElementById('waiting-overlay').classList.add('hidden');
             
-            // Hide Buttons
+            // Hide Host Button temporarily
             document.getElementById('host-next-btn').classList.add('hidden');
             
             // Show Countdown
@@ -285,10 +286,7 @@
                     timerDisplay.textContent = diff;
                 } else {
                     clearInterval(interval);
-                    // Countdown finished locally
                     if (mode === 'host') {
-                        // Host triggers the state change to 'playing'
-                        // Joiners wait for this DB update to reveal card
                         dbRef.update({ status: 'playing' }); 
                     }
                 }
@@ -317,7 +315,7 @@
         // --- UTILS ---
         function fitText(word) {
             const display = document.getElementById('word-display');
-            // Rough logic to size text based on length
+            // Responsive text sizing
             if (word.length > 15) {
                 display.className = "text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
             } else if (word.length > 8) {
