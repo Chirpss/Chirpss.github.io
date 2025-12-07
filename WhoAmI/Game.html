@@ -30,7 +30,6 @@
             background-color: #1C2A39; 
             color: #F5F1E6; 
             font-family: 'Inter', sans-serif; 
-            /* Fix for mobile browsers showing address bars */
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
@@ -52,7 +51,6 @@
     <!-- Header -->
     <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
-        <!-- Branding & Room Code -->
         <div class="flex items-center gap-3 overflow-hidden">
             <span class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">Chirpss</span>
             <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
@@ -61,8 +59,12 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0 flex items-center gap-2">
+             <!-- HOST ONLY: End Game Button -->
+             <button id="host-end-btn" onclick="hostEndGame()" class="hidden px-3 py-1 border border-danger-red text-danger-red font-bold rounded-lg text-xs hover:bg-danger-red hover:text-white transition-colors">
+                End
+            </button>
+
             <!-- Single Player Next -->
             <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-4 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next</span>
@@ -96,7 +98,6 @@
                 Start Game
             </button>
             
-            <!-- Force Clean Button (Just in case) -->
             <button onclick="forceCleanLobby()" class="text-xs text-subtle-gray underline hover:text-white">
                 Count wrong? Kick ghosts.
             </button>
@@ -105,7 +106,7 @@
         <!-- 2. Waiting Overlay (Joiner Only) -->
         <div id="waiting-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
              <h2 class="text-3xl font-bold mb-4 text-white">You're In!</h2>
-             <div class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
+             <div id="waiting-status" class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
         </div>
 
         <!-- 3. Countdown Overlay -->
@@ -133,7 +134,6 @@
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
-        // Use localStorage so ID persists on refresh
         let myId = localStorage.getItem('whoami_persistent_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
@@ -145,7 +145,9 @@
         let playerRef;
         let gameStatus = 'loading';
         let heartbeatInterval;
+        let cleanupInterval;
         let serverTimeOffset = 0;
+        let activePlayerCount = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (mode === 'single') {
@@ -191,7 +193,7 @@
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
             
-            // 1. Sync Clock
+            // Sync Clock
             db.ref('.info/serverTimeOffset').on('value', (snap) => {
                 serverTimeOffset = snap.val();
             });
@@ -204,10 +206,15 @@
 
             if (mode === 'host') {
                 setupHostLobby();
-                // --- HOST CLEANUP: If host leaves, DESTROY ROOM ---
+                
+                dbRef.update({ hostStatus: 'online' });
+                
+                // Initial Default: Remove on disconnect (assuming empty)
                 dbRef.onDisconnect().remove(); 
+                
             } else {
                 setupJoinerLobby();
+                startJoinerCleanupWatch();
             }
 
             // Join the game
@@ -218,32 +225,64 @@
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // If player disconnects, remove them
             playerRef.onDisconnect().remove(); 
             
-            // Client-side instant cleanup on close
+            // Client-side instant cleanup
             window.addEventListener('beforeunload', () => {
                 playerRef.remove();
                 if (mode === 'host') {
-                    dbRef.remove(); // Force room deletion on Host close
+                    // Logic to check players synchronously is hard here, so we force update state
+                    // If Host closes tab, we can't reliably check player count synchronously
+                    // Best effort: if we have active players tracked locally, try to set Grace Period
+                    if (activePlayerCount > 1) {
+                         // Attempt to set graceful exit state
+                         // Note: This often fails on close, which is why onDisconnect is vital
+                    } else {
+                        dbRef.remove();
+                    }
                 }
             });
 
-            // Start Heartbeat
             startHeartbeat();
 
-            // Listen for Game Updates
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
-                if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
+                if (!game) { 
+                    alert("Game ended by Host."); 
+                    window.location.href = '/WhoAmI/'; 
+                    return; 
+                }
 
-                // --- GHOST FIX: Filter Active Players ---
+                if (mode !== 'host') {
+                    if (game.hostStatus === 'offline') {
+                        document.getElementById('waiting-status').textContent = "Host disconnected... waiting (120s)";
+                        document.getElementById('waiting-status').classList.add('text-danger-red');
+                    } else {
+                        document.getElementById('waiting-status').textContent = "Waiting for Host...";
+                        document.getElementById('waiting-status').classList.remove('text-danger-red');
+                    }
+                }
+
                 const activePlayers = getActivePlayers(game.players);
-                document.getElementById('player-count').textContent = `Players: ${activePlayers.length}`;
+                activePlayerCount = activePlayers.length; // Update global tracker
+                document.getElementById('player-count').textContent = `Players: ${activePlayerCount}`;
 
-                // Host performs regular cleanup of stale players
+                // --- HOST DYNAMIC CLEANUP STRATEGY ---
                 if (mode === 'host') {
+                    // 1. Ghost Cleanup
                     autoCleanupGhosts(game.players);
+
+                    // 2. Dynamic Disconnect Strategy
+                    // If there are joiners (>1 player), use Grace Period (update).
+                    // If it's just the host (<=1), use Instant Kill (remove).
+                    if (activePlayerCount > 1) {
+                        dbRef.onDisconnect().update({
+                            hostStatus: 'offline',
+                            hostLeftTime: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    } else {
+                        dbRef.onDisconnect().remove();
+                    }
                 }
 
                 if (game.status === 'countdown' && gameStatus !== 'countdown') {
@@ -260,7 +299,33 @@
                 playerRef.update({
                     lastSeen: firebase.database.ServerValue.TIMESTAMP
                 });
-            }, 5000); // Ping every 5s
+                
+                if (mode === 'host') {
+                    dbRef.update({
+                        hostStatus: 'online',
+                        hostLastSeen: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+            }, 5000);
+        }
+
+        function startJoinerCleanupWatch() {
+            cleanupInterval = setInterval(() => {
+                dbRef.child('hostLeftTime').once('value').then(snap => {
+                    const leftTime = snap.val();
+                    if (leftTime && (getServerTime() - leftTime > 120000)) {
+                        console.log("Host abandoned room. Deleting.");
+                        dbRef.remove(); 
+                    }
+                });
+            }, 10000); 
+        }
+
+        function hostEndGame() {
+            if (confirm("End game and close room for everyone?")) {
+                dbRef.remove();
+                window.location.href = '/WhoAmI/';
+            }
         }
 
         function getServerTime() {
@@ -270,7 +335,6 @@
         function getActivePlayers(playersMap) {
             if (!playersMap) return [];
             const now = getServerTime();
-            // Active if pinged in last 15s
             return Object.values(playersMap).filter(p => {
                 return (now - p.lastSeen) < 15000; 
             });
@@ -281,7 +345,6 @@
             const now = getServerTime();
             Object.keys(playersMap).forEach(pid => {
                 const p = playersMap[pid];
-                // Remove if silent for > 25 seconds
                 if ((now - p.lastSeen) > 25000) {
                     dbRef.child('players/' + pid).remove();
                 }
@@ -293,10 +356,8 @@
                 const playersMap = snap.val();
                 if (!playersMap) return;
                 const now = getServerTime();
-                
                 Object.keys(playersMap).forEach(pid => {
                     const p = playersMap[pid];
-                    // Manual aggressive clean (10s timeout)
                     if ((now - p.lastSeen) > 10000) {
                         dbRef.child('players/' + pid).remove();
                     }
@@ -307,10 +368,10 @@
         function setupHostLobby() {
             document.getElementById('lobby-overlay').classList.remove('hidden');
             document.getElementById('lobby-code').textContent = code;
+            document.getElementById('host-end-btn').classList.remove('hidden'); 
             
             const joinUrl = `${window.location.origin}/Join/?code=${code}`;
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
-            
             document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-40 h-40 mx-auto shadow-xl">`;
         }
 
@@ -318,12 +379,10 @@
             document.getElementById('waiting-overlay').classList.remove('hidden');
         }
 
-        // --- HOST: START ROUND ---
         function hostStartCountdown() {
             dbRef.once('value').then(snap => {
                 const game = snap.val();
                 
-                // Assign to ACTIVE players only
                 const playersMap = game.players || {};
                 const now = getServerTime();
                 const activePlayerIds = Object.keys(playersMap).filter(pid => {
@@ -342,7 +401,6 @@
                 });
 
                 const targetTime = getServerTime() + 10000;
-                
                 updates['startTime'] = targetTime;
                 updates['status'] = 'countdown';
                 updates['nextWordIndex'] = poolIndex;
@@ -351,7 +409,6 @@
             });
         }
 
-        // --- ALL: SYNCED COUNTDOWN ---
         function startSyncedCountdown(targetTime) {
             gameStatus = 'countdown';
             
@@ -377,7 +434,6 @@
             }, 100);
         }
 
-        // --- ALL: GAME PLAYING ---
         function enterGame(game) {
             gameStatus = 'playing';
             document.getElementById('countdown-overlay').classList.add('hidden');
@@ -394,7 +450,6 @@
             }
         }
 
-        // --- UTILS ---
         function fitText(word) {
             const display = document.getElementById('word-display');
             if (word.length > 20) {
