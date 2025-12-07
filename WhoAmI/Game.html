@@ -134,6 +134,7 @@
         let playerRef;
         let gameStatus = 'loading';
         let heartbeatInterval;
+        let serverTimeOffset = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (mode === 'single') {
@@ -179,6 +180,12 @@
         function initMulti() {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
+            
+            // 1. Calculate Time Offset
+            db.ref('.info/serverTimeOffset').on('value', (snap) => {
+                serverTimeOffset = snap.val();
+            });
+
             dbRef = db.ref('games/' + code);
             playerRef = dbRef.child('players/' + myId);
 
@@ -200,18 +207,17 @@
             });
             playerRef.onDisconnect().remove(); 
             
-            // Start Heartbeat (Pings DB every 5s)
             startHeartbeat();
 
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
-                // --- GHOST FIX: Only count active players ---
+                // --- GHOST FIX: Use synchronized time ---
                 const activePlayers = getActivePlayers(game.players);
                 document.getElementById('player-count').textContent = `Players: ${activePlayers.length}`;
 
-                // Host performs cleanup of ghosts
+                // Host performs cleanup
                 if (mode === 'host') {
                     cleanupGhosts(game.players);
                 }
@@ -226,31 +232,34 @@
         }
 
         function startHeartbeat() {
-            // Update lastSeen every 5 seconds
             heartbeatInterval = setInterval(() => {
                 playerRef.update({
                     lastSeen: firebase.database.ServerValue.TIMESTAMP
                 });
-            }, 5000);
+            }, 5000); // 5 sec heartbeat
+        }
+
+        function getServerTime() {
+            return Date.now() + serverTimeOffset;
         }
 
         function getActivePlayers(playersMap) {
             if (!playersMap) return [];
-            const now = Date.now();
+            const now = getServerTime();
             // Player is active if seen in last 15 seconds
+            // Uses Server Time to ignore client clock skew
             return Object.values(playersMap).filter(p => {
-                return (now - p.lastSeen) < 15000;
+                return (now - p.lastSeen) < 15000; 
             });
         }
 
         function cleanupGhosts(playersMap) {
             if (!playersMap) return;
-            const now = Date.now();
+            const now = getServerTime();
             Object.keys(playersMap).forEach(pid => {
                 const p = playersMap[pid];
-                // If not seen in 20 seconds, remove from DB
+                // Remove if silent for 20 seconds
                 if ((now - p.lastSeen) > 20000) {
-                    console.log("Removing ghost player:", pid);
                     dbRef.child('players/' + pid).remove();
                 }
             });
@@ -275,10 +284,11 @@
             dbRef.once('value').then(snap => {
                 const game = snap.val();
                 
-                // Use Filtered Active Players Only
+                // Use Filtered Active Players
                 const playersMap = game.players || {};
+                const now = getServerTime();
                 const activePlayerIds = Object.keys(playersMap).filter(pid => {
-                    return (Date.now() - playersMap[pid].lastSeen) < 15000;
+                    return (now - playersMap[pid].lastSeen) < 15000;
                 });
 
                 let pool = game.wordsPool || [];
@@ -292,7 +302,8 @@
                     poolIndex++;
                 });
 
-                const targetTime = Date.now() + 10000;
+                // Target time: Now (Server Time) + 10 seconds
+                const targetTime = getServerTime() + 10000;
                 
                 updates['startTime'] = targetTime;
                 updates['status'] = 'countdown';
@@ -314,7 +325,7 @@
             const timerDisplay = document.getElementById('countdown-display');
             
             const interval = setInterval(() => {
-                const now = Date.now();
+                const now = getServerTime();
                 const diff = Math.ceil((targetTime - now) / 1000);
 
                 if (diff > 0) {
