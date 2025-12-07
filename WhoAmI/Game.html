@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Who Am I?</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -26,66 +26,74 @@
         }
     </script>
     <style>
-        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; overflow: hidden; }
+        /* Force body to match the dynamic viewport height (fixes address bar issue) */
+        body { 
+            background-color: #1C2A39; 
+            color: #F5F1E6; 
+            font-family: 'Inter', sans-serif; 
+            height: 100vh;      /* Fallback */
+            height: 100dvh;     /* Modern Mobile Fix */
+            overflow: hidden;   /* No scrolling allowed */
+        }
+        
         .card { 
             transition: transform 0.2s ease-out; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        /* QR Code container style */
+        
         .qr-container img {
             border-radius: 0.5rem;
             border: 4px solid white;
         }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="flex flex-col">
 
-    <!-- Header -->
-    <div class="flex-none px-4 py-3 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30 h-18">
+    <!-- Header (Fixed Height) -->
+    <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
         <!-- Left: Branding & Room Info -->
-        <div class="flex items-center gap-4">
-            <span class="text-fiery-core text-2xl font-extrabold tracking-tighter">Chirpss</span>
-            <div id="room-code-display" class="hidden text-subtle-gray text-xs sm:text-sm border-l border-white/20 pl-4 leading-tight">
+        <div class="flex items-center gap-3 overflow-hidden">
+            <span class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">Chirpss</span>
+            <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
                 Room <br>
-                <span class="text-white text-lg font-mono tracking-widest font-bold"></span>
+                <span class="text-white text-base sm:text-lg font-mono tracking-widest font-bold"></span>
             </div>
         </div>
 
-        <!-- Right: Action Buttons (Moved from bottom) -->
-        <div>
+        <!-- Right: Action Buttons -->
+        <div class="flex-shrink-0">
             <!-- Single Player Next -->
-            <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-5 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm sm:text-base flex items-center gap-2">
+            <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-4 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
             </button>
 
             <!-- Host Next Round -->
-            <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-5 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm sm:text-base flex items-center gap-2">
+            <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next Round</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
             </button>
         </div>
     </div>
 
-    <!-- Main Card Area (Takes all remaining space) -->
-    <div class="flex-grow w-full flex items-center justify-center p-4 relative overflow-hidden">
+    <!-- Main Content Area (Fills remaining space, prevents overflow) -->
+    <!-- min-h-0 is CRITICAL for flex children to respect height limits -->
+    <div class="flex-grow flex flex-col items-center justify-center p-4 relative w-full min-h-0">
         
         <!-- 1. Lobby Overlay (Host Only) -->
-        <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
-            <h2 class="text-4xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
+        <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-4 hidden">
+            <h2 class="text-3xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
-            <div id="qr-area" class="qr-container mb-4">
-                <!-- QR Injected Here -->
+            <div id="qr-area" class="qr-container mb-4"></div>
+            
+            <div id="lobby-info" class="mb-4">
+                <p class="text-subtle-gray text-base">Scan to join</p>
+                <div class="text-5xl font-mono font-bold tracking-widest text-white mt-1" id="lobby-code">...</div>
             </div>
+            <div id="player-count" class="text-lg mb-6 text-subtle-gray">Players: 0</div>
             
-            <div id="lobby-info" class="mb-6">
-                <p class="text-subtle-gray text-lg">Scan to join</p>
-                <div class="text-6xl font-mono font-bold tracking-widest text-white mt-2" id="lobby-code">...</div>
-            </div>
-            <div id="player-count" class="text-xl mb-8 text-subtle-gray">Players: 0</div>
-            
-            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-sm px-8 py-4 bg-fiery-core text-deep-twilight font-bold text-2xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
+            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
                 Start Game
             </button>
         </div>
@@ -102,18 +110,18 @@
             <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
         </div>
 
-        <!-- 4. The Game Card -->
-        <!-- Adjusted sizing logic to fill available space without overflowing -->
-        <div id="game-card" class="card w-full h-full max-h-[85vh] bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-6 text-center border-4 border-white/10 relative">
+        <!-- 4. The Game Card (Constrained to container) -->
+        <!-- h-full and max-h-full ensure it fits exactly within the flex-grow area -->
+        <div id="game-card" class="card w-full h-full max-h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative overflow-hidden">
             
-            <!-- The Main Event: BIG TEXT -->
-            <div class="flex-grow flex items-center justify-center w-full">
-                <h1 id="word-display" class="text-7xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full">
+            <!-- Flexible container for text so it centers perfectly -->
+            <div class="flex-grow flex items-center justify-center w-full h-full overflow-hidden">
+                <h1 id="word-display" class="text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2">
                     ...
                 </h1>
             </div>
             
-            <p id="category-label" class="text-white/50 mt-4 text-xl font-semibold tracking-widest uppercase relative z-10 flex-none">Who Am I?</p>
+            <p id="category-label" class="text-white/50 mt-2 text-sm sm:text-base font-semibold tracking-widest uppercase relative z-10 flex-none pb-2">Who Am I?</p>
         </div>
 
     </div>
@@ -123,7 +131,6 @@
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
-        // Generate a stable ID for this session
         let myId = sessionStorage.getItem('whoami_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
@@ -156,7 +163,6 @@
         }
 
         function handleNextSingle() {
-            // Visual feedback on the card itself
             const card = document.getElementById('game-card');
             card.classList.add('scale-[0.98]', 'opacity-80');
             setTimeout(() => {
@@ -192,7 +198,6 @@
                 setupJoinerLobby();
             }
 
-            // Join the game in DB
             playerRef.set({
                 id: myId,
                 name: 'Player',
@@ -201,16 +206,13 @@
             });
             playerRef.onDisconnect().remove(); 
 
-            // Game State Listener
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
-                // Update Player Count
                 const players = game.players || {};
                 document.getElementById('player-count').textContent = `Players: ${Object.keys(players).length}`;
 
-                // Check Status Transitions
                 if (game.status === 'countdown' && gameStatus !== 'countdown') {
                     startSyncedCountdown(game.startTime);
                 } 
@@ -224,11 +226,10 @@
             document.getElementById('lobby-overlay').classList.remove('hidden');
             document.getElementById('lobby-code').textContent = code;
             
-            // Generate QR Code
             const joinUrl = `${window.location.origin}/Join/?code=${code}`;
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
             
-            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-48 h-48 mx-auto shadow-xl">`;
+            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-40 h-40 mx-auto shadow-xl">`;
         }
 
         function setupJoinerLobby() {
@@ -266,14 +267,9 @@
         function startSyncedCountdown(targetTime) {
             gameStatus = 'countdown';
             
-            // Hide Lobbies
             document.getElementById('lobby-overlay').classList.add('hidden');
             document.getElementById('waiting-overlay').classList.add('hidden');
-            
-            // Hide Host Button temporarily
             document.getElementById('host-next-btn').classList.add('hidden');
-            
-            // Show Countdown
             document.getElementById('countdown-overlay').classList.remove('hidden');
 
             const timerDisplay = document.getElementById('countdown-display');
@@ -298,7 +294,6 @@
             gameStatus = 'playing';
             document.getElementById('countdown-overlay').classList.add('hidden');
             
-            // Reveal Word
             const myData = game.players[myId];
             if (myData && myData.currentWord) {
                 const word = myData.currentWord;
@@ -306,7 +301,6 @@
                 fitText(word);
             }
 
-            // Show controls ONLY for Host
             if (mode === 'host') {
                 document.getElementById('host-next-btn').classList.remove('hidden');
             }
@@ -315,13 +309,16 @@
         // --- UTILS ---
         function fitText(word) {
             const display = document.getElementById('word-display');
-            // Responsive text sizing
-            if (word.length > 15) {
-                display.className = "text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
-            } else if (word.length > 8) {
-                display.className = "text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
+            
+            // Safer logic for really long words on small screens
+            if (word.length > 20) {
+                 display.className = "text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
+            } else if (word.length > 12) {
+                display.className = "text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
+            } else if (word.length > 7) {
+                display.className = "text-5xl sm:text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             } else {
-                display.className = "text-8xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full";
+                display.className = "text-7xl sm:text-8xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             }
         }
     </script>
