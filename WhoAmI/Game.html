@@ -30,6 +30,7 @@
             background-color: #1C2A39; 
             color: #F5F1E6; 
             font-family: 'Inter', sans-serif; 
+            /* Fix for mobile browsers showing address bars */
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
@@ -42,14 +43,16 @@
         
         .qr-container img {
             border-radius: 0.5rem;
-            border: 2px solid white;
+            border: 4px solid white;
         }
     </style>
 </head>
 <body class="flex flex-col">
 
+    <!-- Header -->
     <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
+        <!-- Branding & Room Code -->
         <div class="flex items-center gap-3 overflow-hidden">
             <span class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">Chirpss</span>
             <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
@@ -58,12 +61,15 @@
             </div>
         </div>
 
+        <!-- Action Buttons -->
         <div class="flex-shrink-0">
+            <!-- Single Player Next -->
             <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-4 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
             </button>
 
+            <!-- Host Next Round -->
             <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next Round</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
@@ -71,8 +77,10 @@
         </div>
     </div>
 
+    <!-- Main Content Area -->
     <div class="flex-grow flex flex-col items-center justify-center p-4 relative w-full min-h-0">
         
+        <!-- 1. Lobby Overlay (Host Only) -->
         <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-4 hidden">
             <h2 class="text-3xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
@@ -88,18 +96,25 @@
                 Start Game
             </button>
             
+            <!-- Force Clean Button (Just in case) -->
+            <button onclick="forceCleanLobby()" class="text-xs text-subtle-gray underline hover:text-white">
+                Count wrong? Kick ghosts.
+            </button>
         </div>
 
+        <!-- 2. Waiting Overlay (Joiner Only) -->
         <div id="waiting-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
              <h2 class="text-3xl font-bold mb-4 text-white">You're In!</h2>
              <div class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
         </div>
 
+        <!-- 3. Countdown Overlay -->
         <div id="countdown-overlay" class="absolute inset-0 z-40 bg-warm-dusk flex flex-col items-center justify-center text-center p-6 hidden">
             <h2 class="text-3xl font-bold mb-8 text-deep-twilight">Phone on Forehead!</h2>
             <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
         </div>
 
+        <!-- 4. The Game Card -->
         <div id="game-card" class="card w-full h-full max-h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative overflow-hidden">
             
             <div class="flex-grow flex items-center justify-center w-full h-full overflow-hidden">
@@ -115,9 +130,10 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode'); 
+        const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
+        // Use localStorage so ID persists on refresh
         let myId = localStorage.getItem('whoami_persistent_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
@@ -139,13 +155,15 @@
             }
         });
 
-        // --- SINGLE PLAYER ---
+        // --- SINGLE PLAYER LOGIC ---
         function initSingle() {
             document.getElementById('lobby-overlay').classList.add('hidden');
             document.getElementById('single-next-btn').classList.remove('hidden');
+            
             const data = sessionStorage.getItem('whoami_data');
             if (!data) window.location.href = 'index.html';
             wordsPool = JSON.parse(data);
+            
             showNextWordSingle();
         }
 
@@ -168,12 +186,12 @@
             fitText(word);
         }
 
-        // --- MULTIPLAYER ---
+        // --- MULTIPLAYER LOGIC ---
         function initMulti() {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
             
-            // Sync Clock
+            // 1. Sync Clock
             db.ref('.info/serverTimeOffset').on('value', (snap) => {
                 serverTimeOffset = snap.val();
             });
@@ -186,11 +204,13 @@
 
             if (mode === 'host') {
                 setupHostLobby();
+                // --- HOST CLEANUP: If host leaves, DESTROY ROOM ---
+                dbRef.onDisconnect().remove(); 
             } else {
                 setupJoinerLobby();
             }
 
-            // JOIN
+            // Join the game
             playerRef.set({
                 id: myId,
                 name: 'Player',
@@ -198,24 +218,30 @@
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // 1. Server-side Disconnect (Slow fallback)
+            // If player disconnects, remove them
             playerRef.onDisconnect().remove(); 
             
-            // 2. Client-side Unload (Fast cleanup)
+            // Client-side instant cleanup on close
             window.addEventListener('beforeunload', () => {
                 playerRef.remove();
+                if (mode === 'host') {
+                    dbRef.remove(); // Force room deletion on Host close
+                }
             });
 
+            // Start Heartbeat
             startHeartbeat();
 
+            // Listen for Game Updates
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
+                // --- GHOST FIX: Filter Active Players ---
                 const activePlayers = getActivePlayers(game.players);
                 document.getElementById('player-count').textContent = `Players: ${activePlayers.length}`;
 
-                // Host Auto-Cleanup (less aggressive to prevent flickering)
+                // Host performs regular cleanup of stale players
                 if (mode === 'host') {
                     autoCleanupGhosts(game.players);
                 }
@@ -234,7 +260,7 @@
                 playerRef.update({
                     lastSeen: firebase.database.ServerValue.TIMESTAMP
                 });
-            }, 5000);
+            }, 5000); // Ping every 5s
         }
 
         function getServerTime() {
@@ -244,7 +270,7 @@
         function getActivePlayers(playersMap) {
             if (!playersMap) return [];
             const now = getServerTime();
-            // Stricter filter for visual count
+            // Active if pinged in last 15s
             return Object.values(playersMap).filter(p => {
                 return (now - p.lastSeen) < 15000; 
             });
@@ -262,7 +288,6 @@
             });
         }
 
-        // Manual Cleanup Button
         function forceCleanLobby() {
             dbRef.child('players').once('value').then(snap => {
                 const playersMap = snap.val();
@@ -271,7 +296,7 @@
                 
                 Object.keys(playersMap).forEach(pid => {
                     const p = playersMap[pid];
-                    // Aggressive manual clean (10s timeout)
+                    // Manual aggressive clean (10s timeout)
                     if ((now - p.lastSeen) > 10000) {
                         dbRef.child('players/' + pid).remove();
                     }
@@ -284,20 +309,21 @@
             document.getElementById('lobby-code').textContent = code;
             
             const joinUrl = `${window.location.origin}/Join/?code=${code}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
             
-            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-60 h-60 mx-auto shadow-xl">`;
+            document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join Game QR" class="w-40 h-40 mx-auto shadow-xl">`;
         }
 
         function setupJoinerLobby() {
             document.getElementById('waiting-overlay').classList.remove('hidden');
         }
 
+        // --- HOST: START ROUND ---
         function hostStartCountdown() {
             dbRef.once('value').then(snap => {
                 const game = snap.val();
                 
-                // Assign to active players only
+                // Assign to ACTIVE players only
                 const playersMap = game.players || {};
                 const now = getServerTime();
                 const activePlayerIds = Object.keys(playersMap).filter(pid => {
@@ -325,6 +351,7 @@
             });
         }
 
+        // --- ALL: SYNCED COUNTDOWN ---
         function startSyncedCountdown(targetTime) {
             gameStatus = 'countdown';
             
@@ -350,6 +377,7 @@
             }, 100);
         }
 
+        // --- ALL: GAME PLAYING ---
         function enterGame(game) {
             gameStatus = 'playing';
             document.getElementById('countdown-overlay').classList.add('hidden');
@@ -366,6 +394,7 @@
             }
         }
 
+        // --- UTILS ---
         function fitText(word) {
             const display = document.getElementById('word-display');
             if (word.length > 20) {
@@ -381,3 +410,5 @@
     </script>
 </body>
 </html>
+
+
