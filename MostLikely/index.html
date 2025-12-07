@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote The Vibe - Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="../WhoAmI/firebase-config.js"></script> <!-- Reusing config -->
+    <style>
+        body { background-color: #1C2A39; color: #F5F1E6; font-family: 'Inter', sans-serif; }
+        .category-btn { 
+            transition: all 0.2s; 
+            background-color: #2A3C50; 
+            border: 2px solid #5A6F82; 
+        }
+        .category-btn.selected { 
+            background-color: #E87040; 
+            border-color: #E87040;
+            color: #1C2A39; 
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+    
+    <h1 class="text-4xl font-extrabold text-fiery-core mb-2">Vote The Vibe</h1>
+    <p class="text-subtle-gray mb-8">Who is most likely to...?</p>
+
+    <!-- Categories Grid -->
+    <div id="categories-container" class="grid grid-cols-1 gap-4 w-full max-w-md mb-10">
+        <p>Loading...</p>
+    </div>
+
+    <!-- Start Button -->
+    <button id="start-btn" onclick="createRoom()" class="w-full max-w-md py-4 bg-subtle-gray text-soft-horizon font-bold text-xl rounded-xl shadow-lg transition-all" disabled>
+        Pick a Deck
+    </button>
+
+    <script>
+        let allCategories = [];
+        let selectedCategories = [];
+        let db;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebase !== 'undefined' && firebase.database) {
+                db = firebase.database();
+            }
+            fetch('data.json')
+                .then(res => res.json())
+                .then(data => {
+                    allCategories = data.categories;
+                    renderCategories();
+                });
+        });
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+            
+            allCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn py-4 rounded-xl font-bold text-lg';
+                btn.textContent = cat.name;
+                btn.onclick = () => toggleCategory(cat.name, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleCategory(name, btn) {
+            if (selectedCategories.includes(name)) {
+                selectedCategories = selectedCategories.filter(c => c !== name);
+                btn.classList.remove('selected');
+            } else {
+                selectedCategories.push(name);
+                btn.classList.add('selected');
+            }
+            const btnStart = document.getElementById('start-btn');
+            if(selectedCategories.length > 0) {
+                btnStart.disabled = false;
+                btnStart.classList.remove('bg-subtle-gray');
+                btnStart.classList.add('bg-fiery-core', 'text-deep-twilight');
+                btnStart.textContent = "Create Room";
+            } else {
+                btnStart.disabled = true;
+                btnStart.classList.add('bg-subtle-gray');
+                btnStart.classList.remove('bg-fiery-core', 'text-deep-twilight');
+                btnStart.textContent = "Pick a Deck";
+            }
+        }
+
+        async function createRoom() {
+            // Compile Questions
+            let questions = [];
+            allCategories.forEach(cat => {
+                if (selectedCategories.includes(cat.name)) {
+                    questions.push(...cat.questions);
+                }
+            });
+            questions.sort(() => Math.random() - 0.5);
+
+            const code = generateCode();
+            const roomRef = db.ref('games/' + code);
+            
+            await roomRef.set({
+                gameType: 'mostlikely',
+                status: 'lobby',
+                questions: questions,
+                currentQuestionIndex: 0,
+                votes: {},
+                players: {}
+            });
+
+            window.location.href = `Game.html?mode=host&code=${code}`;
+        }
+
+        function generateCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            let result = '';
+            for (let i = 0; i < 4; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+    </script>
+</body>
+</html>
+

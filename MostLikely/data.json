@@ -1,0 +1,35 @@
+{
+  "categories": [
+    {
+      "name": "The Crew",
+      "questions": [
+        "Who is most likely to survive a zombie apocalypse?",
+        "Who is most likely to become a millionaire by accident?",
+        "Who is most likely to join a cult?",
+        "Who is most likely to cry during a movie?",
+        "Who is most likely to forget their own birthday?",
+        "Who is most likely to trip over nothing?",
+        "Who is most likely to win a Nobel Prize?"
+      ]
+    },
+    {
+      "name": "Spicy",
+      "questions": [
+        "Who is most likely to marry for money?",
+        "Who is most likely to get arrested in a foreign country?",
+        "Who is most likely to have a secret family?",
+        "Who is most likely to send a text to the wrong person?",
+        "Who is most likely to date two people at once?"
+      ]
+    },
+    {
+      "name": "Work & School",
+      "questions": [
+        "Who is most likely to fall asleep in a meeting?",
+        "Who is most likely to quit their job on the spot?",
+        "Who is most likely to become the boss?",
+        "Who is most likely to eat someone else's lunch?"
+      ]
+    }
+  ]
+}

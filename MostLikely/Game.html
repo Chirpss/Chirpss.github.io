@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vote The Vibe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="../WhoAmI/firebase-config.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #1C2A39; 
+            color: #F5F1E6; 
+            font-family: 'Inter', sans-serif; 
+            height: 100dvh;
+            overflow: hidden;
+        }
+        .player-btn {
+            transition: transform 0.1s;
+        }
+        .player-btn:active {
+            transform: scale(0.95);
+        }
+        .bar { transition: height 1s ease-out; }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Header -->
+    <div class="flex-none h-16 px-4 flex justify-between items-center bg-deep-twilight/95 backdrop-blur z-30 border-b border-white/5">
+        <span class="text-fiery-core text-xl font-extrabold">Chirpss</span>
+        <div class="text-sm text-subtle-gray">Room: <span id="room-code" class="text-white font-mono font-bold"></span></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow flex flex-col p-4 relative overflow-y-auto">
+        
+        <!-- 1. Lobby Overlay -->
+        <div id="lobby-view" class="hidden flex-col items-center justify-center h-full text-center">
+            <h2 class="text-3xl font-bold mb-4 text-fiery-core">Lobby</h2>
+            <div id="qr-area" class="mb-6 rounded-lg overflow-hidden border-4 border-white"></div>
+            <p class="text-lg mb-8 text-subtle-gray">Players joined: <span id="player-count" class="text-white font-bold">0</span></p>
+            
+            <button id="host-start-btn" onclick="startGame()" class="hidden w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg">
+                Start Voting
+            </button>
+            <p id="wait-msg" class="hidden animate-pulse text-fiery-core">Waiting for Host...</p>
+        </div>
+
+        <!-- 2. Question View -->
+        <div id="game-view" class="hidden flex-col h-full">
+            <!-- Question Card -->
+            <div class="bg-white/10 p-6 rounded-3xl mb-6 text-center shadow-xl">
+                <p class="text-sm text-subtle-gray uppercase tracking-widest mb-2">Most Likely To...</p>
+                <h1 id="question-text" class="text-2xl md:text-4xl font-bold text-white leading-tight">...</h1>
+            </div>
+
+            <!-- Voting Grid -->
+            <div id="voting-grid" class="grid grid-cols-2 gap-3 pb-24">
+                <!-- Player Buttons Injected Here -->
+            </div>
+
+            <!-- Result View (Hidden initially) -->
+            <div id="result-view" class="hidden flex-col items-center justify-center flex-grow">
+                <div id="winner-display" class="text-center mb-8">
+                    <p class="text-subtle-gray">The winner is...</p>
+                    <h2 class="text-5xl font-extrabold text-fiery-core mt-2" id="winner-name">...</h2>
+                    <p class="text-2xl mt-2"><span id="winner-votes">0</span> votes</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Action Bar (Host Only) -->
+    <div id="host-controls" class="hidden absolute bottom-0 left-0 right-0 p-4 bg-deep-twilight border-t border-white/10">
+        <button id="reveal-btn" onclick="revealVotes()" class="w-full py-4 bg-success-green text-deep-twilight font-bold text-xl rounded-xl shadow-lg">
+            Reveal Votes
+        </button>
+        <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-xl shadow-lg">
+            Next Question
+        </button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode'); 
+        const code = urlParams.get('code');
+        
+        let myId = localStorage.getItem('ml_id');
+        if (!myId) {
+            myId = 'p_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('ml_id', myId);
+        }
+        // Let user set a name if they haven't (Simple prompt for now)
+        let myName = localStorage.getItem('ml_name');
+        if (!myName) {
+            myName = prompt("Enter your name:") || "Player";
+            localStorage.setItem('ml_name', myName);
+        }
+
+        const db = firebase.database();
+        const dbRef = db.ref('games/' + code);
+        const playerRef = dbRef.child('players/' + myId);
+
+        let playersMap = {};
+
+        document.getElementById('room-code').textContent = code;
+
+        // Init
+        playerRef.set({
+            id: myId,
+            name: myName,
+            status: 'active'
+        });
+        playerRef.onDisconnect().remove();
+        if (mode === 'host') dbRef.onDisconnect().remove();
+
+        // Listen
+        dbRef.on('value', snap => {
+            const game = snap.val();
+            if(!game) { window.location.href = '/Join/'; return; }
+
+            playersMap = game.players || {};
+            const playerCount = Object.keys(playersMap).length;
+            document.getElementById('player-count').textContent = playerCount;
+
+            // Route View
+            if (game.status === 'lobby') {
+                renderLobby();
+            } else if (game.status === 'voting') {
+                renderVoting(game);
+            } else if (game.status === 'results') {
+                renderResults(game);
+            }
+        });
+
+        function renderLobby() {
+            document.getElementById('lobby-view').classList.remove('hidden');
+            document.getElementById('lobby-view').classList.add('flex');
+            document.getElementById('game-view').classList.add('hidden');
+            
+            if (mode === 'host') {
+                document.getElementById('host-start-btn').classList.remove('hidden');
+                // QR Code
+                const joinUrl = `${window.location.origin}/Join/?code=${code}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(joinUrl)}&bgcolor=1C2A39&color=F5F1E6&margin=10`;
+                document.getElementById('qr-area').innerHTML = `<img src="${qrUrl}" alt="Join" class="w-48 h-48">`;
+            } else {
+                document.getElementById('wait-msg').classList.remove('hidden');
+            }
+        }
+
+        function renderVoting(game) {
+            document.getElementById('lobby-view').classList.add('hidden');
+            document.getElementById('lobby-view').classList.remove('flex');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('flex');
+            
+            document.getElementById('result-view').classList.add('hidden');
+            document.getElementById('voting-grid').classList.remove('hidden');
+
+            // Question
+            const q = game.questions[game.currentQuestionIndex];
+            document.getElementById('question-text').textContent = q;
+
+            // Render Players to Vote For
+            const grid = document.getElementById('voting-grid');
+            grid.innerHTML = '';
+            
+            Object.values(playersMap).forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = "player-btn bg-subtle-gray p-4 rounded-xl font-bold text-white text-lg shadow-md";
+                btn.textContent = p.name;
+                
+                // Highlight if I voted for them
+                if (game.votes && game.votes[myId] === p.id) {
+                    btn.classList.remove('bg-subtle-gray');
+                    btn.classList.add('bg-warm-dusk');
+                }
+
+                btn.onclick = () => castVote(p.id);
+                grid.appendChild(btn);
+            });
+
+            if (mode === 'host') {
+                document.getElementById('host-controls').classList.remove('hidden');
+                document.getElementById('reveal-btn').classList.remove('hidden');
+                document.getElementById('next-btn').classList.add('hidden');
+            }
+        }
+
+        function renderResults(game) {
+            document.getElementById('voting-grid').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('result-view').classList.add('flex');
+
+            // Calculate Winner
+            const votes = game.votes || {};
+            const tally = {};
+            Object.values(votes).forEach(targetId => {
+                tally[targetId] = (tally[targetId] || 0) + 1;
+            });
+
+            // Find max
+            let winnerId = null;
+            let maxVotes = -1;
+            Object.keys(tally).forEach(id => {
+                if (tally[id] > maxVotes) {
+                    maxVotes = tally[id];
+                    winnerId = id;
+                }
+            });
+
+            if (winnerId && playersMap[winnerId]) {
+                document.getElementById('winner-name').textContent = playersMap[winnerId].name;
+                document.getElementById('winner-votes').textContent = maxVotes;
+            } else {
+                document.getElementById('winner-name').textContent = "Nobody!";
+                document.getElementById('winner-votes').textContent = "0";
+            }
+
+            if (mode === 'host') {
+                document.getElementById('reveal-btn').classList.add('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+
+        // --- ACTIONS ---
+
+        function startGame() {
+            dbRef.update({ status: 'voting' });
+        }
+
+        function castVote(targetId) {
+            dbRef.child('votes/' + myId).set(targetId);
+        }
+
+        function revealVotes() {
+            dbRef.update({ status: 'results' });
+        }
+
+        function nextQuestion() {
+            dbRef.once('value').then(snap => {
+                const game = snap.val();
+                let nextIdx = (game.currentQuestionIndex || 0) + 1;
+                if (nextIdx >= game.questions.length) nextIdx = 0; // Loop
+
+                dbRef.update({
+                    status: 'voting',
+                    currentQuestionIndex: nextIdx,
+                    votes: {} // Clear votes
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+
