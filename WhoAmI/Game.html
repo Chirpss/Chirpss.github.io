@@ -123,8 +123,6 @@
         const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
         const code = urlParams.get('code');
         
-        // FIX: Use localStorage instead of sessionStorage
-        // This keeps the ID same across tabs/reloads on the same device
         let myId = localStorage.getItem('whoami_persistent_id');
         if (!myId) {
             myId = 'player_' + Math.random().toString(36).substr(2, 9);
@@ -135,6 +133,7 @@
         let dbRef;
         let playerRef;
         let gameStatus = 'loading';
+        let heartbeatInterval;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (mode === 'single') {
@@ -192,28 +191,67 @@
                 setupJoinerLobby();
             }
 
-            // Join the game in DB
+            // Join the game in DB & Set OnDisconnect
             playerRef.set({
                 id: myId,
                 name: 'Player',
                 status: 'joined',
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
-            // FIX: Ensure player is removed when they disconnect/close tab
             playerRef.onDisconnect().remove(); 
+            
+            // Start Heartbeat (Pings DB every 5s)
+            startHeartbeat();
 
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
-                const players = game.players || {};
-                document.getElementById('player-count').textContent = `Players: ${Object.keys(players).length}`;
+                // --- GHOST FIX: Only count active players ---
+                const activePlayers = getActivePlayers(game.players);
+                document.getElementById('player-count').textContent = `Players: ${activePlayers.length}`;
+
+                // Host performs cleanup of ghosts
+                if (mode === 'host') {
+                    cleanupGhosts(game.players);
+                }
 
                 if (game.status === 'countdown' && gameStatus !== 'countdown') {
                     startSyncedCountdown(game.startTime);
                 } 
                 else if (game.status === 'playing') {
                     enterGame(game);
+                }
+            });
+        }
+
+        function startHeartbeat() {
+            // Update lastSeen every 5 seconds
+            heartbeatInterval = setInterval(() => {
+                playerRef.update({
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+            }, 5000);
+        }
+
+        function getActivePlayers(playersMap) {
+            if (!playersMap) return [];
+            const now = Date.now();
+            // Player is active if seen in last 15 seconds
+            return Object.values(playersMap).filter(p => {
+                return (now - p.lastSeen) < 15000;
+            });
+        }
+
+        function cleanupGhosts(playersMap) {
+            if (!playersMap) return;
+            const now = Date.now();
+            Object.keys(playersMap).forEach(pid => {
+                const p = playersMap[pid];
+                // If not seen in 20 seconds, remove from DB
+                if ((now - p.lastSeen) > 20000) {
+                    console.log("Removing ghost player:", pid);
+                    dbRef.child('players/' + pid).remove();
                 }
             });
         }
@@ -232,18 +270,23 @@
             document.getElementById('waiting-overlay').classList.remove('hidden');
         }
 
-
         // --- HOST: START ROUND ---
         function hostStartCountdown() {
             dbRef.once('value').then(snap => {
                 const game = snap.val();
-                const players = game.players || {};
+                
+                // Use Filtered Active Players Only
+                const playersMap = game.players || {};
+                const activePlayerIds = Object.keys(playersMap).filter(pid => {
+                    return (Date.now() - playersMap[pid].lastSeen) < 15000;
+                });
+
                 let pool = game.wordsPool || [];
                 let poolIndex = game.nextWordIndex || 0;
                 
                 const updates = {};
                 
-                Object.keys(players).forEach(pid => {
+                activePlayerIds.forEach(pid => {
                     const word = pool[poolIndex % pool.length];
                     updates[`players/${pid}/currentWord`] = word;
                     poolIndex++;
