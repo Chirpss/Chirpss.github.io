@@ -48,7 +48,6 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- Header -->
     <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
         <div class="flex items-center gap-3 overflow-hidden">
@@ -72,39 +71,38 @@
         </div>
     </div>
 
-    <!-- Main Content Area -->
     <div class="flex-grow flex flex-col items-center justify-center p-4 relative w-full min-h-0">
         
-        <!-- 1. Lobby Overlay (Host Only) -->
         <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-4 hidden">
             <h2 class="text-3xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
             <div id="qr-area" class="qr-container mb-4"></div>
             
-            <div id="lobby-info" class="mb-4">
+            <div id="lobby-info" class="mb-2">
                 <p class="text-subtle-gray text-base">Scan to join</p>
                 <div class="text-5xl font-mono font-bold tracking-widest text-white mt-1" id="lobby-code">...</div>
             </div>
             <div id="player-count" class="text-lg mb-6 text-subtle-gray">Players: 0</div>
             
-            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
+            <button id="host-start-btn" onclick="hostStartCountdown()" class="w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg transform active:scale-95 transition-transform mb-4">
                 Start Game
+            </button>
+            
+            <button onclick="forceCleanLobby()" class="text-xs text-subtle-gray underline hover:text-white">
+                Count wrong? Kick ghosts.
             </button>
         </div>
 
-        <!-- 2. Waiting Overlay (Joiner Only) -->
         <div id="waiting-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
              <h2 class="text-3xl font-bold mb-4 text-white">You're In!</h2>
              <div class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
         </div>
 
-        <!-- 3. Countdown Overlay -->
         <div id="countdown-overlay" class="absolute inset-0 z-40 bg-warm-dusk flex flex-col items-center justify-center text-center p-6 hidden">
             <h2 class="text-3xl font-bold mb-8 text-deep-twilight">Phone on Forehead!</h2>
             <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
         </div>
 
-        <!-- 4. The Game Card -->
         <div id="game-card" class="card w-full h-full max-h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative overflow-hidden">
             
             <div class="flex-grow flex items-center justify-center w-full h-full overflow-hidden">
@@ -120,7 +118,7 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode'); // 'single', 'host', 'joiner'
+        const mode = urlParams.get('mode'); 
         const code = urlParams.get('code');
         
         let myId = localStorage.getItem('whoami_persistent_id');
@@ -144,15 +142,13 @@
             }
         });
 
-        // --- SINGLE PLAYER LOGIC ---
+        // --- SINGLE PLAYER ---
         function initSingle() {
             document.getElementById('lobby-overlay').classList.add('hidden');
             document.getElementById('single-next-btn').classList.remove('hidden');
-            
             const data = sessionStorage.getItem('whoami_data');
             if (!data) window.location.href = 'index.html';
             wordsPool = JSON.parse(data);
-            
             showNextWordSingle();
         }
 
@@ -175,13 +171,12 @@
             fitText(word);
         }
 
-
-        // --- MULTIPLAYER LOGIC ---
+        // --- MULTIPLAYER ---
         function initMulti() {
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
             
-            // 1. Calculate Time Offset
+            // Sync Clock
             db.ref('.info/serverTimeOffset').on('value', (snap) => {
                 serverTimeOffset = snap.val();
             });
@@ -198,28 +193,34 @@
                 setupJoinerLobby();
             }
 
-            // Join the game in DB & Set OnDisconnect
+            // JOIN
             playerRef.set({
                 id: myId,
                 name: 'Player',
                 status: 'joined',
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
+
+            // 1. Server-side Disconnect (Slow fallback)
             playerRef.onDisconnect().remove(); 
             
+            // 2. Client-side Unload (Fast cleanup)
+            window.addEventListener('beforeunload', () => {
+                playerRef.remove();
+            });
+
             startHeartbeat();
 
             dbRef.on('value', (snapshot) => {
                 const game = snapshot.val();
                 if (!game) { alert("Game ended"); window.location.href = '/WhoAmI/'; return; }
 
-                // --- GHOST FIX: Use synchronized time ---
                 const activePlayers = getActivePlayers(game.players);
                 document.getElementById('player-count').textContent = `Players: ${activePlayers.length}`;
 
-                // Host performs cleanup
+                // Host Auto-Cleanup (less aggressive to prevent flickering)
                 if (mode === 'host') {
-                    cleanupGhosts(game.players);
+                    autoCleanupGhosts(game.players);
                 }
 
                 if (game.status === 'countdown' && gameStatus !== 'countdown') {
@@ -236,7 +237,7 @@
                 playerRef.update({
                     lastSeen: firebase.database.ServerValue.TIMESTAMP
                 });
-            }, 5000); // 5 sec heartbeat
+            }, 5000);
         }
 
         function getServerTime() {
@@ -246,22 +247,38 @@
         function getActivePlayers(playersMap) {
             if (!playersMap) return [];
             const now = getServerTime();
-            // Player is active if seen in last 15 seconds
-            // Uses Server Time to ignore client clock skew
+            // Stricter filter for visual count
             return Object.values(playersMap).filter(p => {
                 return (now - p.lastSeen) < 15000; 
             });
         }
 
-        function cleanupGhosts(playersMap) {
+        function autoCleanupGhosts(playersMap) {
             if (!playersMap) return;
             const now = getServerTime();
             Object.keys(playersMap).forEach(pid => {
                 const p = playersMap[pid];
-                // Remove if silent for 20 seconds
-                if ((now - p.lastSeen) > 20000) {
+                // Remove if silent for > 25 seconds
+                if ((now - p.lastSeen) > 25000) {
                     dbRef.child('players/' + pid).remove();
                 }
+            });
+        }
+
+        // Manual Cleanup Button
+        function forceCleanLobby() {
+            dbRef.child('players').once('value').then(snap => {
+                const playersMap = snap.val();
+                if (!playersMap) return;
+                const now = getServerTime();
+                
+                Object.keys(playersMap).forEach(pid => {
+                    const p = playersMap[pid];
+                    // Aggressive manual clean (10s timeout)
+                    if ((now - p.lastSeen) > 10000) {
+                        dbRef.child('players/' + pid).remove();
+                    }
+                });
             });
         }
 
@@ -279,12 +296,11 @@
             document.getElementById('waiting-overlay').classList.remove('hidden');
         }
 
-        // --- HOST: START ROUND ---
         function hostStartCountdown() {
             dbRef.once('value').then(snap => {
                 const game = snap.val();
                 
-                // Use Filtered Active Players
+                // Assign to active players only
                 const playersMap = game.players || {};
                 const now = getServerTime();
                 const activePlayerIds = Object.keys(playersMap).filter(pid => {
@@ -302,7 +318,6 @@
                     poolIndex++;
                 });
 
-                // Target time: Now (Server Time) + 10 seconds
                 const targetTime = getServerTime() + 10000;
                 
                 updates['startTime'] = targetTime;
@@ -313,7 +328,6 @@
             });
         }
 
-        // --- ALL: SYNCED COUNTDOWN ---
         function startSyncedCountdown(targetTime) {
             gameStatus = 'countdown';
             
@@ -339,7 +353,6 @@
             }, 100);
         }
 
-        // --- ALL: GAME PLAYING ---
         function enterGame(game) {
             gameStatus = 'playing';
             document.getElementById('countdown-overlay').classList.add('hidden');
@@ -356,10 +369,8 @@
             }
         }
 
-        // --- UTILS ---
         function fitText(word) {
             const display = document.getElementById('word-display');
-            
             if (word.length > 20) {
                  display.className = "text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             } else if (word.length > 12) {
@@ -373,5 +384,3 @@
     </script>
 </body>
 </html>
-
-
