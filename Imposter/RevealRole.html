@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reveal Role - Chirpss</title>
+    
+    <title>CHIRPSS | Reveal Role</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display.swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV2022ERX5"></script>
@@ -26,6 +29,7 @@
                         'subtle-gray': '#5A6F82',
                         'danger-red': '#E53E3E',      /* Imposter Role */
                         'success-green': '#38A169',   /* Regular Player Role */
+                        'input-bg': '#2A3C50',        /* Added missing color */
                     },
                     boxShadow: {
                         'glow-imposter': '0 0 20px rgba(229, 62, 62, 0.6)',
@@ -96,7 +100,13 @@
     
     <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex-shrink-0">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+                <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+            </a>
+            
+            <div class="flex items-center gap-2">
+                </div>
         </div>
     </header>
 
@@ -147,7 +157,7 @@
             const data = sessionStorage.getItem('chirpss_imposter_game_data');
             if (!data) {
                 alert("Game data not found. Redirecting to setup.");
-                window.location.href = '/Imposter/';
+                window.location.href = 'https://chirpss.my.to/Imposter/'; // Updated link
                 return null;
             }
             return JSON.parse(data);
@@ -250,7 +260,6 @@
         }
 
         function dragStart(e) {
-            // FIX 1: Removed the 'if (isRevealed) return;' line.
             isDragging = true;
             startY = getPosition(e);
             cardFront.style.transition = 'none'; // Disable transition while dragging
@@ -258,7 +267,6 @@
         }
 
         function dragMove(e) {
-            // Only block if not dragging. isRevealed check is no longer needed here.
             if (!isDragging) return; 
             
             const y = getPosition(e);
@@ -280,10 +288,8 @@
             // Card always snaps back, as requested for "peek" behavior.
             cardFront.style.transform = 'translateY(0px)';
 
-            // FIX 2: Only check if the threshold was passed to set isRevealed = true.
-            // Do NOT set it to false if the threshold wasn't passed, as it should persist.
+            // Check if the threshold was passed to set isRevealed = true.
             if (currentY < REVEAL_THRESHOLD) {
-                // If they swiped far enough, set the revealed state flag
                 isRevealed = true; 
             }
             

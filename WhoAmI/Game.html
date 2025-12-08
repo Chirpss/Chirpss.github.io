@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Who Am I?</title>
+    
+    <title>CHIRPSS | Who Am I?</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
@@ -48,11 +51,16 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- Header -->
-    <div class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
+    <header class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
         <div class="flex items-center gap-3 overflow-hidden">
-            <span class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">Chirpss</span>
+            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex-shrink-0 flex items-center gap-3">
+                <div class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">
+                     <span class="hidden sm:inline">CHIRPSS Game hub</span>
+                    <span class="sm:hidden">CHIRPSS</span>
+                </div>
+            </a>
+            
             <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
                 Room <br>
                 <span class="text-white text-base sm:text-lg font-mono tracking-widest font-bold"></span>
@@ -60,29 +68,24 @@
         </div>
 
         <div class="flex-shrink-0 flex items-center gap-2">
-             <!-- HOST ONLY: End Game Button -->
              <button id="host-end-btn" onclick="hostEndGame()" class="hidden px-3 py-1 border border-danger-red text-danger-red font-bold rounded-lg text-xs hover:bg-danger-red hover:text-white transition-colors">
                 End
             </button>
 
-            <!-- Single Player Next -->
             <button id="single-next-btn" onclick="handleNextSingle()" class="hidden px-4 py-2 bg-success-green text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
             </button>
 
-            <!-- Host Next Round -->
             <button id="host-next-btn" onclick="hostStartCountdown()" class="hidden px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Next Round</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
             </button>
         </div>
-    </div>
+    </header>
 
-    <!-- Main Content Area -->
     <div class="flex-grow flex flex-col items-center justify-center p-4 relative w-full min-h-0">
         
-        <!-- 1. Lobby Overlay (Host Only) -->
         <div id="lobby-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-4 hidden">
             <h2 class="text-3xl font-bold mb-4 text-fiery-core">Who Am I?</h2>
             
@@ -103,19 +106,16 @@
             </button>
         </div>
 
-        <!-- 2. Waiting Overlay (Joiner Only) -->
         <div id="waiting-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6 hidden">
              <h2 class="text-3xl font-bold mb-4 text-white">You're In!</h2>
              <div id="waiting-status" class="animate-pulse text-fiery-core text-xl">Waiting for Host...</div>
         </div>
 
-        <!-- 3. Countdown Overlay -->
         <div id="countdown-overlay" class="absolute inset-0 z-40 bg-warm-dusk flex flex-col items-center justify-center text-center p-6 hidden">
             <h2 class="text-3xl font-bold mb-8 text-deep-twilight">Phone on Forehead!</h2>
             <div id="countdown-display" class="text-9xl font-extrabold text-white drop-shadow-lg">10</div>
         </div>
 
-        <!-- 4. The Game Card -->
         <div id="game-card" class="card w-full h-full max-h-full bg-subtle-gray rounded-3xl flex flex-col items-center justify-center p-4 text-center border-4 border-white/10 relative overflow-hidden">
             
             <div class="flex-grow flex items-center justify-center w-full h-full overflow-hidden">
@@ -163,7 +163,7 @@
             document.getElementById('single-next-btn').classList.remove('hidden');
             
             const data = sessionStorage.getItem('whoami_data');
-            if (!data) window.location.href = 'index.html';
+            if (!data) window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
             wordsPool = JSON.parse(data);
             
             showNextWordSingle();
@@ -249,7 +249,7 @@
                 const game = snapshot.val();
                 if (!game) { 
                     alert("Game ended by Host."); 
-                    window.location.href = '/WhoAmI/'; 
+                    window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
                     return; 
                 }
 
@@ -324,7 +324,7 @@
         function hostEndGame() {
             if (confirm("End game and close room for everyone?")) {
                 dbRef.remove();
-                window.location.href = '/WhoAmI/';
+                window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
             }
         }
 
@@ -465,5 +465,3 @@
     </script>
 </body>
 </html>
-
-

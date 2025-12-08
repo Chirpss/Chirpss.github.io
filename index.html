@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>CHIRPSS | Free Online Party Games & Social Deduction Games</title>
-    <meta name="description" content="Play CHIRPSS, the ultimate hub for free online party games and social deduction games like Imposter. No ads, No account, No downloads!">
+    <title>CHIRPSS | Free party games</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
+    <meta name="description" content="Play CHIRPSS, the ultimate hub for free online party games.">
     
     <link rel="canonical" href="https://chirpss.eu.org/" />
-
     <meta property="og:title" content="CHIRPSS: Free Online Party Games Hub" />
-    <meta property="og:description" content="The best selection of free, no-download social deduction and group party games for your next virtual hangout." />
+    <meta property="og:description" content="The best selection of free, no-download social deduction and group party games." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://chirpss.eu.org/" />
     <meta property="og:image" content="https://chirpss.eu.org/icon.png" /> 
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2662390329704548"
-     crossorigin="anonymous"></script>
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2662390329704548" crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV2022ERX5"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
-    gtag('config', 'G-SV2022ERX5');
+        gtag('config', 'G-SV2022ERX5');
     </script>
+
     <script>
-        // Custom Tailwind Configuration: Deep Twilight Palette
         tailwind.config = {
             theme: {
                 extend: {
@@ -47,42 +47,27 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1C2A39;
-            color: #F5F1E6;
-        }
-        .game-card-link {
-            outline: none; 
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-        }
-        .game-card-link:hover, .game-card-link:focus-visible {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), var(--tw-shadow-card-glow);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #1C2A39; color: #F5F1E6; }
+        .game-card-link { outline: none; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .game-card-link:hover, .game-card-link:focus-visible { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), var(--tw-shadow-card-glow); }
     </style>
 </head>
-<body class="min-h-screen antialiased">
+<body class="min-h-screen antialiased flex flex-col">
 
     <script>
         window.startPlay = function(gameName) {
-            const pathMap = {
-                'Imposter': '/Imposter/',
-                'WrongAnswersOnly': '/WrongAnswersOnly/',
-                'TenBut': '/TenBut/',
-                'WhoAmI': '/WhoAmI/'
-            };
-            
+            const pathMap = { 'Imposter': '/Imposter/', 'WrongAnswersOnly': '/WrongAnswersOnly/', 'TenBut': '/TenBut/', 'WhoAmI': '/WhoAmI/' };
             const urlPath = pathMap[gameName] || '/';
-            console.log(`Navigating to: ${urlPath}`);
             window.location.href = urlPath;
         };
     </script>
     
-    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+                <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+            </a>
             
             <button onclick="window.location.href='/Join/'" class="px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
                 <span>Join Room</span>
@@ -90,32 +75,26 @@
                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
             </button>
-            </div>
+        </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4 sm:p-8">
-        
+    <main class="max-w-7xl mx-auto p-4 sm:p-8 flex-grow">
         <div class="text-center mb-12 mt-4">
             <h2 class="text-2xl sm:text-3xl font-extrabold text-soft-horizon mb-2">The Best Online Social Party Games</h2>
             <p class="text-base sm:text-lg text-subtle-gray font-medium">Instant in-person party games you play together - no ads, no accounts.</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
-            
             <div class="relative game-card-link rounded-xl" onclick="startPlay('Imposter')">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
                     <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
                     <div class="p-4 flex flex-col flex-grow text-deep-twilight">
                         <div class="flex-grow">
                             <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Imposter</h3>
-                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
-                                Debate and vote to unmask the spy before they figure out the secret word.
-                            </p>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Debate and vote to unmask the spy.</p>
                         </div>
                         <div class="mt-4">
-                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
-                                Launch
-                            </button>
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
                         </div>
                     </div>
                 </div>
@@ -127,14 +106,10 @@
                     <div class="p-4 flex flex-col flex-grow text-deep-twilight">
                         <div class="flex-grow">
                             <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Who Am I</h3>
-                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
-                                Get a secret word, object, place or person and try to guess who it is.
-                            </p>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Guess the secret person or object assigned to you.</p>
                         </div>
                         <div class="mt-4">
-                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
-                                Lauch / Party Up
-                            </button>
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
                         </div>
                     </div>
                 </div>
@@ -145,59 +120,53 @@
                     <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
                     <div class="p-4 flex flex-col flex-grow text-deep-twilight">
                         <div class="flex-grow">
-                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Wrong Answers Only</h3>
-                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
-                                Answer the question wrong if you get one right you're out!
-                            </p>
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Wrong Answers</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Answer the question wrong to win.</p>
                         </div>
                         <div class="mt-4">
-                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
-                                Launch
-                            </button>
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="relative game-card-link rounded-xl" onclick="startPlay('TenBut')">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
                     <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
                     <div class="p-4 flex flex-col flex-grow text-deep-twilight">
                         <div class="flex-grow">
-                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">They're a 10/10 But</h3>
-                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">
-                                Rate a 10/10 but with a funny, horrible, and spicy twist, you can also see how other people react.
-                            </p>
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">10/10 But</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Rate a 10/10 with a spicy twist.</p>
                         </div>
                         <div class="mt-4">
-                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">
-                                Launch
-                            </button>
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="relative cursor-default p-1">
+             <div class="relative cursor-default p-1">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
                     <div class="text-center text-soft-horizon">
-                        <svg class="w-8 h-8 mx-auto mb-2 text-fiery-core/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 3h.01M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-base sm:text-lg font-bold">Spectrum<br></h3>
-                        <p class="text-xs sm:text-sm mt-1 text-subtle-gray">Fun, Creative and spicy promts<br><br>Coming soon to your party.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative cursor-default p-1">
-                <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
-                    <div class="text-center text-soft-horizon">
-                        <svg class="w-8 h-8 mx-auto mb-2 text-fiery-core/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 3h.01M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-base sm:text-lg font-bold">Werewolf</h3>
-                        <p class="text-xs sm:text-sm mt-1 text-subtle-gray">40+ roles<br><br>Coming soon to your party.</p>
+                        <h3 class="text-base sm:text-lg font-bold">Spectrum</h3>
+                        <p class="text-xs sm:text-sm mt-1 text-subtle-gray">Coming soon</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <footer class="bg-deep-twilight border-t border-subtle-gray/20 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-6 text-sm text-subtle-gray mb-4">
+                <a href="/impressum" class="hover:text-fiery-core transition-colors">Impressum</a>
+                <a href="/privacy" class="hover:text-fiery-core transition-colors">Privacy Policy</a>
+                <a href="/gdpr" class="hover:text-fiery-core transition-colors">GDPR</a>
+                <a href="/cookies" class="hover:text-fiery-core transition-colors">Cookie Rules</a>
+            </div>
+            <p class="text-xs text-subtle-gray/60">&copy; 2024 CHIRPSS. All Rights Reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

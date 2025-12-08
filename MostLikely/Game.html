@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vote The Vibe</title>
+    
+    <title>CHIRPSS | Vote The Vibe</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
@@ -47,28 +50,31 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- Header -->
-    <div class="flex-none h-16 px-4 flex justify-between items-center bg-deep-twilight/95 backdrop-blur z-30 border-b border-white/5 shadow-md">
-        <div class="flex items-center gap-3">
-            <span class="text-fiery-core text-xl font-extrabold">Chirpss</span>
-            <div class="text-xs text-subtle-gray border-l border-white/20 pl-3 leading-tight">
-                Room <br><span id="room-code" class="text-white font-mono font-bold text-base"></span>
-            </div>
-        </div>
-        
-        <!-- Player List Button -->
-        <button id="players-btn" onclick="togglePlayerModal()" class="hidden flex items-center gap-2 px-3 py-1.5 bg-subtle-gray/30 hover:bg-subtle-gray/50 rounded-lg transition-colors border border-white/10">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-soft-horizon" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-            </svg>
-            <span id="header-count" class="font-bold text-sm">0</span>
-        </button>
-    </div>
+    <header class="flex-none p-4 bg-deep-twilight/95 backdrop-blur z-30 border-b border-subtle-gray/30 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+            
+            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex items-center gap-3">
+                <div class="text-fiery-core text-xl font-extrabold">
+                    <span class="hidden sm:inline">CHIRPSS Game hub</span>
+                    <span class="sm:hidden">CHIRPSS</span>
+                </div>
+                <div class="text-xs text-subtle-gray border-l border-white/20 pl-3 leading-tight">
+                    Room <br><span id="room-code" class="text-white font-mono font-bold text-base"></span>
+                </div>
+            </a>
+            
+            <button id="players-btn" onclick="togglePlayerModal()" class="flex items-center gap-2 px-3 py-1.5 bg-subtle-gray/30 hover:bg-subtle-gray/50 rounded-lg transition-colors border border-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-soft-horizon" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                <span id="header-count" class="font-bold text-sm">0</span>
+            </button>
 
-    <!-- Main Content -->
+        </div>
+    </header>
+
     <div class="flex-grow flex flex-col p-4 relative overflow-y-auto w-full max-w-2xl mx-auto">
         
-        <!-- 0. Name Entry Overlay (Shows first if no name) -->
         <div id="name-overlay" class="absolute inset-0 z-50 bg-deep-twilight flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-3xl font-bold mb-2 text-fiery-core">Who are you?</h2>
             <p class="text-subtle-gray mb-8">Enter a name to join the game</p>
@@ -80,7 +86,6 @@
             </button>
         </div>
 
-        <!-- 1. Lobby Overlay -->
         <div id="lobby-view" class="hidden flex-col items-center justify-center h-full text-center">
             <h2 class="text-4xl font-bold mb-6 text-fiery-core">Lobby</h2>
             
@@ -95,7 +100,6 @@
             <p id="wait-msg" class="hidden animate-pulse text-fiery-core text-xl">Waiting for Host...</p>
         </div>
 
-        <!-- 2. Question View -->
         <div id="game-view" class="hidden flex-col h-full">
             <div class="bg-black/40 backdrop-blur-md p-6 rounded-3xl mb-6 text-center shadow-xl border border-white/10">
                 <p class="text-xs sm:text-sm text-fiery-core uppercase tracking-widest mb-3 font-bold">Most Likely To...</p>
@@ -117,7 +121,6 @@
         </div>
     </div>
 
-    <!-- Bottom Action Bar (Host Only) -->
     <div id="host-controls" class="hidden absolute bottom-0 left-0 right-0 p-4 bg-deep-twilight/95 border-t border-white/10 backdrop-blur z-20">
         <div class="max-w-2xl mx-auto">
             <button id="reveal-btn" onclick="revealVotes()" class="w-full py-4 bg-success-green text-deep-twilight font-bold text-xl rounded-xl shadow-lg active:scale-95 transition-transform">
@@ -129,7 +132,6 @@
         </div>
     </div>
 
-    <!-- Player Management Modal -->
     <div id="player-modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
         <div class="bg-deep-twilight w-full max-w-sm rounded-2xl shadow-2xl border border-white/10 flex flex-col max-h-[80vh]">
             <div class="p-4 border-b border-white/10 flex justify-between items-center">
@@ -220,7 +222,7 @@
             // Main Game Listener
             dbRef.on('value', snap => {
                 const game = snap.val();
-                if(!game) { window.location.href = '/Join/'; return; }
+                if(!game) { window.location.href = 'https://chirpss.my.to/Join/'; return; } // Updated link
 
                 playersMap = game.players || {};
                 
@@ -431,5 +433,3 @@
     </script>
 </body>
 </html>
-
-
