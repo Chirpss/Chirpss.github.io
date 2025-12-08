@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://chirpss.my.to/Cookies.js"></script>
+    <script src="https://chirpss.my.to/Cookies.js"></script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHIRPSS | Cookie Rules & Consent</title>
@@ -95,15 +96,35 @@
                 <div class="section-separator"></div>
                 <p class="mb-3 text-sm">You can change your mind at any time:</p>
                 <ul class="policy-list list-disc ml-6 space-y-3 text-sm text-soft-horizon/80">
-                    <li>To change your consent preference, please click the <span class="policy-highlight">[Link to Reopen Cookie Banner/Widget]</span> on this website.</li>
+                    <li>
+                        To change your consent preference, please click here:
+                        <button id="reset-consent-btn" class="text-warm-dusk hover:text-fiery-core font-bold underline cursor-pointer transition-colors focus:outline-none">
+                            Update Cookie Preferences
+                        </button>
+                        </li>
                     <li>You can also delete cookies directly through your browser's settings.</li>
                 </ul>
             </div>
-
-            <p class="mt-8 pt-4 border-t border-subtle-gray/50 text-xs text-danger-red italic">
-                <span class="policy-highlight">CRITICAL ACTION:</span> You must implement a Cookie Consent Banner that prevents the Google Analytics script (G-SV2022ERX5) from loading until the user explicitly accepts.
-            </p>
         </div>
     </main>
+
+    <script>
+        document.getElementById('reset-consent-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // 1. Try to find the banner element created by Cookies.js
+            const banner = document.getElementById('cookie-banner');
+            
+            if (banner) {
+                // If the banner exists in the DOM, just show it
+                banner.classList.add('visible');
+            } else {
+                // 2. Fallback: If banner isn't in DOM, clear the decision and reload
+                // This forces Cookies.js to see you as a "new user"
+                localStorage.removeItem('chirpss_analytics_consent');
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>
