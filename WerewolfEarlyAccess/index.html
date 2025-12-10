@@ -16,11 +16,11 @@
                     colors: {
                         'deep-twilight': '#1C2A39',
                         'warm-dusk': '#E87040',
-                        'fiery-core': '#FFC35B',
+                        'fiery-core': '#FFC35B', 
                         'soft-horizon': '#F5F1E6',
                         'subtle-gray': '#5A6F82',
                         'input-bg': '#2A3C50',
-                        'danger-red': '#E53E3E',
+                        'danger-red': '#E53E3E', 
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
@@ -42,6 +42,10 @@
             background-color: #1C2A39;
             color: #F5F1E6;
         }
+        /* New: Style for the SVG image reference */
+        .werewolf-icon {
+            filter: drop-shadow(0 0 10px rgba(255, 195, 91, 0.5)); /* Equivalent to drop-shadow-2xl using CSS filter */
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -51,20 +55,25 @@
             <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity">
                 <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
-
+            <a href="index.html" class="text-sm font-bold text-subtle-gray hover:text-soft-horizon transition-colors">
+                Back to Hub
+            </a>
         </div>
     </header>
 
     <main class="flex-grow flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
         
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-fiery-core/5 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-danger-red/10 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
 
         <div class="max-w-3xl mx-auto space-y-8 animate-float">
             
             <div class="flex justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-fiery-core drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                </svg>
+                <img 
+                    src="https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg" 
+                    alt="Werewolf Icon" 
+                    class="h-40 w-40 werewolf-icon"
+                    style="color: #FFC35B;"
+                >
             </div>
 
             <h1 class="text-5xl md:text-7xl font-extrabold text-soft-horizon tracking-tight drop-shadow-lg">
@@ -72,8 +81,8 @@
             </h1>
 
             <div class="flex flex-col items-center gap-2">
-                <div class="inline-block bg-input-bg border border-danger-red/50 px-6 py-3 rounded-xl shadow-lg">
-                    <p class="text-danger-red font-bold uppercase tracking-widest text-sm">
+                <div class="inline-block bg-input-bg border border-danger-red px-6 py-3 rounded-xl shadow-[0_0_15px_rgba(229,62,62,0.3)]">
+                    <p class="text-danger-red font-bold uppercase tracking-widest text-sm animate-pulse">
                         Under Development
                     </p>
                 </div>
