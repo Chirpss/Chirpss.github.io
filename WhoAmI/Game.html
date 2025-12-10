@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://chirpss.my.to/Cookies.js"></script>
+    <script src="https://chirpss.github.io/Cookies.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -55,7 +55,7 @@
     <header class="flex-none h-16 px-4 py-2 flex justify-between items-center bg-deep-twilight/95 backdrop-blur shadow-md z-30">
         
         <div class="flex items-center gap-3 overflow-hidden">
-            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex-shrink-0 flex items-center gap-3">
+            <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity flex-shrink-0 flex items-center gap-3">
                 <div class="text-fiery-core text-xl sm:text-2xl font-extrabold tracking-tighter flex-shrink-0">
                      <span class="hidden sm:inline">CHIRPSS Game hub</span>
                     <span class="sm:hidden">CHIRPSS</span>
@@ -164,7 +164,7 @@
             document.getElementById('single-next-btn').classList.remove('hidden');
             
             const data = sessionStorage.getItem('whoami_data');
-            if (!data) window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
+            if (!data) window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
             wordsPool = JSON.parse(data);
             
             showNextWordSingle();
@@ -250,7 +250,7 @@
                 const game = snapshot.val();
                 if (!game) { 
                     alert("Game ended by Host."); 
-                    window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
+                    window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
                     return; 
                 }
 
@@ -325,7 +325,7 @@
         function hostEndGame() {
             if (confirm("End game and close room for everyone?")) {
                 dbRef.remove();
-                window.location.href = 'https://chirpss.my.to/WhoAmI/'; // Updated link
+                window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
             }
         }
 

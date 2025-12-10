@@ -465,7 +465,7 @@
             toggleTeamMode(); 
 
             // Fetch the game data, then render the parts that depend on it
-            fetch('https://chirpss.my.to/wavelength/data.json')
+            fetch('https://chirpss.github.io/wavelength/data.json')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);

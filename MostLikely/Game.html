@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://chirpss.my.to/Cookies.js"></script>
+    <script src="https://chirpss.github.io/Cookies.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -54,7 +54,7 @@
     <header class="flex-none p-4 bg-deep-twilight/95 backdrop-blur z-30 border-b border-subtle-gray/30 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
             
-            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex items-center gap-3">
+            <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity flex items-center gap-3">
                 <div class="text-fiery-core text-xl font-extrabold">
                     <span class="hidden sm:inline">CHIRPSS Game hub</span>
                     <span class="sm:hidden">CHIRPSS</span>
@@ -92,7 +92,7 @@
             
             <div id="qr-area" class="mb-8 rounded-xl overflow-hidden border-4 border-white shadow-2xl bg-white"></div>
             
-            <p class="text-lg mb-2 text-subtle-gray">Join at <span class="text-white font-bold">chirpss.my.to/Join</span></p>
+            <p class="text-lg mb-2 text-subtle-gray">Join at <span class="text-white font-bold">chirpss.github.io/Join</span></p>
             <p class="text-lg mb-8 text-subtle-gray">Players: <span id="lobby-count" class="text-white font-bold">0</span></p>
             
             <button id="host-start-btn" onclick="startGame()" class="hidden w-full max-w-xs px-6 py-4 bg-fiery-core text-deep-twilight font-bold text-xl rounded-2xl shadow-lg transform active:scale-95 transition-transform">
@@ -223,7 +223,7 @@
             // Main Game Listener
             dbRef.on('value', snap => {
                 const game = snap.val();
-                if(!game) { window.location.href = 'https://chirpss.my.to/Join/'; return; } // Updated link
+                if(!game) { window.location.href = 'https://chirpss.github.io/Join/'; return; } // Updated link
 
                 playersMap = game.players || {};
                 
