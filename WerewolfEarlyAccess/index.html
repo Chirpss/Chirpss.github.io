@@ -24,17 +24,11 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        // New 1-second heartbeat animation
-                        'heartbeat': 'heartbeat 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' },
-                        },
-                        heartbeat: {
-                            '0%, 100%': { opacity: '0.1', transform: 'translateX(-50%) scale(1)' },
-                            '50%': { opacity: '0.3', transform: 'translateX(-50%) scale(1.1)' },
                         }
                     }
                 }
@@ -48,6 +42,7 @@
             color: #F5F1E6;
         }
         
+        /* Mask for the Icon color */
         .werewolf-mask {
             mask-image: url('https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg');
             -webkit-mask-image: url('https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg');
@@ -64,11 +59,39 @@
             transition: color 0.4s ease-out, text-shadow 0.4s ease-out;
         }
 
-        /* The class we add via JS when a number changes */
+        /* Flash Yellow for numbers */
         .flash-yellow {
-            color: #FFC35B !important; /* fiery-core */
+            color: #FFC35B !important; 
             text-shadow: 0 0 15px rgba(255, 195, 91, 0.6);
             transform: scale(1.05);
+        }
+
+        /* CUSTOM BACKGROUND PULSE ANIMATION 
+           Duration: 2 Seconds
+           Behavior: Scales up and glows brighter, then returns to rest.
+           Note: We keep translateX(-50%) to maintain centering.
+        */
+        @keyframes deepPulse {
+            0% { 
+                transform: translateX(-50%) scale(1); 
+                opacity: 0.1; 
+                filter: blur(40px);
+            }
+            50% { 
+                transform: translateX(-50%) scale(1.5); 
+                opacity: 0.5; /* Brighter at the peak */
+                filter: blur(60px);
+            }
+            100% { 
+                transform: translateX(-50%) scale(1); 
+                opacity: 0.1; 
+                filter: blur(40px);
+            }
+        }
+
+        /* Class to trigger the animation */
+        .run-pulse {
+            animation: deepPulse 2s ease-in-out forwards;
         }
     </style>
 </head>
@@ -84,7 +107,7 @@
 
     <main class="flex-grow flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
         
-        <div class="absolute top-1/4 left-1/2 w-96 h-96 bg-danger-red rounded-full blur-3xl -z-10 animate-heartbeat origin-center"></div>
+        <div id="heartbeat-bg" class="absolute top-1/4 left-1/2 w-96 h-96 bg-danger-red rounded-full blur-3xl -z-10 opacity-10 origin-center -translate-x-1/2"></div>
 
         <div class="max-w-3xl mx-auto space-y-8 animate-float">
             
@@ -168,13 +191,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                     </div>
                     <h4 class="text-2xl font-bold text-soft-horizon">Phone Based</h4>
-                    <p class="text-subtle-gray mt-3 text-lg">Secret roles are delivered safely to everyone's device. No shuffling cards or hassle.</p>
+                    <p class="text-subtle-gray mt-3 text-lg">Secret roles are delivered safely to everyone's device. No shuffling cards or closing eyes to peek.</p>
                 </div>
             </div>
         </div>
 
         <div class="mt-16 mb-8">
-            <a href="https://chirpss.github.io/" class="bg-subtle-gray hover:bg-subtle-gray/80 text-soft-horizon font-bold py-4 px-10 rounded-xl transition-all shadow-lg text-lg">
+            <a href="index.html" class="bg-subtle-gray hover:bg-subtle-gray/80 text-soft-horizon font-bold py-4 px-10 rounded-xl transition-all shadow-lg text-lg">
                 Back to Games
             </a>
         </div>
@@ -183,25 +206,21 @@
 
     <script>
         const countDownDate = new Date("Jan 1, 2026 00:00:00").getTime();
+        const backgroundBg = document.getElementById('heartbeat-bg');
         
-        // State tracking to detect changes
         let prevValues = { d: null, h: null, m: null, s: null };
 
         function updateElement(id, value, key) {
             const el = document.getElementById(id);
             const strVal = String(value).padStart(2, '0');
             
-            // If value changed (and isn't the initial null), add flash class
+            // Number Update Animation (Flash Yellow)
             if (prevValues[key] !== null && prevValues[key] !== value) {
+                // For seconds, we flash every second. For others, only on change.
                 el.classList.add('flash-yellow');
                 el.innerHTML = strVal;
-                
-                // Remove class after animation (400ms) to allow re-trigger
-                setTimeout(() => {
-                    el.classList.remove('flash-yellow');
-                }, 800);
+                setTimeout(() => el.classList.remove('flash-yellow'), 800);
             } else {
-                // Initial set or no change
                 if(el.innerHTML !== strVal) el.innerHTML = strVal;
             }
             prevValues[key] = value;
@@ -216,10 +235,34 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
+            // Update UI Numbers
             updateElement("days", days, 'd');
             updateElement("hours", hours, 'h');
             updateElement("minutes", minutes, 'm');
             updateElement("seconds", seconds, 's');
+
+            // --- DEEP PULSE LOGIC ---
+            // Trigger if seconds is a multiple of 5 (5, 10, 15, ... 55, 00)
+            if (seconds % 5 === 0) {
+                // We add the class. Since the animation is 2s long and this block runs 
+                // for 1 second (while seconds == X), we need to ensure we don't 
+                // re-trigger it unnecessarily, but CSS animations handle being "added" fine.
+                // To allow it to finish playing (2s) even after seconds changes to 4 or 1,
+                // we check if it's already running.
+                
+                // Actually, simplest way: Just add the class. 
+                // To ensure it plays fully, we only remove it when the animation is definitely done.
+                // But since we want to re-trigger it every 5s, we can just remove it slightly before.
+                
+                if (!backgroundBg.classList.contains('run-pulse')) {
+                    backgroundBg.classList.add('run-pulse');
+                    
+                    // Remove the class after 2.1 seconds so it's ready for the next 5s interval
+                    setTimeout(() => {
+                        backgroundBg.classList.remove('run-pulse');
+                    }, 2100);
+                }
+            }
 
             if (distance < 0) {
                 clearInterval(x);
