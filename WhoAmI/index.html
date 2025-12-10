@@ -13,17 +13,16 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        // Custom Tailwind Configuration (From HTML 2)
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'deep-twilight': '#1C2A39',   /* Main Dark Background */
-                        'warm-dusk': '#E87040',       /* Primary Action/Button */
-                        'fiery-core': '#FFC35B',      /* Accent/Highlight */
-                        'soft-horizon': '#F5F1E6',    /* Light Text/Card Background/Input */
-                        'subtle-gray': '#5A6F82',     /* Subtler text/border color */
-                        'input-bg': '#2A3C50',        /* Slightly lighter background for inputs */
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                        'input-bg': '#2A3C50',
                         'danger-red': '#E53E3E',
                     },
                     boxShadow: {
@@ -36,17 +35,11 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1C2A39; /* deep-twilight */
-            color: #F5F1E6; /* soft-horizon */
+            background-color: #1C2A39;
+            color: #F5F1E6;
         }
-        
-        /* Transition utilities for JS toggling */
-        .category-btn { 
-            transition: all 0.2s ease-in-out; 
-        }
-        .mode-btn { 
-            transition: all 0.3s ease; 
-        }
+        .category-btn { transition: all 0.2s ease-in-out; }
+        .mode-btn { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen antialiased flex flex-col">
@@ -58,8 +51,13 @@
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
             
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-4">
+                <div class="flex bg-input-bg rounded-lg border border-subtle-gray/50 overflow-hidden">
+                    <button onclick="setLanguage('EN')" id="lang-en" class="px-3 py-1 text-sm font-bold transition-colors text-subtle-gray hover:text-soft-horizon">EN</button>
+                    <div class="w-px bg-subtle-gray/50"></div>
+                    <button onclick="setLanguage('DE')" id="lang-de" class="px-3 py-1 text-sm font-bold transition-colors text-subtle-gray hover:text-soft-horizon">DE</button>
                 </div>
+            </div>
         </div>
     </header>
 
@@ -101,8 +99,60 @@
         let selectedCategories = [];
         let gameMode = 'single';
         let db;
+        // Default to EN if no cookie found
+        let currentLang = 'EN'; 
+
+        // Helper to get cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Helper to set cookie
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+
+        function setLanguage(lang) {
+            setCookie('chirpss_lang', lang, 365);
+            // Reload to fetch new data
+            window.location.reload(); 
+        }
+
+        function updateLangUI() {
+            const btnEn = document.getElementById('lang-en');
+            const btnDe = document.getElementById('lang-de');
+            const activeClass = "bg-warm-dusk text-deep-twilight";
+            const inactiveClass = "text-subtle-gray hover:text-soft-horizon bg-transparent";
+
+            // Reset
+            btnEn.className = `px-3 py-1 text-sm font-bold transition-colors ${inactiveClass}`;
+            btnDe.className = `px-3 py-1 text-sm font-bold transition-colors ${inactiveClass}`;
+
+            if(currentLang === 'DE') {
+                btnDe.className = `px-3 py-1 text-sm font-bold transition-colors ${activeClass}`;
+            } else {
+                btnEn.className = `px-3 py-1 text-sm font-bold transition-colors ${activeClass}`;
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Check Language Cookie
+            const savedLang = getCookie('chirpss_lang');
+            if(savedLang) currentLang = savedLang;
+            updateLangUI();
+
+            // 2. Determine File
+            const dataFile = currentLang === 'DE' ? 'dataDE.json' : 'data.json';
+
             // Check for Firebase availability
             if (typeof firebase !== 'undefined' && firebase.database) {
                 try {
@@ -112,17 +162,17 @@
                 }
             }
             
-            // Set initial mode UI
             setMode('single');
 
-            fetch('data.json')
+            // 3. Fetch Correct Data
+            fetch(dataFile)
                 .then(res => res.json())
                 .then(data => {
                     allCategories = data.categories;
                     renderCategories();
                 })
                 .catch(err => {
-                    document.getElementById('categories-container').innerHTML = `<p class="text-danger-red">Error loading data.json</p>`;
+                    document.getElementById('categories-container').innerHTML = `<p class="text-danger-red">Error loading ${dataFile}</p>`;
                 });
         });
 
@@ -131,7 +181,6 @@
             const singleBtn = document.getElementById('mode-single');
             const multiBtn = document.getElementById('mode-multi');
 
-            // Reset classes
             const baseClass = "mode-btn flex-1 py-3 rounded-lg font-bold text-soft-horizon hover:bg-subtle-gray/30";
             const activeClass = "mode-btn flex-1 py-3 rounded-lg font-bold text-deep-twilight bg-warm-dusk shadow-lg";
 
@@ -151,13 +200,9 @@
             
             allCategories.forEach(cat => {
                 const btn = document.createElement('button');
-                // Styling to match HTML 2 input/button aesthetics
                 btn.className = 'category-btn py-6 rounded-xl font-bold text-lg flex flex-col items-center justify-center bg-input-bg text-soft-horizon border border-subtle-gray/50 hover:border-fiery-core';
                 btn.textContent = cat.name;
-                
-                // Store category name in dataset for easy reference
                 btn.dataset.name = cat.name;
-                
                 btn.onclick = () => toggleCategory(cat.name, btn);
                 container.appendChild(btn);
             });
@@ -165,17 +210,11 @@
 
         function toggleCategory(name, btn) {
             if (selectedCategories.includes(name)) {
-                // Deselect
                 selectedCategories = selectedCategories.filter(c => c !== name);
-                
-                // Revert styles
                 btn.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
                 btn.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
             } else {
-                // Select
                 selectedCategories.push(name);
-                
-                // Apply Active Styles (Warm Dusk + Dark Text)
                 btn.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
                 btn.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
             }
@@ -198,7 +237,6 @@
         }
 
         async function initGame() {
-            // Compile words
             let gameWords = [];
             allCategories.forEach(cat => {
                 if (selectedCategories.includes(cat.name)) {
@@ -211,7 +249,6 @@
                 sessionStorage.setItem('whoami_data', JSON.stringify(gameWords));
                 window.location.href = 'Game.html?mode=single';
             } else {
-                // Multi Player Logic
                 if (!db) {
                     alert("Database not connected. Check config.");
                     return;
@@ -228,7 +265,6 @@
                     players: {} 
                 });
 
-                // Redirect Host
                 window.location.href = `Game.html?mode=host&code=${code}`;
             }
         }

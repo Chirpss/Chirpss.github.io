@@ -38,12 +38,10 @@
             height: 100dvh;
             overflow: hidden;
         }
-        
         .card { 
             transition: transform 0.2s ease-out; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        
         .qr-container img {
             border-radius: 0.5rem;
             border: 4px solid white;
@@ -61,6 +59,12 @@
                     <span class="sm:hidden">CHIRPSS</span>
                 </div>
             </a>
+
+            <div class="hidden sm:flex bg-deep-twilight/50 rounded-lg border border-subtle-gray/30 overflow-hidden ml-2">
+                <button onclick="setLanguage('EN')" id="lang-en" class="px-2 py-1 text-xs font-bold transition-colors text-subtle-gray hover:text-soft-horizon">EN</button>
+                <div class="w-px bg-subtle-gray/30"></div>
+                <button onclick="setLanguage('DE')" id="lang-de" class="px-2 py-1 text-xs font-bold transition-colors text-subtle-gray hover:text-soft-horizon">DE</button>
+            </div>
             
             <div id="room-code-display" class="hidden text-subtle-gray text-xs border-l border-white/20 pl-3 leading-tight whitespace-nowrap">
                 Room <br>
@@ -150,7 +154,52 @@
         let serverTimeOffset = 0;
         let activePlayerCount = 0;
 
+        // --- Language Cookie Logic (Simplified for Game Page) ---
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        function setLanguage(lang) {
+            setCookie('chirpss_lang', lang, 365);
+            // In Game.html, changing language usually requires going back to Index to reload data, 
+            // but we update the cookie here so the next visit is correct.
+            // Optionally, prompt user to restart.
+            if(confirm("Language changed. Return to menu to load new data?")) {
+                window.location.href = 'https://chirpss.github.io/WhoAmI/';
+            }
+        }
+        function updateLangUI() {
+            const savedLang = getCookie('chirpss_lang') || 'EN';
+            const btnEn = document.getElementById('lang-en');
+            const btnDe = document.getElementById('lang-de');
+            if(!btnEn || !btnDe) return;
+
+            const activeClass = "bg-warm-dusk text-deep-twilight";
+            const inactiveClass = "text-subtle-gray hover:text-soft-horizon bg-transparent";
+
+            btnEn.className = `px-2 py-1 text-xs font-bold transition-colors ${inactiveClass}`;
+            btnDe.className = `px-2 py-1 text-xs font-bold transition-colors ${inactiveClass}`;
+
+            if(savedLang === 'DE') {
+                btnDe.className = `px-2 py-1 text-xs font-bold transition-colors ${activeClass}`;
+            } else {
+                btnEn.className = `px-2 py-1 text-xs font-bold transition-colors ${activeClass}`;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            updateLangUI();
             if (mode === 'single') {
                 initSingle();
             } else {
@@ -164,7 +213,8 @@
             document.getElementById('single-next-btn').classList.remove('hidden');
             
             const data = sessionStorage.getItem('whoami_data');
-            if (!data) window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
+            // Redirect to index if data is missing
+            if (!data) window.location.href = 'https://chirpss.github.io/WhoAmI/'; 
             wordsPool = JSON.parse(data);
             
             showNextWordSingle();
@@ -209,8 +259,6 @@
                 setupHostLobby();
                 
                 dbRef.update({ hostStatus: 'online' });
-                
-                // Initial Default: Remove on disconnect (assuming empty)
                 dbRef.onDisconnect().remove(); 
                 
             } else {
@@ -228,16 +276,11 @@
 
             playerRef.onDisconnect().remove(); 
             
-            // Client-side instant cleanup
             window.addEventListener('beforeunload', () => {
                 playerRef.remove();
                 if (mode === 'host') {
-                    // Logic to check players synchronously is hard here, so we force update state
-                    // If Host closes tab, we can't reliably check player count synchronously
-                    // Best effort: if we have active players tracked locally, try to set Grace Period
                     if (activePlayerCount > 1) {
-                         // Attempt to set graceful exit state
-                         // Note: This often fails on close, which is why onDisconnect is vital
+                         // Grace period logic if needed
                     } else {
                         dbRef.remove();
                     }
@@ -250,7 +293,7 @@
                 const game = snapshot.val();
                 if (!game) { 
                     alert("Game ended by Host."); 
-                    window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
+                    window.location.href = 'https://chirpss.github.io/WhoAmI/';
                     return; 
                 }
 
@@ -265,17 +308,12 @@
                 }
 
                 const activePlayers = getActivePlayers(game.players);
-                activePlayerCount = activePlayers.length; // Update global tracker
+                activePlayerCount = activePlayers.length; 
                 document.getElementById('player-count').textContent = `Players: ${activePlayerCount}`;
 
-                // --- HOST DYNAMIC CLEANUP STRATEGY ---
                 if (mode === 'host') {
-                    // 1. Ghost Cleanup
                     autoCleanupGhosts(game.players);
 
-                    // 2. Dynamic Disconnect Strategy
-                    // If there are joiners (>1 player), use Grace Period (update).
-                    // If it's just the host (<=1), use Instant Kill (remove).
                     if (activePlayerCount > 1) {
                         dbRef.onDisconnect().update({
                             hostStatus: 'offline',
@@ -325,7 +363,7 @@
         function hostEndGame() {
             if (confirm("End game and close room for everyone?")) {
                 dbRef.remove();
-                window.location.href = 'https://chirpss.github.io/WhoAmI/'; // Updated link
+                window.location.href = 'https://chirpss.github.io/WhoAmI/'; 
             }
         }
 
@@ -460,7 +498,7 @@
             } else if (word.length > 7) {
                 display.className = "text-5xl sm:text-6xl md:text-8xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             } else {
-                display.className = "text-7xl sm:text-8xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
+                display.className = "text-6xl sm:text-8xl md:text-9xl font-extrabold leading-tight drop-shadow-lg relative z-10 break-words w-full px-2";
             }
         }
     </script>
