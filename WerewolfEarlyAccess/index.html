@@ -42,9 +42,25 @@
             background-color: #1C2A39;
             color: #F5F1E6;
         }
-        /* New: Style for the SVG image reference */
-        .werewolf-icon {
-            filter: drop-shadow(0 0 10px rgba(255, 195, 91, 0.5)); /* Equivalent to drop-shadow-2xl using CSS filter */
+        
+        /* COLOR FIX: 
+           Using mask-image allows us to take the shape of the external SVG 
+           but fill it with a CSS background color (bg-fiery-core). 
+        */
+        .werewolf-mask {
+            mask-image: url('https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg');
+            -webkit-mask-image: url('https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg');
+            mask-size: contain;
+            -webkit-mask-size: contain;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-position: center;
+        }
+
+        /* Countdown Numbers - Monospace to prevent jitter */
+        .count-num {
+            font-variant-numeric: tabular-nums;
         }
     </style>
 </head>
@@ -55,10 +71,7 @@
             <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity">
                 <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
-            <a href="index.html" class="text-sm font-bold text-subtle-gray hover:text-soft-horizon transition-colors">
-                Back to Hub
-            </a>
-        </div>
+            </div>
     </header>
 
     <main class="flex-grow flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
@@ -68,12 +81,7 @@
         <div class="max-w-3xl mx-auto space-y-8 animate-float">
             
             <div class="flex justify-center">
-                <img 
-                    src="https://chirpss.github.io/WerewolfEarlyAccess/werewolf.svg" 
-                    alt="Werewolf Icon" 
-                    class="h-40 w-40 werewolf-icon"
-                    style="color: #FFC35B;"
-                >
+                <div class="h-40 w-40 bg-fiery-core werewolf-mask drop-shadow-2xl"></div>
             </div>
 
             <h1 class="text-5xl md:text-7xl font-extrabold text-soft-horizon tracking-tight drop-shadow-lg">
@@ -86,20 +94,36 @@
                         Under Development
                     </p>
                 </div>
-                <p class="text-xs text-subtle-gray/60 uppercase tracking-widest">
-                    *English Language Release Only
-                </p>
-            </div>
+                </div>
 
             <p class="text-xl text-subtle-gray max-w-lg mx-auto leading-relaxed">
                 We are currently brewing the potions and sharpening the claws. The ultimate social deduction experience is coming to CHIRPSS.
             </p>
 
-            <div class="py-8">
+            <div class="py-6">
                 <p class="text-sm text-subtle-gray uppercase tracking-widest mb-2">Expected Release</p>
-                <h2 class="text-4xl md:text-6xl font-mono font-bold text-fiery-core drop-shadow-md">
+                <h2 class="text-4xl md:text-6xl font-mono font-bold text-fiery-core drop-shadow-md mb-6">
                     01.01.2026
                 </h2>
+
+                <div id="countdown" class="grid grid-cols-4 gap-4 max-w-lg mx-auto">
+                    <div class="bg-input-bg/80 border border-subtle-gray/30 p-3 rounded-lg flex flex-col items-center">
+                        <span id="days" class="text-2xl sm:text-4xl font-bold text-soft-horizon count-num">00</span>
+                        <span class="text-xs text-subtle-gray uppercase tracking-wider">Days</span>
+                    </div>
+                    <div class="bg-input-bg/80 border border-subtle-gray/30 p-3 rounded-lg flex flex-col items-center">
+                        <span id="hours" class="text-2xl sm:text-4xl font-bold text-soft-horizon count-num">00</span>
+                        <span class="text-xs text-subtle-gray uppercase tracking-wider">Hours</span>
+                    </div>
+                    <div class="bg-input-bg/80 border border-subtle-gray/30 p-3 rounded-lg flex flex-col items-center">
+                        <span id="minutes" class="text-2xl sm:text-4xl font-bold text-soft-horizon count-num">00</span>
+                        <span class="text-xs text-subtle-gray uppercase tracking-wider">Mins</span>
+                    </div>
+                    <div class="bg-input-bg/80 border border-subtle-gray/30 p-3 rounded-lg flex flex-col items-center shadow-[0_0_10px_rgba(255,195,91,0.1)]">
+                        <span id="seconds" class="text-2xl sm:text-4xl font-bold text-fiery-core count-num">00</span>
+                        <span class="text-xs text-subtle-gray uppercase tracking-wider">Secs</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -148,6 +172,39 @@
         </div>
 
     </main>
+
+    <script>
+        // Set the date we're counting down to
+        const countDownDate = new Date("Jan 1, 2026 00:00:00").getTime();
+
+        // Update the count down every 1 second
+        const x = setInterval(function() {
+
+            // Get today's date and time
+            const now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            const distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the elements
+            document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+            document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "<div class='text-2xl font-bold text-fiery-core col-span-4'>THE NIGHT HAS COME</div>";
+            }
+        }, 1000);
+    </script>
 
 </body>
 </html>
