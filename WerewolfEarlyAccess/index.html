@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHIRPSS | Werewolf - Coming Soon</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                        'input-bg': '#2A3C50',
+                        'danger-red': '#E53E3E',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1C2A39;
+            color: #F5F1E6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+            <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity">
+                <h1 class="text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+            </a>
+
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+        
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-fiery-core/5 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
+
+        <div class="max-w-3xl mx-auto space-y-8 animate-float">
+            
+            <div class="flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-fiery-core drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-soft-horizon tracking-tight drop-shadow-lg">
+                The Village Sleeps
+            </h1>
+
+            <div class="flex flex-col items-center gap-2">
+                <div class="inline-block bg-input-bg border border-danger-red/50 px-6 py-3 rounded-xl shadow-lg">
+                    <p class="text-danger-red font-bold uppercase tracking-widest text-sm">
+                        Under Development
+                    </p>
+                </div>
+                <p class="text-xs text-subtle-gray/60 uppercase tracking-widest">
+                    *English Language Release Only
+                </p>
+            </div>
+
+            <p class="text-xl text-subtle-gray max-w-lg mx-auto leading-relaxed">
+                We are currently brewing the potions and sharpening the claws. The ultimate social deduction experience is coming to CHIRPSS.
+            </p>
+
+            <div class="py-8">
+                <p class="text-sm text-subtle-gray uppercase tracking-widest mb-2">Expected Release</p>
+                <h2 class="text-4xl md:text-6xl font-mono font-bold text-fiery-core drop-shadow-md">
+                    01.01.2026
+                </h2>
+            </div>
+        </div>
+
+        <div class="mt-12 max-w-5xl w-full">
+            <h3 class="text-2xl font-bold mb-8 text-warm-dusk">What to Expect</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div class="bg-input-bg/60 backdrop-blur-sm p-8 rounded-2xl border border-subtle-gray/20 hover:border-fiery-core/30 transition-colors shadow-xl">
+                    <div class="text-fiery-core mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-soft-horizon">100+ Players</h4>
+                    <p class="text-subtle-gray mt-3 text-lg">Massive scale support. Whether it's a small party or a convention hall, everyone can join the same village.</p>
+                </div>
+
+                <div class="bg-input-bg/60 backdrop-blur-sm p-8 rounded-2xl border border-subtle-gray/20 hover:border-fiery-core/30 transition-colors shadow-xl">
+                    <div class="text-fiery-core mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-soft-horizon">40+ Roles</h4>
+                    <p class="text-subtle-gray mt-3 text-lg">Way beyond simple Wolves. From the Tanner to the Sorcerer, create complex webs of deception.</p>
+                </div>
+
+                <div class="bg-input-bg/60 backdrop-blur-sm p-8 rounded-2xl border border-subtle-gray/20 hover:border-fiery-core/30 transition-colors shadow-xl">
+                    <div class="text-fiery-core mb-4">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-soft-horizon">Automated Narrator</h4>
+                    <p class="text-subtle-gray mt-3 text-lg">No human moderator needed. The app voices the story, wakes up roles, and manages the chaos for you.</p>
+                </div>
+
+                 <div class="bg-input-bg/60 backdrop-blur-sm p-8 rounded-2xl border border-subtle-gray/20 hover:border-fiery-core/30 transition-colors shadow-xl">
+                    <div class="text-fiery-core mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    </div>
+                    <h4 class="text-2xl font-bold text-soft-horizon">Phone Based</h4>
+                    <p class="text-subtle-gray mt-3 text-lg">Secret roles are delivered safely to everyone's device. No shuffling cards or closing eyes to peek.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-16 mb-8">
+            <a href="index.html" class="bg-subtle-gray hover:bg-subtle-gray/80 text-soft-horizon font-bold py-4 px-10 rounded-xl transition-all shadow-lg text-lg">
+                Back to Games
+            </a>
+        </div>
+
+    </main>
+
+</body>
+</html>

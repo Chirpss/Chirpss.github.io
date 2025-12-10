@@ -51,7 +51,7 @@
 
     <script>
         window.startPlay = function(gameName) {
-            const pathMap = { 'Imposter': '/Imposter/', 'WrongAnswersOnly': '/WrongAnswersOnly/', 'TenBut': '/TenBut/', 'WhoAmI': '/WhoAmI/', 'WerewolfEalyAccess': '/WerewolfEalyAccess/'};
+            const pathMap = { 'Imposter': '/Imposter/', 'WrongAnswersOnly': '/WrongAnswersOnly/', 'TenBut': '/TenBut/', 'WhoAmI': '/WhoAmI/', 'WerewolfEarlyAccess': '/WerewolfEarlyAccess/'};
             const urlPath = pathMap[gameName] || '/';
             window.location.href = urlPath;
         };
@@ -140,7 +140,7 @@
                 </div>
             </div>
 
-             <div class="relative cursor-default p-1" onclick="startPlay('WerewolfEalyAccess')">
+             <div class="relative cursor-default p-1" onclick="startPlay('WerewolfEarlyAccess')">
                 <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
                     <div class="text-center text-soft-horizon">
                         <h3 class="text-base sm:text-lg font-bold">Werewolf</h3>
