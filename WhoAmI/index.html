@@ -10,7 +10,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="firebase-config.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script src="https://chirpss.github.io/WhoAmI/firebase-config.js"></script>
 
     <script>
         tailwind.config = {
@@ -153,18 +157,21 @@
             // 2. Determine File
             const dataFile = currentLang === 'DE' ? 'dataDE.json' : 'data.json';
 
-            // Check for Firebase availability
-            if (typeof firebase !== 'undefined' && firebase.database) {
+            // 3. Connect Database
+            if (typeof firebase !== 'undefined') {
                 try {
                     db = firebase.database();
+                    console.log("Firebase initialized successfully");
                 } catch (e) {
-                    console.log("Firebase config might be missing or already initialized.");
+                    console.log("Firebase error:", e);
                 }
+            } else {
+                console.log("Firebase SDK not found");
             }
             
             setMode('single');
 
-            // 3. Fetch Correct Data
+            // 4. Fetch Correct Data
             fetch(dataFile)
                 .then(res => res.json())
                 .then(data => {
