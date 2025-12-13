@@ -11,22 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script src="firebase-config.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
     <script>
-        // Custom Tailwind Configuration (Copied from HTML 2/4)
+        // Custom Tailwind Configuration
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'deep-twilight': '#1C2A39',   /* Main Dark Background */
-                        'warm-dusk': '#E87040',       /* Primary Action/Button */
-                        'fiery-core': '#FFC35B',      /* Accent/Highlight */
-                        'soft-horizon': '#F5F1E6',    /* Light Text/Card Background/Input */
-                        'subtle-gray': '#5A6F82',     /* Subtler text/border color */
-                        'input-bg': '#2A3C50',        /* Slightly lighter background for inputs (used for bar background) */
+                        'deep-twilight': '#1C2A39',   
+                        'warm-dusk': '#E87040',       
+                        'fiery-core': '#FFC35B',      
+                        'soft-horizon': '#F5F1E6',    
+                        'subtle-gray': '#5A6F82',     
+                        'input-bg': '#2A3C50',        
                         'danger-red': '#E53E3E',
                         'success-green': '#38A169',
                     }
@@ -38,13 +39,13 @@
     <style>
         /* Base styles matched to the brand */
         body { 
-            background-color: #1C2A39; /* deep-twilight */ 
-            color: #F5F1E6; /* soft-horizon */ 
+            background-color: #1C2A39; 
+            color: #F5F1E6; 
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
         
-        /* Primary Action Button Style (Copied from HTML 4 primary-btn logic) */
+        /* Primary Action Button Style */
         .primary-action-btn {
             transition: all 0.15s ease-in-out;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
@@ -58,7 +59,7 @@
             box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
         }
 
-        /* Gender/Next Buttons (warm-dusk background, deep-twilight text) */
+        /* Gender/Next Buttons */
         .gender-btn { 
             transition: all 0.2s; 
             background-color: #E87040; /* warm-dusk */
@@ -137,7 +138,7 @@
             animation: promptFlash 0.3s ease-out 1;
         }
         
-        /* NEW: Share Icon Styling */
+        /* Share Icon Styling */
         #share-icon-btn {
             position: absolute;
             top: 10px;
