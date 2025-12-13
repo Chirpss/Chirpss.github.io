@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script>
         // Custom Tailwind Configuration
         tailwind.config = {
@@ -92,6 +95,9 @@
     </main>
 
     <script>
+        // Note: I left this configuration here since you had it in your code.
+        // You could also remove this variable and add <script src="firebase-config.js"> to the head
+        // like you did in the previous file to avoid copy-pasting API keys.
         const firebaseConfig = {
             apiKey: "AIzaSyAdgoyDsUteoRBIQ74NXvg5Xfj8V105Dnw",
             authDomain: "chirpssgames.firebaseapp.com",
@@ -102,6 +108,8 @@
             appId: "1:949878456642:web:4287fe5fe9577ce1b688db",
             measurementId: "G-E628QMNRQY"
         };
+        
+        // Now that the scripts are in the <head>, this line will work:
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -115,7 +123,7 @@
 
         async function joinGame() {
             const codeInput = document.getElementById('game-code');
-            const code = codeInput.value.toUpperCase(); // Keeping uppercase just in case mixed inputs occur
+            const code = codeInput.value.toUpperCase(); 
             const errorMsg = document.getElementById('error-msg');
             const btn = document.getElementById('join-btn');
 
