@@ -1,0 +1,471 @@
+{
+  "categories": [
+    {
+      "name": "Space & Astronomy",
+      "questions": [
+        { "prompt": "Age of the universe (billion years)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "13.8", "actual": 13.8 },
+        { "prompt": "Distance Earth–Moon (km)...", "benchmarkDisplay": "500,000", "benchmark": 500000, "actualDisplay": "384,400", "actual": 384400 },
+        { "prompt": "Diameter of Earth (km)...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "12,742", "actual": 12742 },
+        { "prompt": "Light speed (km/s)...", "benchmarkDisplay": "250,000", "benchmark": 250000, "actualDisplay": "299,792", "actual": 299792 },
+        { "prompt": "Milky Way stars (billion)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "200", "actual": 200 },
+        { "prompt": "Sun surface temperature (°C)...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "5,500", "actual": 5500 },
+        { "prompt": "Sun core temperature (million °C)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "15", "actual": 15 },
+        { "prompt": "Earth–Sun distance (million km)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "149.6", "actual": 149.6 },
+        { "prompt": "Moon radius (km)...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "1,737", "actual": 1737 },
+        { "prompt": "Planets in Solar System...", "benchmarkDisplay": "9", "benchmark": 9, "actualDisplay": "8", "actual": 8 },
+        
+        { "prompt": "Largest asteroid diameter (km)...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "940", "actual": 940 },
+        { "prompt": "Saturn rings thickness (m)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Jupiter mass vs Earth (x)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "318", "actual": 318 },
+        { "prompt": "Venus surface temp (°C)...", "benchmarkDisplay": "400", "benchmark": 400, "actualDisplay": "462", "actual": 462 },
+        { "prompt": "Mars day length (hours)...", "benchmarkDisplay": "24", "benchmark": 24, "actualDisplay": "24.6", "actual": 24.6 },
+        { "prompt": "Neptune wind speed (km/h)...", "benchmarkDisplay": "1,500", "benchmark": 1500, "actualDisplay": "2,100", "actual": 2100 },
+        { "prompt": "Pluto orbital period (years)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "248", "actual": 248 },
+        { "prompt": "International Space Station speed (km/h)...", "benchmarkDisplay": "25,000", "benchmark": 25000, "actualDisplay": "27,600", "actual": 27600 },
+        { "prompt": "Total solar eclipses per century...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "60", "actual": 60 },
+        { "prompt": "Observable universe diameter (billion ly)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "93", "actual": 93 },
+        
+        { "prompt": "Galaxies in observable universe (billion)...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "2,000", "actual": 2000 },
+        { "prompt": "Earth escape velocity (km/s)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "11.2", "actual": 11.2 },
+        { "prompt": "Sun mass vs Earth (x)...", "benchmarkDisplay": "300,000", "benchmark": 300000, "actualDisplay": "333,000", "actual": 333000 },
+        { "prompt": "Largest known star radius vs Sun (x)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "1,700", "actual": 1700 },
+        { "prompt": "Meteorites hitting Earth yearly...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "17,000", "actual": 17000 },
+        { "prompt": "Solar flares peak temp (million °C)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Black hole at Milky Way center (solar masses)...", "benchmarkDisplay": "3M", "benchmark": 3000000, "actualDisplay": "4.3M", "actual": 4300000 },
+        { "prompt": "Moon gravity vs Earth (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "16.5", "actual": 16.5 },
+        { "prompt": "Solar energy reaching Earth (PW)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "174", "actual": 174 },
+        { "prompt": "Average galaxy diameter (ly)...", "benchmarkDisplay": "50,000", "benchmark": 50000, "actualDisplay": "100,000", "actual": 100000 },
+        
+        { "prompt": "Time for light from Sun to Earth (min)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "8.3", "actual": 8.3 },
+        { "prompt": "Largest moon diameter (km)...", "benchmarkDisplay": "4,000", "benchmark": 4000, "actualDisplay": "5,268", "actual": 5268 },
+        { "prompt": "Earth rotation speed at equator (km/h)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "1,670", "actual": 1670 },
+        { "prompt": "Satellites orbiting Earth...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "8,000", "actual": 8000 },
+        { "prompt": "Space debris objects tracked...", "benchmarkDisplay": "20,000", "benchmark": 20000, "actualDisplay": "34,000", "actual": 34000 },
+        { "prompt": "Longest lunar eclipse (min)...", "benchmarkDisplay": "90", "benchmark": 90, "actualDisplay": "107", "actual": 107 },
+        { "prompt": "Mars gravity vs Earth (%)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "38", "actual": 38 },
+        { "prompt": "Known exoplanets...", "benchmarkDisplay": "3,000", "benchmark": 3000, "actualDisplay": "5,500", "actual": 5500 },
+        { "prompt": "Sun lifespan total (billion years)...", "benchmarkDisplay": "8", "benchmark": 8, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Asteroid belt width (million km)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "140", "actual": 140 }
+      ]
+    },
+    {
+      "name": "Human Body",
+      "questions": [
+        { "prompt": "Bones in adult human body...", "benchmarkDisplay": "250", "benchmark": 250, "actualDisplay": "206", "actual": 206 },
+        { "prompt": "Muscles in human body...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "600", "actual": 600 },
+        { "prompt": "Blood volume (liters)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5", "actual": 5 },
+        { "prompt": "Heartbeats per day...", "benchmarkDisplay": "80,000", "benchmark": 80000, "actualDisplay": "100,000", "actual": 100000 },
+        { "prompt": "Neurons in brain (billion)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "86", "actual": 86 },
+        
+        { "prompt": "DNA length per cell (meters)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "2", "actual": 2 },
+        { "prompt": "Skin weight (kg)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "4", "actual": 4 },
+        { "prompt": "Daily breaths...", "benchmarkDisplay": "15,000", "benchmark": 15000, "actualDisplay": "20,000", "actual": 20000 },
+        { "prompt": "Taste buds...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "10,000", "actual": 10000 },
+        { "prompt": "Human body water (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "60", "actual": 60 },
+        
+        { "prompt": "Red blood cells (trillion)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "25", "actual": 25 },
+        { "prompt": "Daily saliva production (liters)...", "benchmarkDisplay": "0.5", "benchmark": 0.5, "actualDisplay": "1.5", "actual": 1.5 },
+        { "prompt": "Daily hair loss...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "100", "actual": 100 },
+        { "prompt": "Liver weight (kg)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.5", "actual": 1.5 },
+        { "prompt": "Blinking per day...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "15,000", "actual": 15000 },
+        
+        { "prompt": "Average lifespan globally (years)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "73", "actual": 73 },
+        { "prompt": "Calories burned sleeping (per hour)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "70", "actual": 70 },
+        { "prompt": "Capillaries length (km)...", "benchmarkDisplay": "50,000", "benchmark": 50000, "actualDisplay": "100,000", "actual": 100000 },
+        { "prompt": "Daily urine production (liters)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "2", "actual": 2 },
+        { "prompt": "Heart chambers...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "4", "actual": 4 },
+        
+        { "prompt": "Human cells (trillion)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "37", "actual": 37 },
+        { "prompt": "Bone marrow produced cells/day (billion)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "200", "actual": 200 },
+        { "prompt": "Average body temperature (°C)...", "benchmarkDisplay": "36", "benchmark": 36, "actualDisplay": "37", "actual": 37 },
+        { "prompt": "Eyes can distinguish colors (million)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Lung surface area (m²)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "70", "actual": 70 },
+        
+        { "prompt": "Max taste types...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5", "actual": 5 },
+        { "prompt": "Daily calories for teen male...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "2,800", "actual": 2800 },
+        { "prompt": "Nerve signal speed (m/s)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "120", "actual": 120 },
+        { "prompt": "Teeth in adult mouth...", "benchmarkDisplay": "28", "benchmark": 28, "actualDisplay": "32", "actual": 32 },
+        { "prompt": "Stomach acid pH...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "1", "actual": 1 },
+        
+        { "prompt": "Human reaction time (ms)...", "benchmarkDisplay": "300", "benchmark": 300, "actualDisplay": "250", "actual": 250 },
+        { "prompt": "Sweat glands...", "benchmarkDisplay": "1M", "benchmark": 1000000, "actualDisplay": "2M", "actual": 2000000 },
+        { "prompt": "Daily skin shed (kg/year)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "4", "actual": 4 },
+        { "prompt": "Eye resolution (megapixels)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "576", "actual": 576 },
+        { "prompt": "Smell receptors...", "benchmarkDisplay": "5M", "benchmark": 5000000, "actualDisplay": "6M", "actual": 6000000 }
+      ]
+    },
+    {
+      "name": "Earth & Nature",
+      "questions": [
+        { "prompt": "Age of Earth (billion years)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "4.54", "actual": 4.54 },
+        { "prompt": "Oceans cover Earth (%)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "71", "actual": 71 },
+        { "prompt": "Highest mountain above sea level (m)...", "benchmarkDisplay": "8,000", "benchmark": 8000, "actualDisplay": "8,849", "actual": 8849 },
+        { "prompt": "Deepest ocean point (m)...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "10,935", "actual": 10935 },
+        { "prompt": "Active volcanoes worldwide...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "1,500", "actual": 1500 },
+
+        { "prompt": "Earthquakes per year...", "benchmarkDisplay": "100,000", "benchmark": 100000, "actualDisplay": "500,000", "actual": 500000 },
+        { "prompt": "Freshwater on Earth (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "2.5", "actual": 2.5 },
+        { "prompt": "Largest desert area (million km²)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "14", "actual": 14 },
+        { "prompt": "Amazon rainforest area (million km²)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5.5", "actual": 5.5 },
+        { "prompt": "Average ocean depth (m)...", "benchmarkDisplay": "3,000", "benchmark": 3000, "actualDisplay": "3,688", "actual": 3688 },
+        { "prompt": "Lightning strikes per year...", "benchmarkDisplay": "500M", "benchmark": 500000000, "actualDisplay": "1.4B", "actual": 1400000000 },
+        { "prompt": "Rainfall record in one day (mm)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "1,825", "actual": 1825 },
+        { "prompt": "Earth axial tilt (degrees)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "23.5", "actual": 23.5 },
+        { "prompt": "Soil organisms per teaspoon...", "benchmarkDisplay": "100M", "benchmark": 100000000, "actualDisplay": "1B", "actual": 1000000000 },
+        { "prompt": "Earth rotation slowdown (ms/century)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.7", "actual": 1.7 },
+
+        { "prompt": "Tree species worldwide...", "benchmarkDisplay": "40,000", "benchmark": 40000, "actualDisplay": "60,000", "actual": 60000 },
+        { "prompt": "Animal species estimated (million)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "8.7", "actual": 8.7 },
+        { "prompt": "Earth atmosphere height (km)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "100", "actual": 100 },
+        { "prompt": "Largest waterfall height (m)...", "benchmarkDisplay": "800", "benchmark": 800, "actualDisplay": "979", "actual": 979 },
+        { "prompt": "Glaciers melting yearly (billion tons)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "267", "actual": 267 },
+
+        { "prompt": "Global forest loss per year (million ha)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Atmospheric oxygen (%)...", "benchmarkDisplay": "18", "benchmark": 18, "actualDisplay": "21", "actual": 21 },
+        { "prompt": "Earth mass (10^24 kg)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "5.97", "actual": 5.97 },
+        { "prompt": "Longest river length (km)...", "benchmarkDisplay": "6,000", "benchmark": 6000, "actualDisplay": "6,650", "actual": 6650 },
+        { "prompt": "Coral reefs lost (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+
+        { "prompt": "Daily tidal energy dissipated (TW)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "3.7", "actual": 3.7 },
+        { "prompt": "Earth surface gravity (m/s²)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "9.81", "actual": 9.81 },
+        { "prompt": "Atmospheric pressure at sea level (kPa)...", "benchmarkDisplay": "90", "benchmark": 90, "actualDisplay": "101.3", "actual": 101.3 },
+        { "prompt": "Largest earthquake magnitude...", "benchmarkDisplay": "8.5", "benchmark": 8.5, "actualDisplay": "9.5", "actual": 9.5 },
+        { "prompt": "Earth albedo (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "30", "actual": 30 },
+
+        { "prompt": "Carbon stored in forests (Gt)...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "650", "actual": 650 },
+        { "prompt": "Earth land surface (%)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "29", "actual": 29 },
+        { "prompt": "Average wind speed globally (km/h)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "15", "actual": 15 },
+        { "prompt": "Ocean phytoplankton oxygen (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+        { "prompt": "Permafrost carbon (Gt)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "1,500", "actual": 1500 }
+      ]
+    },
+    {
+      "name": "Technology & Internet",
+      "questions": [
+        { "prompt": "People with internet access (billion)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5.4", "actual": 5.4 },
+        { "prompt": "Smartphones in use worldwide (billion)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "6.8", "actual": 6.8 },
+        { "prompt": "Emails sent per day (billion)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "347", "actual": 347 },
+        { "prompt": "Google searches per day (billion)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "8.5", "actual": 8.5 },
+        { "prompt": "YouTube videos watched daily (billion)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "5", "actual": 5 },
+
+        { "prompt": "Lines of code in Windows OS (million)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+        { "prompt": "Global data created per day (EB)...", "benchmarkDisplay": "300", "benchmark": 300, "actualDisplay": "463", "actual": 463 },
+        { "prompt": "Internet traffic video share (%)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "80", "actual": 80 },
+        { "prompt": "World websites (billion)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.1", "actual": 1.1 },
+        { "prompt": "Apps downloaded per year (billion)...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "255", "actual": 255 },
+
+        { "prompt": "Average smartphone lifespan (years)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "3", "actual": 3 },
+        { "prompt": "Internet users on social media (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "63", "actual": 63 },
+        { "prompt": "Average daily screen time (hours)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "6.5", "actual": 6.5 },
+        { "prompt": "Data stored globally (ZB)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "120", "actual": 120 },
+        { "prompt": "Passwords leaked yearly (billion)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "15", "actual": 15 },
+
+        { "prompt": "Energy use of global data centers (%)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "2", "actual": 2 },
+        { "prompt": "Avg mobile internet speed (Mbps)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+        { "prompt": "AI parameters (largest models, billion)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "1,000", "actual": 1000 },
+        { "prompt": "Global IT spending (trillion USD)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "4.7", "actual": 4.7 },
+        { "prompt": "Cyberattacks per day (million)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "100", "actual": 100 },
+
+        { "prompt": "Average webpage size (MB)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "2.3", "actual": 2.3 },
+        { "prompt": "Internet backbone speed (Tbps)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "100", "actual": 100 },
+        { "prompt": "Cloud workload share (%)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "60", "actual": 60 },
+        { "prompt": "Code repositories on GitHub (million)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "420", "actual": 420 },
+        { "prompt": "Programming languages created...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "700", "actual": 700 },
+
+        { "prompt": "Bitcoin transactions per day...", "benchmarkDisplay": "200,000", "benchmark": 200000, "actualDisplay": "350,000", "actual": 350000 },
+        { "prompt": "Blockchain size Bitcoin (GB)...", "benchmarkDisplay": "300", "benchmark": 300, "actualDisplay": "550", "actual": 550 },
+        { "prompt": "Average PC power usage (W)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "300", "actual": 300 },
+        { "prompt": "Video game players worldwide (billion)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "3.3", "actual": 3.3 },
+        { "prompt": "Latency human-perceptible (ms)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "50", "actual": 50 },
+
+        { "prompt": "Internet cables under oceans (km)...", "benchmarkDisplay": "1M", "benchmark": 1000000, "actualDisplay": "1.4M", "actual": 1400000 },
+        { "prompt": "Avg SSD speed (MB/s)...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "3,500", "actual": 3500 },
+        { "prompt": "Data lost yearly (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "20", "actual": 20 },
+        { "prompt": "Global IP addresses IPv4 (billion)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "4.3", "actual": 4.3 },
+        { "prompt": "Quantum computers qubits (max)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "1,000+", "actual": 1000 }
+      ]
+    },
+    {
+      "name": "Economy & Money",
+      "questions": [
+        { "prompt": "Global GDP (trillion USD)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "105", "actual": 105 },
+        { "prompt": "People living on <$2/day (million)...", "benchmarkDisplay": "800", "benchmark": 800, "actualDisplay": "650", "actual": 650 },
+        { "prompt": "World population (billion)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "8.1", "actual": 8.1 },
+        { "prompt": "Cash in circulation globally (trillion USD)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "8.3", "actual": 8.3 },
+        { "prompt": "Countries with their own currency...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "180", "actual": 180 },
+
+        { "prompt": "Global public debt (trillion USD)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "315", "actual": 315 },
+        { "prompt": "World billionaires...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "2,640", "actual": 2640 },
+        { "prompt": "Average global inflation (%)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "6", "actual": 6 },
+        { "prompt": "Global remittances (trillion USD)...", "benchmarkDisplay": "0.5", "benchmark": 0.5, "actualDisplay": "0.86", "actual": 0.86 },
+        { "prompt": "Stock exchanges worldwide...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "60", "actual": 60 },
+
+        { "prompt": "Largest company market cap (trillion USD)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "3.5", "actual": 3.5 },
+        { "prompt": "Daily forex trading (trillion USD)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "7.5", "actual": 7.5 },
+        { "prompt": "Gold mined total (tons)...", "benchmarkDisplay": "150,000", "benchmark": 150000, "actualDisplay": "205,000", "actual": 205000 },
+        { "prompt": "Credit cards in use (billion)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "25", "actual": 25 },
+        { "prompt": "Unbanked adults worldwide (billion)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "1.4", "actual": 1.4 },
+
+        { "prompt": "Avg global salary (USD/year)...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "13,000", "actual": 13000 },
+        { "prompt": "Global tax revenue (% of GDP)...", "benchmarkDisplay": "12", "benchmark": 12, "actualDisplay": "15", "actual": 15 },
+        { "prompt": "International tourists per year (billion)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.3", "actual": 1.3 },
+        { "prompt": "Global e-commerce sales (trillion USD)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "6.3", "actual": 6.3 },
+        { "prompt": "Global unemployment (%)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "5", "actual": 5 },
+
+        { "prompt": "Average work hours per year...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "1,900", "actual": 1900 },
+        { "prompt": "Largest national debt (trillion USD)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "34", "actual": 34 },
+        { "prompt": "Global insurance premiums (trillion USD)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "7", "actual": 7 },
+        { "prompt": "Share of cashless payments (%)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "60", "actual": 60 },
+        { "prompt": "Avg household debt (% income)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "100", "actual": 100 },
+
+        { "prompt": "Global minimum wage countries...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "90", "actual": 90 },
+        { "prompt": "Wealth held by top 1% (%)...", "benchmarkDisplay": "35", "benchmark": 35, "actualDisplay": "45", "actual": 45 },
+        { "prompt": "Central banks worldwide...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "180", "actual": 180 },
+        { "prompt": "Global aid spending (billion USD)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "210", "actual": 210 },
+        { "prompt": "Avg retirement age globally...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "64", "actual": 64 },
+
+        { "prompt": "Daily cash withdrawals (billion USD)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "75", "actual": 75 },
+        { "prompt": "Countries with stock markets...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "95", "actual": 95 },
+        { "prompt": "Global food spending (% income)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "35", "actual": 35 },
+        { "prompt": "Avg global rent (% income)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "30", "actual": 30 },
+        { "prompt": "Black market economy (% GDP)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "15", "actual": 15 }
+      ]
+    },
+    {
+      "name": "History & Civilization",
+      "questions": [
+        { "prompt": "Age of oldest known civilization (years)...", "benchmarkDisplay": "4,000", "benchmark": 4000, "actualDisplay": "5,500", "actual": 5500 },
+        { "prompt": "Years since invention of writing...", "benchmarkDisplay": "4,000", "benchmark": 4000, "actualDisplay": "5,200", "actual": 5200 },
+        { "prompt": "Total human history (years)...", "benchmarkDisplay": "100,000", "benchmark": 100000, "actualDisplay": "300,000", "actual": 300000 },
+        { "prompt": "Ancient wonders of the world...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "7", "actual": 7 },
+        { "prompt": "Years Roman Empire existed...", "benchmarkDisplay": "500", "benchmark": 500, "actualDisplay": "1,000", "actual": 1000 },
+
+        { "prompt": "Pyramids age (years)...", "benchmarkDisplay": "3,000", "benchmark": 3000, "actualDisplay": "4,500", "actual": 4500 },
+        { "prompt": "Longest-lasting empire (years)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "2,100", "actual": 2100 },
+        { "prompt": "Books destroyed at Library of Alexandria...", "benchmarkDisplay": "100,000", "benchmark": 100000, "actualDisplay": "400,000", "actual": 400000 },
+        { "prompt": "People killed in World War II (million)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "70", "actual": 70 },
+        { "prompt": "Years of Cold War...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "44", "actual": 44 },
+
+        { "prompt": "Countries existing in 1900...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "57", "actual": 57 },
+        { "prompt": "Modern countries today...", "benchmarkDisplay": "180", "benchmark": 180, "actualDisplay": "195", "actual": 195 },
+        { "prompt": "Years of Ancient Egypt...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "3,100", "actual": 3100 },
+        { "prompt": "Years since first Olympics...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "2,800", "actual": 2800 },
+        { "prompt": "Crusades duration (years)...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "196", "actual": 196 },
+
+        { "prompt": "Languages ever existed...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "7,000", "actual": 7000 },
+        { "prompt": "Dead languages today...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "3,000", "actual": 3000 },
+        { "prompt": "People killed by pandemics historically (million)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "300", "actual": 300 },
+        { "prompt": "Years since printing press...", "benchmarkDisplay": "400", "benchmark": 400, "actualDisplay": "580", "actual": 580 },
+        { "prompt": "Time between Stone Age and Iron Age (years)...", "benchmarkDisplay": "3,000", "benchmark": 3000, "actualDisplay": "5,000", "actual": 5000 },
+
+        { "prompt": "Vikings active (years)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "300", "actual": 300 },
+        { "prompt": "Witch trials executions (thousands)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Ancient Rome population peak (million)...", "benchmarkDisplay": "0.5", "benchmark": 0.5, "actualDisplay": "1", "actual": 1 },
+        { "prompt": "Years since Magna Carta...", "benchmarkDisplay": "600", "benchmark": 600, "actualDisplay": "809", "actual": 809 },
+        { "prompt": "Empires collapsed in 20th century...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+
+        { "prompt": "Total wars recorded in history...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "14,500", "actual": 14500 },
+        { "prompt": "Slavery practiced (years)...", "benchmarkDisplay": "2,000", "benchmark": 2000, "actualDisplay": "4,000", "actual": 4000 },
+        { "prompt": "People enslaved historically (million)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "100", "actual": 100 },
+        { "prompt": "Human generations so far...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "10,000", "actual": 10000 },
+        { "prompt": "Years since first cities...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "7,000", "actual": 7000 },
+
+        { "prompt": "Documents in Vatican archives (km shelves)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "85", "actual": 85 },
+        { "prompt": "Total time humans lived as hunters (%)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "95", "actual": 95 },
+        { "prompt": "Years since gunpowder invention...", "benchmarkDisplay": "800", "benchmark": 800, "actualDisplay": "1,100", "actual": 1100 },
+        { "prompt": "Medieval population of Europe (million)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "80", "actual": 80 },
+        { "prompt": "Ancient libraries destroyed...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "30+", "actual": 30 }
+      ]
+    },
+    {
+      "name": "Animals & Biology",
+      "questions": [
+        { "prompt": "Animal species on Earth (million)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "8.7", "actual": 8.7 },
+        { "prompt": "Insects share of all species (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "75", "actual": 75 },
+        { "prompt": "Blue whale weight (tons)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "180", "actual": 180 },
+        { "prompt": "Blue whale heart weight (kg)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "600", "actual": 600 },
+        { "prompt": "Largest spider leg span (cm)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "30", "actual": 30 },
+
+        { "prompt": "Fastest land animal speed (km/h)...", "benchmarkDisplay": "90", "benchmark": 90, "actualDisplay": "120", "actual": 120 },
+        { "prompt": "Fastest bird speed (km/h)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "390", "actual": 390 },
+        { "prompt": "Largest snake length (m)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "9", "actual": 9 },
+        { "prompt": "Ants per human ratio...", "benchmarkDisplay": "1M", "benchmark": 1000000, "actualDisplay": "2.5M", "actual": 2500000 },
+        { "prompt": "Bacteria cells on Earth...", "benchmarkDisplay": "1e29", "benchmark": 1e29, "actualDisplay": "5e30", "actual": 5e30 },
+
+        { "prompt": "Human microbiome cells (trillion)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "38", "actual": 38 },
+        { "prompt": "Octopus neurons (million)...", "benchmarkDisplay": "300", "benchmark": 300, "actualDisplay": "500", "actual": 500 },
+        { "prompt": "Longest living vertebrate (years)...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "250", "actual": 250 },
+        { "prompt": "Largest bird wingspan (m)...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "3.7", "actual": 3.7 },
+        { "prompt": "Shark species...", "benchmarkDisplay": "400", "benchmark": 400, "actualDisplay": "540", "actual": 540 },
+
+        { "prompt": "Plants species identified...", "benchmarkDisplay": "300,000", "benchmark": 300000, "actualDisplay": "390,000", "actual": 390000 },
+        { "prompt": "Trees on Earth (trillion)...", "benchmarkDisplay": "2", "benchmark": 2, "actualDisplay": "3", "actual": 3 },
+        { "prompt": "Elephant pregnancy (days)...", "benchmarkDisplay": "600", "benchmark": 600, "actualDisplay": "660", "actual": 660 },
+        { "prompt": "Fastest fish speed (km/h)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "110", "actual": 110 },
+        { "prompt": "Largest land carnivore weight (kg)...", "benchmarkDisplay": "700", "benchmark": 700, "actualDisplay": "1,000", "actual": 1000 },
+
+        { "prompt": "Bird species worldwide...", "benchmarkDisplay": "9,000", "benchmark": 9000, "actualDisplay": "10,700", "actual": 10700 },
+        { "prompt": "Venomous animals species...", "benchmarkDisplay": "100,000", "benchmark": 100000, "actualDisplay": "220,000", "actual": 220000 },
+        { "prompt": "Animals going extinct per year...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "1,000", "actual": 1000 },
+        { "prompt": "Largest frog length (cm)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "32", "actual": 32 },
+        { "prompt": "Longest migration (km)...", "benchmarkDisplay": "15,000", "benchmark": 15000, "actualDisplay": "40,000", "actual": 40000 },
+
+        { "prompt": "Deepest living fish depth (m)...", "benchmarkDisplay": "6,000", "benchmark": 6000, "actualDisplay": "8,336", "actual": 8336 },
+        { "prompt": "Largest insect wingspan (cm)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "25", "actual": 25 },
+        { "prompt": "Brain size sperm whale (kg)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "9", "actual": 9 },
+        { "prompt": "Species described per year...", "benchmarkDisplay": "10,000", "benchmark": 10000, "actualDisplay": "18,000", "actual": 18000 },
+        { "prompt": "Jellyfish age potential (years)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "Immortal", "actual": 999999 },
+
+        { "prompt": "Largest land animal height (m)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5.5", "actual": 5.5 },
+        { "prompt": "Animal biomass insects (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "45", "actual": 45 },
+        { "prompt": "Brain oxygen usage (%)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "20", "actual": 20 },
+        { "prompt": "Largest egg weight (kg)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.4", "actual": 1.4 },
+        { "prompt": "Average animal sleep (hours/day)...", "benchmarkDisplay": "6", "benchmark": 6, "actualDisplay": "8", "actual": 8 }
+      ]
+    },
+    {
+      "name": "Sports & Physical Limits",
+      "questions": [
+        { "prompt": "Olympic sports currently contested...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "33", "actual": 33 },
+        { "prompt": "Fastest 100m sprint (seconds)...", "benchmarkDisplay": "9.8", "benchmark": 9.8, "actualDisplay": "9.58", "actual": 9.58 },
+        { "prompt": "Marathon world record (minutes)...", "benchmarkDisplay": "125", "benchmark": 125, "actualDisplay": "121", "actual": 121 },
+        { "prompt": "Highest vertical jump (cm)...", "benchmarkDisplay": "120", "benchmark": 120, "actualDisplay": "162", "actual": 162 },
+        { "prompt": "Max human punch force (newtons)...", "benchmarkDisplay": "3,000", "benchmark": 3000, "actualDisplay": "5,000", "actual": 5000 },
+
+        { "prompt": "Fastest soccer shot (km/h)...", "benchmarkDisplay": "120", "benchmark": 120, "actualDisplay": "131", "actual": 131 },
+        { "prompt": "Longest long jump (m)...", "benchmarkDisplay": "8.5", "benchmark": 8.5, "actualDisplay": "8.95", "actual": 8.95 },
+        { "prompt": "Highest recorded VO2 max...", "benchmarkDisplay": "85", "benchmark": 85, "actualDisplay": "97.5", "actual": 97.5 },
+        { "prompt": "Fastest tennis serve (km/h)...", "benchmarkDisplay": "240", "benchmark": 240, "actualDisplay": "263", "actual": 263 },
+        { "prompt": "Average NBA player height (cm)...", "benchmarkDisplay": "195", "benchmark": 195, "actualDisplay": "198", "actual": 198 },
+
+        { "prompt": "Longest Olympic swimming pool (m)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "50", "actual": 50 },
+        { "prompt": "Max cycling sprint power (watts)...", "benchmarkDisplay": "1,800", "benchmark": 1800, "actualDisplay": "2,200", "actual": 2200 },
+        { "prompt": "Fastest hockey slapshot (km/h)...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "177", "actual": 177 },
+        { "prompt": "Max human grip strength (kg)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "90", "actual": 90 },
+        { "prompt": "Highest free climb (m)...", "benchmarkDisplay": "800", "benchmark": 800, "actualDisplay": "914", "actual": 914 },
+
+        { "prompt": "Fastest baseball pitch (km/h)...", "benchmarkDisplay": "155", "benchmark": 155, "actualDisplay": "169", "actual": 169 },
+        { "prompt": "World record deadlift (kg)...", "benchmarkDisplay": "450", "benchmark": 450, "actualDisplay": "501", "actual": 501 },
+        { "prompt": "Fastest Formula 1 pit stop (seconds)...", "benchmarkDisplay": "2.5", "benchmark": 2.5, "actualDisplay": "1.8", "actual": 1.8 },
+        { "prompt": "Longest professional boxing match (rounds)...", "benchmarkDisplay": "15", "benchmark": 15, "actualDisplay": "110", "actual": 110 },
+        { "prompt": "Max recorded human heart rate (bpm)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "220", "actual": 220 },
+
+        { "prompt": "Fastest NFL 40-yard dash (seconds)...", "benchmarkDisplay": "4.3", "benchmark": 4.3, "actualDisplay": "4.22", "actual": 4.22 },
+        { "prompt": "Longest tennis match (hours)...", "benchmarkDisplay": "6", "benchmark": 6, "actualDisplay": "11", "actual": 11 },
+        { "prompt": "Max rowing stroke power (watts)...", "benchmarkDisplay": "1,200", "benchmark": 1200, "actualDisplay": "1,600", "actual": 1600 },
+        { "prompt": "Fastest Olympic swim 100m (seconds)...", "benchmarkDisplay": "47", "benchmark": 47, "actualDisplay": "46.4", "actual": 46.4 },
+        { "prompt": "Highest ski jump distance (m)...", "benchmarkDisplay": "240", "benchmark": 240, "actualDisplay": "253", "actual": 253 },
+
+        { "prompt": "Fastest human reaction time (ms)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "120", "actual": 120 },
+        { "prompt": "Longest plank hold (hours)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "9.5", "actual": 9.5 },
+        { "prompt": "Max squat record (kg)...", "benchmarkDisplay": "450", "benchmark": 450, "actualDisplay": "595", "actual": 595 },
+        { "prompt": "Fastest boxing punch speed (km/h)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "45", "actual": 45 },
+        { "prompt": "Longest bicycle distance in 24h (km)...", "benchmarkDisplay": "800", "benchmark": 800, "actualDisplay": "941", "actual": 941 },
+
+        { "prompt": "Fastest recorded kick (km/h)...", "benchmarkDisplay": "120", "benchmark": 120, "actualDisplay": "130", "actual": 130 },
+        { "prompt": "Highest number of pull-ups in 24h...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "7,715", "actual": 7715 },
+        { "prompt": "Fastest speed skating (km/h)...", "benchmarkDisplay": "55", "benchmark": 55, "actualDisplay": "60", "actual": 60 },
+        { "prompt": "Longest underwater breath hold (minutes)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "24", "actual": 24 },
+        { "prompt": "Max sustained G-force human (G)...", "benchmarkDisplay": "6", "benchmark": 6, "actualDisplay": "9", "actual": 9 }
+      ]
+    },
+    {
+      "name": "Cities, Population & Society",
+      "questions": [
+        { "prompt": "World population (billion)...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "8.1", "actual": 8.1 },
+        { "prompt": "Megacities worldwide...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "34", "actual": 34 },
+        { "prompt": "Largest city population (million)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "37", "actual": 37 },
+        { "prompt": "People living in cities (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "56", "actual": 56 },
+        { "prompt": "Languages spoken today...", "benchmarkDisplay": "5,000", "benchmark": 5000, "actualDisplay": "7,000", "actual": 7000 },
+
+        { "prompt": "Daily babies born worldwide...", "benchmarkDisplay": "300,000", "benchmark": 300000, "actualDisplay": "385,000", "actual": 385000 },
+        { "prompt": "Daily deaths worldwide...", "benchmarkDisplay": "150,000", "benchmark": 150000, "actualDisplay": "170,000", "actual": 170000 },
+        { "prompt": "Countries in the world...", "benchmarkDisplay": "180", "benchmark": 180, "actualDisplay": "195", "actual": 195 },
+        { "prompt": "Urban land area of Earth (%)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "3", "actual": 3 },
+        { "prompt": "Average global life expectancy (years)...", "benchmarkDisplay": "65", "benchmark": 65, "actualDisplay": "73", "actual": 73 },
+
+        { "prompt": "Illiterate adults worldwide (million)...", "benchmarkDisplay": "600", "benchmark": 600, "actualDisplay": "750", "actual": 750 },
+        { "prompt": "People living alone (%)...", "benchmarkDisplay": "15", "benchmark": 15, "actualDisplay": "28", "actual": 28 },
+        { "prompt": "Average global household size...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "3.4", "actual": 3.4 },
+        { "prompt": "Global migration population (million)...", "benchmarkDisplay": "200", "benchmark": 200, "actualDisplay": "281", "actual": 281 },
+        { "prompt": "People with access to clean water (%)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "87", "actual": 87 },
+
+        { "prompt": "Average marriage age globally (years)...", "benchmarkDisplay": "24", "benchmark": 24, "actualDisplay": "28", "actual": 28 },
+        { "prompt": "Divorces per year worldwide (million)...", "benchmarkDisplay": "4", "benchmark": 4, "actualDisplay": "5", "actual": 5 },
+        { "prompt": "People using social media (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "63", "actual": 63 },
+        { "prompt": "Global literacy rate (%)...", "benchmarkDisplay": "80", "benchmark": 80, "actualDisplay": "86", "actual": 86 },
+        { "prompt": "Average commute time (minutes)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "40", "actual": 40 },
+
+        { "prompt": "People affected by air pollution (%)...", "benchmarkDisplay": "70", "benchmark": 70, "actualDisplay": "99", "actual": 99 },
+        { "prompt": "Global obesity rate (%)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "16", "actual": 16 },
+        { "prompt": "Average daily social media use (minutes)...", "benchmarkDisplay": "120", "benchmark": 120, "actualDisplay": "150", "actual": 150 },
+        { "prompt": "People over 65 worldwide (billion)...", "benchmarkDisplay": "0.6", "benchmark": 0.6, "actualDisplay": "0.8", "actual": 0.8 },
+        { "prompt": "Global suicide rate (per 100k)...", "benchmarkDisplay": "15", "benchmark": 15, "actualDisplay": "9", "actual": 9 },
+
+        { "prompt": "Children in child labor (million)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "160", "actual": 160 },
+        { "prompt": "Average years of schooling globally...", "benchmarkDisplay": "7", "benchmark": 7, "actualDisplay": "8.6", "actual": 8.6 },
+        { "prompt": "People without electricity (million)...", "benchmarkDisplay": "1,000", "benchmark": 1000, "actualDisplay": "675", "actual": 675 },
+        { "prompt": "Global crime rate change since 1990 (%)...", "benchmarkDisplay": "-20", "benchmark": -20, "actualDisplay": "-40", "actual": -40 },
+        { "prompt": "People living in slums (billion)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.1", "actual": 1.1 },
+
+        { "prompt": "Average household internet access (%)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "75", "actual": 75 },
+        { "prompt": "People speaking English (billion)...", "benchmarkDisplay": "1", "benchmark": 1, "actualDisplay": "1.5", "actual": 1.5 },
+        { "prompt": "Global prison population (million)...", "benchmarkDisplay": "9", "benchmark": 9, "actualDisplay": "11.5", "actual": 11.5 },
+        { "prompt": "Homeless population worldwide (million)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "150", "actual": 150 },
+        { "prompt": "Average global happiness score (/10)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "5.6", "actual": 5.6 }
+      ]
+    },
+    {
+      "name": "Spicy (18+)",
+      "questions": [
+        { "prompt": "Adults who watch pornography monthly (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "65", "actual": 65 },
+        { "prompt": "Average age of first sexual intercourse (years)...", "benchmarkDisplay": "18", "benchmark": 18, "actualDisplay": "17", "actual": 17 },
+        { "prompt": "Adults who have had one-night stands (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "45", "actual": 45 },
+        { "prompt": "People who have cheated on a partner (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "35", "actual": 35 },
+        { "prompt": "Average lifetime sexual partners...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "7", "actual": 7 },
+
+        { "prompt": "Adults who masturbate weekly (%)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "60", "actual": 60 },
+        { "prompt": "People who have tried illegal drugs (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "35", "actual": 35 },
+        { "prompt": "Adults who drink alcohol regularly (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "43", "actual": 43 },
+        { "prompt": "Global cannabis users (million)...", "benchmarkDisplay": "150", "benchmark": 150, "actualDisplay": "220", "actual": 220 },
+        { "prompt": "Cigarettes smoked worldwide per year (trillion)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "6", "actual": 6 },
+
+        { "prompt": "Adults with an STD at some point (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Condom use during casual sex (%)...", "benchmarkDisplay": "60", "benchmark": 60, "actualDisplay": "65", "actual": 65 },
+        { "prompt": "People who regret their first time (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "30", "actual": 30 },
+        { "prompt": "Average porn videos watched per user per week...", "benchmarkDisplay": "3", "benchmark": 3, "actualDisplay": "7", "actual": 7 },
+        { "prompt": "Adults using dating apps (%)...", "benchmarkDisplay": "15", "benchmark": 15, "actualDisplay": "30", "actual": 30 },
+
+        { "prompt": "People who have sent nude images (%)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Adults who sleep with a sex toy (%)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "25", "actual": 25 },
+        { "prompt": "Adults who watch porn at work (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Adults who have had a threesome (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "15", "actual": 15 },
+        { "prompt": "People who fantasize about coworkers (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+
+        { "prompt": "Global sex industry revenue (billion USD)...", "benchmarkDisplay": "100", "benchmark": 100, "actualDisplay": "180", "actual": 180 },
+        { "prompt": "Average time spent on porn sites per visit (minutes)...", "benchmarkDisplay": "8", "benchmark": 8, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "People who have had sex on first date (%)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Adults dissatisfied with sex life (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "30", "actual": 30 },
+        { "prompt": "Adults who fake orgasms (%)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "45", "actual": 45 },
+
+        { "prompt": "Adults addicted to porn (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "People who have had public sex (%)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "20", "actual": 20 },
+        { "prompt": "Adults who have tried BDSM (%)...", "benchmarkDisplay": "15", "benchmark": 15, "actualDisplay": "30", "actual": 30 },
+        { "prompt": "People who use alcohol before sex (%)...", "benchmarkDisplay": "25", "benchmark": 25, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Adults who sext regularly (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "35", "actual": 35 },
+
+        { "prompt": "Global overdose deaths per year (thousand)...", "benchmarkDisplay": "300", "benchmark": 300, "actualDisplay": "600", "actual": 600 },
+        { "prompt": "People who have tried cocaine (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "8", "actual": 8 },
+        { "prompt": "People who have used MDMA (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "Adults who have had sex dreams weekly (%)...", "benchmarkDisplay": "30", "benchmark": 30, "actualDisplay": "50", "actual": 50 },
+        { "prompt": "Adults who lie about body count (%)...", "benchmarkDisplay": "40", "benchmark": 40, "actualDisplay": "60", "actual": 60 },
+
+        { "prompt": "People who have filmed themselves having sex (%)...", "benchmarkDisplay": "10", "benchmark": 10, "actualDisplay": "20", "actual": 20 },
+        { "prompt": "Adults who prefer casual sex (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "35", "actual": 35 },
+        { "prompt": "Adults who have used escort services (%)...", "benchmarkDisplay": "5", "benchmark": 5, "actualDisplay": "10", "actual": 10 },
+        { "prompt": "People who have watched porn before age 13 (%)...", "benchmarkDisplay": "20", "benchmark": 20, "actualDisplay": "40", "actual": 40 },
+        { "prompt": "Adults who think porn affects relationships (%)...", "benchmarkDisplay": "50", "benchmark": 50, "actualDisplay": "70", "actual": 70 }
+      ]
+    }
+  ]
+}

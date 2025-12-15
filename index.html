@@ -19,8 +19,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://chirpss.github.io/Cookies.js"></script>
 
 
     <script>
@@ -51,7 +49,7 @@
 
     <script>
         window.startPlay = function(gameName) {
-            const pathMap = { 'Imposter': '/Imposter/', 'WrongAnswersOnly': '/WrongAnswersOnly/', 'TenBut': '/TenBut/', 'WhoAmI': '/WhoAmI/', 'WerewolfEarlyAccess': '/WerewolfEarlyAccess/'};
+            const pathMap = { 'Imposter': '/Imposter/', 'WrongAnswersOnly': '/WrongAnswersOnly/', 'TenBut': '/TenBut/', 'WhoAmI': '/WhoAmI/', 'MoreOrLess': '/MoreOrLess/', 'WerewolfEarlyAccess': '/WerewolfEarlyAccess/'};
             const urlPath = pathMap[gameName] || '/';
             window.location.href = urlPath;
         };
@@ -132,6 +130,21 @@
                         <div class="flex-grow">
                             <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">10/10 But</h3>
                             <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Rate a 10/10 with a spicy twist.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('MoreOrLess')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">More Or Less</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Guess if crazy facts are higher or lower!</p>
                         </div>
                         <div class="mt-4">
                             <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Launch</button>
