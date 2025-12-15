@@ -45,7 +45,7 @@
         .game-card-link:hover, .game-card-link:focus-visible { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), var(--tw-shadow-card-glow); }
     </style>
 </head>
-<body class="min-h-screen antialiased flex flex-col">
+<body class="min-h-screen antialiased flex flex-col relative">
 
     <script>
         window.startPlay = function(gameName) {
@@ -180,6 +180,45 @@
             <p class="text-xs text-subtle-gray/60">&copy; 2025 CHIRPSS. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <div id="scroll-hint" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-1000 opacity-0 pointer-events-none">
+        <div class="flex flex-col items-center animate-bounce">
+            <p class="text-[10px] uppercase tracking-widest text-subtle-gray mb-1">More</p>
+            <div class="p-2 rounded-full bg-deep-twilight/80 backdrop-blur-sm border border-subtle-gray/30 shadow-card-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-fiery-core" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollHint = document.getElementById('scroll-hint');
+            let hasScrolled = false;
+
+            const hideHint = () => {
+                hasScrolled = true;
+                scrollHint.classList.add('opacity-0');
+            };
+
+            // Detect if user scrolls manually
+            window.addEventListener('scroll', () => {
+                if (!hasScrolled) hideHint();
+            }, { once: true });
+
+            // Check after 10 seconds
+            setTimeout(() => {
+                const isAtTop = window.scrollY < 50; 
+                // Only show if content is actually taller than screen
+                const isScrollable = document.body.scrollHeight > window.innerHeight;
+
+                if (!hasScrolled && isAtTop && isScrollable) {
+                    scrollHint.classList.remove('opacity-0');
+                }
+            }, 10000); 
+        });
+    </script>
 
 </body>
 </html>
