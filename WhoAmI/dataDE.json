@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "name": "Filme & Fernsehen",
+      "name": "Filme & Serien",
       "words": [
         "Harry Potter",
         "Darth Vader",
@@ -10,11 +10,14 @@
         "Der Joker",
         "Shrek",
         "Walter White",
-        "Elfi",
+        "Elf",
         "Buzz Lightyear",
         "Mario",
         "Spider-Man",
-        "Micky Maus"
+        "Micky Maus",
+        "Iron Man",
+        "Homer Simpson",
+        "Yoda"
       ]
     },
     {
@@ -24,12 +27,17 @@
         "Albert Einstein",
         "Elon Musk",
         "Beyoncé",
-        "Lincoln",
+        "Abraham Lincoln",
         "Gordon Ramsay",
         "The Rock",
-        "Königin Elisabeth II.",
+        "Königin Elisabeth II",
         "Michael Jordan",
-        "Shakespeare"
+        "William Shakespeare",
+        "Leonardo da Vinci",
+        "Cristiano Ronaldo",
+        "Lionel Messi",
+        "Oprah Winfrey",
+        "Nikola Tesla"
       ]
     },
     {
@@ -46,14 +54,17 @@
         "Löwe",
         "Mensch",
         "Huhn",
-        "Kuh"
+        "Kuh",
+        "Oktopus",
+        "Adler",
+        "Delfin"
       ]
     },
     {
       "name": "Gegenstände",
       "words": [
         "Toaster",
-        "Verkehrshütchen",
+        "Verkehrskegel",
         "Toilettenpapier",
         "iPhone",
         "Banane",
@@ -61,7 +72,132 @@
         "Eiffelturm",
         "Mikrowelle",
         "Socken",
-        "Pizza"
+        "Pizza",
+        "Laptop",
+        "Rucksack",
+        "Kopfhörer",
+        "Trinkflasche",
+        "Fernseher"
+      ]
+    },
+    {
+      "name": "Orte",
+      "words": [
+        "New York",
+        "Paris",
+        "Tokio",
+        "Berlin",
+        "London",
+        "Rom",
+        "Sydney",
+        "Dubai",
+        "Los Angeles",
+        "Toronto",
+        "Barcelona",
+        "Amsterdam",
+        "Prag",
+        "Wien",
+        "Singapur"
+      ]
+    },
+    {
+      "name": "Essen & Getränke",
+      "words": [
+        "Pizza",
+        "Burger",
+        "Sushi",
+        "Pasta",
+        "Eiscreme",
+        "Schokolade",
+        "Pommes",
+        "Pfannkuchen",
+        "Apfel",
+        "Banane",
+        "Kaffee",
+        "Tee",
+        "Milch",
+        "Käse",
+        "Brot"
+      ]
+    },
+    {
+      "name": "Technologie",
+      "words": [
+        "Smartphone",
+        "Computer",
+        "Internet",
+        "WLAN",
+        "Bluetooth",
+        "Künstliche Intelligenz",
+        "Roboter",
+        "Drohne",
+        "Server",
+        "Cloud",
+        "Blockchain",
+        "USB-Stick",
+        "Tastatur",
+        "Maus",
+        "Monitor"
+      ]
+    },
+    {
+      "name": "Sport",
+      "words": [
+        "Fußball",
+        "Basketball",
+        "Tennis",
+        "Baseball",
+        "Eishockey",
+        "Formel 1",
+        "Radfahren",
+        "Laufen",
+        "Schwimmen",
+        "Volleyball",
+        "Golf",
+        "Boxen",
+        "Skateboarden",
+        "Skifahren",
+        "Snowboarden"
+      ]
+    },
+    {
+      "name": "Videospiele",
+      "words": [
+        "Minecraft",
+        "Fortnite",
+        "Roblox",
+        "Super Mario",
+        "Zelda",
+        "Call of Duty",
+        "Among Us",
+        "League of Legends",
+        "Valorant",
+        "Counter-Strike",
+        "Pokémon",
+        "FIFA",
+        "Rocket League",
+        "GTA",
+        "Die Sims"
+      ]
+    },
+    {
+      "name": "Zufällige Konzepte",
+      "words": [
+        "Zeit",
+        "Raum",
+        "Schwerkraft",
+        "Geld",
+        "Glück",
+        "Traum",
+        "Angst",
+        "Macht",
+        "Freiheit",
+        "Geschwindigkeit",
+        "Energie",
+        "Chaos",
+        "Ordnung",
+        "Unendlichkeit",
+        "Realität"
       ]
     }
   ]

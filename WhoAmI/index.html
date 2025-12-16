@@ -14,7 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-    <script src="https://chirpss.github.io/WhoAmI/firebase-config.js"></script>
+    <script src="/WhoAmI/firebase-config.js"></script>
 
     <script>
         tailwind.config = {
@@ -44,13 +44,32 @@
         }
         .category-btn { transition: all 0.2s ease-in-out; }
         .mode-btn { transition: all 0.3s ease; }
+
+        /* Styling for details/summary to match theme */
+        details > summary {
+            list-style: none; /* Remove default marker */
+        }
+        details > summary::-webkit-details-marker {
+            display: none; /* Remove default marker (Safari) */
+        }
+        /* Custom marker */
+        details > summary::before {
+            content: '►';
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 0.8em;
+            transition: transform 0.2s ease-in-out;
+        }
+        details[open] > summary::before {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body class="min-h-screen antialiased flex flex-col">
 
     <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10 flex-none">
         <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
-            <a href="https://chirpss.github.io" class="hover:opacity-90 transition-opacity flex-shrink-0">
+            <a href="https://chirpss.my.to" class="hover:opacity-90 transition-opacity flex-shrink-0">
                 <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
@@ -85,10 +104,17 @@
             </div>
 
             <div class="mb-10">
-                <label class="block text-lg font-semibold mb-3 text-fiery-core">Select Decks</label>
-                <div id="categories-container" class="grid grid-cols-2 gap-4 w-full">
-                    <p class="text-subtle-gray">Loading categories...</p>
-                </div>
+                <details id="category-section" class="rounded-lg border border-subtle-gray/30 overflow-hidden" open>
+                    <summary class="block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none">
+                        Select Word Decks
+                    </summary>
+                    <div class="p-4 pt-3 border-t border-subtle-gray/30">
+                        <div id="categories-container" class="flex flex-wrap gap-3">
+                            <p class="text-subtle-gray animate-pulse">Loading categories...</p>
+                        </div>
+                        <p class="text-xs text-subtle-gray mt-2" id="category-count-message">Select one or more categories.</p>
+                    </div>
+                </details>
             </div>
 
             <button id="start-btn" onclick="initGame()" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg transition-all transform active:scale-95" disabled>
@@ -207,9 +233,11 @@
             
             allCategories.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className = 'category-btn py-6 rounded-xl font-bold text-lg flex flex-col items-center justify-center bg-input-bg text-soft-horizon border border-subtle-gray/50 hover:border-fiery-core';
+                // Updated Pill Style to match Imposter
+                btn.className = 'category-btn bg-input-bg text-soft-horizon py-2 px-4 rounded-full border border-subtle-gray/50 font-medium hover:border-fiery-core';
                 btn.textContent = cat.name;
                 btn.dataset.name = cat.name;
+                
                 btn.onclick = () => toggleCategory(cat.name, btn);
                 container.appendChild(btn);
             });
@@ -217,20 +245,27 @@
 
         function toggleCategory(name, btn) {
             if (selectedCategories.includes(name)) {
+                // Deselect
                 selectedCategories = selectedCategories.filter(c => c !== name);
-                btn.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
-                btn.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
+                btn.classList.remove('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'font-bold');
+                btn.classList.add('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50', 'font-medium');
             } else {
+                // Select
                 selectedCategories.push(name);
-                btn.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50');
-                btn.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'scale-[1.02]');
+                btn.classList.add('bg-warm-dusk', 'text-deep-twilight', 'border-warm-dusk', 'font-bold');
+                btn.classList.remove('bg-input-bg', 'text-soft-horizon', 'border-subtle-gray/50', 'font-medium');
             }
             updateStartButton();
         }
 
         function updateStartButton() {
             const btn = document.getElementById('start-btn');
-            if (selectedCategories.length > 0) {
+            // Update message
+            const count = selectedCategories.length;
+            const total = allCategories.length;
+            document.getElementById('category-count-message').textContent = `Selected: ${count} of ${total} categories.`;
+
+            if (count > 0) {
                 btn.disabled = false;
                 btn.classList.remove('bg-subtle-gray', 'text-soft-horizon');
                 btn.classList.add('bg-fiery-core', 'text-deep-twilight');

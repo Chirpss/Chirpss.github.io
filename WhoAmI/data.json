@@ -2,19 +2,203 @@
   "categories": [
     {
       "name": "Movies & TV",
-      "words": ["Harry Potter", "Darth Vader", "SpongeBob", "Batman", "The Joker", "Shrek", "Walter White", "Eleven", "Buzz Lightyear", "Mario", "Spiderman", "Mickey Mouse"]
+      "words": [
+        "Harry Potter",
+        "Darth Vader",
+        "SpongeBob",
+        "Batman",
+        "The Joker",
+        "Shrek",
+        "Walter White",
+        "Eleven",
+        "Buzz Lightyear",
+        "Mario",
+        "Spiderman",
+        "Mickey Mouse",
+        "Iron Man",
+        "Homer Simpson",
+        "Yoda"
+      ]
     },
     {
       "name": "Famous People",
-      "words": ["Taylor Swift", "Albert Einstein", "Elon Musk", "Beyoncé", "Lincoln", "Gordon Ramsay", "The Rock", "Queen Elizabeth II", "Michael Jordan", "Shakespeare"]
+      "words": [
+        "Taylor Swift",
+        "Albert Einstein",
+        "Elon Musk",
+        "Beyoncé",
+        "Abraham Lincoln",
+        "Gordon Ramsay",
+        "The Rock",
+        "Queen Elizabeth II",
+        "Michael Jordan",
+        "William Shakespeare",
+        "Leonardo da Vinci",
+        "Cristiano Ronaldo",
+        "Lionel Messi",
+        "Oprah Winfrey",
+        "Nikola Tesla"
+      ]
     },
     {
       "name": "Animals",
-      "words": ["Giraffe", "Penguin", "Sloth", "T-Rex", "Narwhal", "Platypus", "Shark", "Kangaroo", "Lion", "Human", "Chicken", "Cow"]
+      "words": [
+        "Giraffe",
+        "Penguin",
+        "Sloth",
+        "T-Rex",
+        "Narwhal",
+        "Platypus",
+        "Shark",
+        "Kangaroo",
+        "Lion",
+        "Human",
+        "Chicken",
+        "Cow",
+        "Octopus",
+        "Eagle",
+        "Dolphin"
+      ]
     },
     {
       "name": "Objects",
-      "words": ["Toaster", "Traffic Cone", "Toilet Paper", "Iphone", "Banana", "Statue of Liberty", "Eiffel Tower", "Microwave", "Socks", "Pizza"]
+      "words": [
+        "Toaster",
+        "Traffic Cone",
+        "Toilet Paper",
+        "iPhone",
+        "Banana",
+        "Statue of Liberty",
+        "Eiffel Tower",
+        "Microwave",
+        "Socks",
+        "Pizza",
+        "Laptop",
+        "Backpack",
+        "Headphones",
+        "Water Bottle",
+        "Television"
+      ]
+    },
+    {
+      "name": "Places",
+      "words": [
+        "New York",
+        "Paris",
+        "Tokyo",
+        "Berlin",
+        "London",
+        "Rome",
+        "Sydney",
+        "Dubai",
+        "Los Angeles",
+        "Toronto",
+        "Barcelona",
+        "Amsterdam",
+        "Prague",
+        "Vienna",
+        "Singapore"
+      ]
+    },
+    {
+      "name": "Food & Drinks",
+      "words": [
+        "Pizza",
+        "Burger",
+        "Sushi",
+        "Pasta",
+        "Ice Cream",
+        "Chocolate",
+        "Fries",
+        "Pancakes",
+        "Apple",
+        "Banana",
+        "Coffee",
+        "Tea",
+        "Milk",
+        "Cheese",
+        "Bread"
+      ]
+    },
+    {
+      "name": "Technology",
+      "words": [
+        "Smartphone",
+        "Computer",
+        "Internet",
+        "WiFi",
+        "Bluetooth",
+        "Artificial Intelligence",
+        "Robot",
+        "Drone",
+        "Server",
+        "Cloud",
+        "Blockchain",
+        "USB Stick",
+        "Keyboard",
+        "Mouse",
+        "Monitor"
+      ]
+    },
+    {
+      "name": "Sports",
+      "words": [
+        "Football",
+        "Basketball",
+        "Tennis",
+        "Baseball",
+        "Hockey",
+        "Formula One",
+        "Cycling",
+        "Running",
+        "Swimming",
+        "Volleyball",
+        "Golf",
+        "Boxing",
+        "Skateboarding",
+        "Skiing",
+        "Snowboarding"
+      ]
+    },
+    {
+      "name": "Video Games",
+      "words": [
+        "Minecraft",
+        "Fortnite",
+        "Roblox",
+        "Super Mario",
+        "Zelda",
+        "Call of Duty",
+        "Among Us",
+        "League of Legends",
+        "Valorant",
+        "Counter-Strike",
+        "Pokémon",
+        "FIFA",
+        "Rocket League",
+        "GTA",
+        "The Sims"
+      ]
+    },
+    {
+      "name": "Random Concepts",
+      "words": [
+        "Time",
+        "Space",
+        "Gravity",
+        "Money",
+        "Luck",
+        "Dream",
+        "Fear",
+        "Power",
+        "Freedom",
+        "Speed",
+        "Energy",
+        "Chaos",
+        "Order",
+        "Infinity",
+        "Reality"
+      ]
     }
   ]
 }
