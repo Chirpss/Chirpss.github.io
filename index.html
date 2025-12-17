@@ -9,8 +9,11 @@
         var savedLang = localStorage.getItem('preferredLanguage');
 
         if (savedLang) {
-            // If they have a preference, send them there immediately
-            window.location.replace('/' + savedLang + '/');
+            // FIX: Ensure the first letter is Uppercase and the rest is lowercase
+            // This turns 'en' -> 'En', 'de' -> 'De', 'DE' -> 'De', etc.
+            var formattedLang = savedLang.charAt(0).toUpperCase() + savedLang.slice(1).toLowerCase();
+            
+            window.location.replace('/' + formattedLang + '/');
         } else {
             // 2. If no preference, check their browser language
             var userLang = navigator.language || navigator.userLanguage; 
