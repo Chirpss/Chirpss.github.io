@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "name": "Filme & Serien",
+      "name": "Filme & TV",
       "words": [
         "Harry Potter",
         "Darth Vader",
@@ -10,11 +10,11 @@
         "Der Joker",
         "Shrek",
         "Walter White",
-        "Elf",
+        "Eleven",
         "Buzz Lightyear",
         "Mario",
-        "Spider-Man",
-        "Micky Maus",
+        "Spiderman",
+        "Mickey Maus",
         "Iron Man",
         "Homer Simpson",
         "Yoda"
@@ -27,16 +27,16 @@
         "Albert Einstein",
         "Elon Musk",
         "Beyoncé",
-        "Abraham Lincoln",
+        "Angela Merkel",
         "Gordon Ramsay",
-        "The Rock",
-        "Königin Elisabeth II",
+        "Dwayne Johnson",
+        "Queen Elizabeth II",
         "Michael Jordan",
         "William Shakespeare",
         "Leonardo da Vinci",
         "Cristiano Ronaldo",
         "Lionel Messi",
-        "Oprah Winfrey",
+        "Heidi Klum",
         "Nikola Tesla"
       ]
     },
@@ -64,7 +64,7 @@
       "name": "Gegenstände",
       "words": [
         "Toaster",
-        "Verkehrskegel",
+        "Verkehrshütchen",
         "Toilettenpapier",
         "iPhone",
         "Banane",
@@ -76,7 +76,7 @@
         "Laptop",
         "Rucksack",
         "Kopfhörer",
-        "Trinkflasche",
+        "Wasserflasche",
         "Fernseher"
       ]
     },
@@ -92,16 +92,16 @@
         "Sydney",
         "Dubai",
         "Los Angeles",
-        "Toronto",
+        "München",
         "Barcelona",
         "Amsterdam",
         "Prag",
         "Wien",
-        "Singapur"
+        "Mallorca"
       ]
     },
     {
-      "name": "Essen & Getränke",
+      "name": "Essen & Trinken",
       "words": [
         "Pizza",
         "Burger",
@@ -181,10 +181,10 @@
       ]
     },
     {
-      "name": "Zufällige Konzepte",
+      "name": "Zufälliges",
       "words": [
         "Zeit",
-        "Raum",
+        "Weltraum",
         "Schwerkraft",
         "Geld",
         "Glück",
