@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <script src="https://chirpss.github.io/Cookies.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>CHIRPSS | Reveal Role</title>
+    <title>CHIRPSS | Rolle enthüllen</title>
     <link rel="icon" type="image/x-icon" href="/logo.ico">
 
-    <link rel="canonical" href="https://chirpss.github.io/En/Imposter/RevealRole.html" />
+    <link rel="canonical" href="https://chirpss.github.io/De/Imposter/RevealRole.html" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -53,8 +53,8 @@
     
     <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="https://chirpss.github.io/En/" class="hover:opacity-90 transition-opacity flex-shrink-0">
-                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+            <a href="https://chirpss.github.io/De/" class="hover:opacity-90 transition-opacity flex-shrink-0">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Spiele-Hub</h1>
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
             <div class="flex items-center gap-2"></div>
@@ -63,8 +63,8 @@
 
     <main class="max-w-7xl mx-auto p-4 sm:p-8">
         <div class="text-center mb-6">
-            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2" id="main-title">Role Assignment</h2>
-            <p class="text-lg text-subtle-gray" id="host-instructions">Pass the device to the player named below.</p>
+            <h2 class="text-4xl font-extrabold text-soft-horizon mb-2" id="main-title">Rollenzuweisung</h2>
+            <p class="text-lg text-subtle-gray" id="host-instructions">Gib das Gerät an den unten genannten Spieler.</p>
         </div>
 
         <div id="role-display-area" class="card-stack-container mb-6">
@@ -74,7 +74,7 @@
 
         <div id="control-panel" class="max-w-sm mx-auto">
             <button onclick="nextPlayer()" id="next-player-btn" class="w-full py-4 mt-3 bg-warm-dusk text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg opacity-50 cursor-not-allowed">
-                NEXT PLAYER (0 / 0)
+                NÄCHSTER SPIELER (0 / 0)
             </button>
         </div>
     </main>
@@ -99,8 +99,8 @@
         function getGameData() {
             const data = sessionStorage.getItem('chirpss_imposter_game_data');
             if (!data) {
-                alert("Game data not found. Redirecting to setup.");
-                window.location.href = 'https://chirpss.github.io/En/Imposter/index.html'; 
+                alert("Spieldaten nicht gefunden. Leite zur Einrichtung weiter.");
+                window.location.href = 'https://chirpss.github.io/De/Imposter/index.html'; 
                 return null;
             }
             return JSON.parse(data);
@@ -116,7 +116,7 @@
             const selectedWordData = words[wordDataIndex];
             const currentWord = selectedWordData.w; 
             const jsonHint = selectedWordData.h; 
-            const finalImposterHint = data.hintEnabled ? jsonHint : 'No additional information.';
+            const finalImposterHint = data.hintEnabled ? jsonHint : 'Keine zusätzlichen Informationen.';
             
             const imposterIndices = [];
             while (imposterIndices.length < imposterCount) {
@@ -131,7 +131,7 @@
                     isImposter: isImposter,
                     role: isImposter ? 'Imposter' : 'Player',
                     word: currentWord.toUpperCase(),
-                    displayHint: isImposter ? finalImposterHint : `Category: ${selectedCategory.name}`, 
+                    displayHint: isImposter ? finalImposterHint : `Kategorie: ${selectedCategory.name}`, 
                     colorClass: isImposter ? 'bg-danger-red' : 'bg-success-green',
                     boxShadow: isImposter ? 'shadow-glow-imposter' : 'shadow-glow-regular'
                 };
@@ -147,9 +147,9 @@
             
             cardFront.className = 'role-card shadow-lg bg-fiery-core text-deep-twilight'; 
             cardFront.innerHTML = `
-                <p class="text-2xl font-semibold mb-2">Next Player:</p>
+                <p class="text-2xl font-semibold mb-2">Nächster Spieler:</p>
                 <h3 id="current-player-name" class="text-6xl font-extrabold tracking-tighter">${playerName.toUpperCase()}</h3>
-                <p class="mt-4 text-xl font-medium">Drag up to reveal your role</p>
+                <p class="mt-4 text-xl font-medium">Zieh nach oben, um deine Rolle zu sehen</p>
                 <svg class="w-8 h-8 mt-4 animate-bounce" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
                 </svg>
@@ -160,9 +160,9 @@
 
             let contentHTML = '';
             if (roleData.isImposter) {
-                contentHTML = `<h4 class="text-6xl font-extrabold">IMPOSTER</h4><p class="text-2xl font-semibold mt-4">Hint: ${roleData.displayHint}</p>`;
+                contentHTML = `<h4 class="text-6xl font-extrabold">IMPOSTER</h4><p class="text-2xl font-semibold mt-4">Hinweis: ${roleData.displayHint}</p>`;
             } else {
-                contentHTML = `<h4 class="text-6xl font-extrabold">PLAYER</h4><p class="text-2xl font-semibold mt-4">Word: ${roleData.word}</p>`;
+                contentHTML = `<h4 class="text-6xl font-extrabold">SPIELER</h4><p class="text-2xl font-semibold mt-4">Wort: ${roleData.word}</p>`;
             }
             cardBack.innerHTML = contentHTML;
 
@@ -218,24 +218,24 @@
         function updateNextButtonText() {
             const total = playersQueue.length;
             const current = currentPlayerIndex + 1; 
-            nextPlayerBtn.textContent = `NEXT PLAYER (${current} / ${total})`;
+            nextPlayerBtn.textContent = `NÄCHSTER SPIELER (${current} / ${total})`;
         }
         
         function startDiscussion() {
-            document.getElementById('main-title').textContent = 'Assignment Complete!';
-            document.getElementById('host-instructions').textContent = 'Everyone has seen their roles';
+            document.getElementById('main-title').textContent = 'Zuweisung abgeschlossen!';
+            document.getElementById('host-instructions').textContent = 'Jeder hat seine Rolle gesehen';
             nextPlayerBtn.classList.add('hidden');
             document.getElementById('role-display-area').innerHTML = `
                 <div class="role-card bg-deep-twilight/50 rounded-xl shadow-lg p-8 justify-center">
-                    <p class="text-xl font-bold">All roles assigned.</p>
-                    <p class="text-lg text-subtle-gray mt-2">Time: ${gameData.gameTimeSeconds/60}m | Imposters: ${gameData.imposterCount}</p>
+                    <p class="text-xl font-bold">Alle Rollen zugewiesen.</p>
+                    <p class="text-lg text-subtle-gray mt-2">Zeit: ${gameData.gameTimeSeconds/60}m | Imposter: ${gameData.imposterCount}</p>
                 </div>
             `;
             const finalStartBtn = document.createElement('button');
             finalStartBtn.className = 'w-full py-4 mt-8 bg-fiery-core text-deep-twilight font-extrabold text-xl rounded-xl shadow-lg';
-            finalStartBtn.textContent = 'START GAME'; 
+            finalStartBtn.textContent = 'SPIEL STARTEN'; 
             finalStartBtn.onclick = () => {
-                window.location.href = 'https://chirpss.github.io/En/Imposter/Game.html';
+                window.location.href = 'https://chirpss.github.io/De/Imposter/Game.html';
             };
             document.getElementById('control-panel').appendChild(finalStartBtn);
         }

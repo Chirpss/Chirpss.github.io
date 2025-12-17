@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <script src="https://chirpss.github.io/Cookies.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>CHIRPSS | Imposter Game</title>
+    <title>CHIRPSS | Imposter Spiel</title>
     <link rel="icon" type="image/x-icon" href="/logo.ico">
 
-    <link rel="canonical" href="https://chirpss.github.io/En/Imposter/Game.html" />
+    <link rel="canonical" href="https://chirpss.github.io/De/Imposter/Game.html" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,8 +47,8 @@
     
     <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="https://chirpss.github.io/En/" class="hover:opacity-90 transition-opacity flex-shrink-0">
-                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+            <a href="https://chirpss.github.io/De/" class="hover:opacity-90 transition-opacity flex-shrink-0">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Spiele-Hub</h1>
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
             <div class="flex items-center gap-2"></div>
@@ -59,26 +59,26 @@
         
         <div id="timer-state" class="text-center transition-opacity duration-300">
             <p id="start-player-announcement" class="text-xl font-medium mb-4 text-warm-dusk/90 hidden"></p>
-            <h2 id="timer-heading" class="text-3xl font-bold mb-8 text-soft-horizon">DISCUSSION ROUND</h2>
+            <h2 id="timer-heading" class="text-3xl font-bold mb-8 text-soft-horizon">DISKUSSIONSRUNDE</h2>
             <div id="timer" class="timer-display text-fiery-core mb-10">05:00</div>
             <div class="flex space-x-4 max-w-sm mx-auto">
                 <button onclick="toggleTimer()" id="pause-button" class="flex-grow py-3 bg-subtle-gray hover:bg-subtle-gray/80 text-soft-horizon font-bold text-lg rounded-xl primary-btn">PAUSE</button>
-                <button onclick="endRound()" id="end-button" class="flex-grow py-3 bg-danger-red hover:bg-danger-red/80 text-soft-horizon font-bold text-lg rounded-xl primary-btn">END ROUND</button>
+                <button onclick="endRound()" id="end-button" class="flex-grow py-3 bg-danger-red hover:bg-danger-red/80 text-soft-horizon font-bold text-lg rounded-xl primary-btn">RUNDE BEENDEN</button>
             </div>
         </div>
 
         <div id="results-state" class="hidden text-center max-w-md mx-auto transition-opacity duration-300">
-            <h2 id="results-heading" class="text-4xl font-extrabold text-soft-horizon mb-6">TIME IS UP!</h2>
-            <p id="results-message" class="text-xl text-subtle-gray mb-8">The round has ended. Time to vote for the imposter!</p>
+            <h2 id="results-heading" class="text-4xl font-extrabold text-soft-horizon mb-6">ZEIT ABGELAUFEN!</h2>
+            <p id="results-message" class="text-xl text-subtle-gray mb-8">Die Runde ist vorbei. Zeit, über den Imposter abzustimmen!</p>
             
-            <button onclick="revealImposter()" id="reveal-button" class="w-full py-4 bg-warm-dusk hover:bg-warm-dusk/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn">REVEAL IMPOSTER</button>
+            <button onclick="revealImposter()" id="reveal-button" class="w-full py-4 bg-warm-dusk hover:bg-warm-dusk/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn">IMPOSTER AUFDECKEN</button>
             
             <div id="imposter-details" class="hidden mt-8 p-6 bg-deep-twilight/50 rounded-xl border border-subtle-gray/50">
-                <p class="text-2xl font-bold mb-2 text-danger-red">The Imposter(s) was: <span id="imposter-name"></span></p>
-                <p class="text-lg text-soft-horizon">The secret word was: <span id="secret-word" class="font-bold text-fiery-core"></span></p>
+                <p class="text-2xl font-bold mb-2 text-danger-red">Der/Die Imposter war(en): <span id="imposter-name"></span></p>
+                <p class="text-lg text-soft-horizon">Das geheime Wort war: <span id="secret-word" class="font-bold text-fiery-core"></span></p>
             </div>
             
-            <button onclick="playAgain()" id="play-again-button" class="w-full py-4 mt-6 bg-success-green hover:bg-success-green/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn hidden">PLAY AGAIN</button>
+            <button onclick="playAgain()" id="play-again-button" class="w-full py-4 mt-6 bg-success-green hover:bg-success-green/90 text-deep-twilight font-extrabold text-xl rounded-xl primary-btn hidden">NOCHMAL SPIELEN</button>
         </div>
 
     </main>
@@ -98,8 +98,8 @@
             const roles = sessionStorage.getItem('chirpss_imposter_assigned_roles');
             
             if (!data || !roles) {
-                alert("Game data not found. Redirecting to setup.");
-                window.location.href = 'https://chirpss.github.io/En/Imposter/index.html'; 
+                alert("Spieldaten nicht gefunden. Leite zur Einrichtung weiter.");
+                window.location.href = 'https://chirpss.github.io/De/Imposter/index.html'; 
                 return null;
             }
             gameData = JSON.parse(data);
@@ -121,7 +121,7 @@
             const randomIndex = Math.floor(Math.random() * allPlayerNames.length);
             const startingPlayer = allPlayerNames[randomIndex];
             const announcementElement = document.getElementById('start-player-announcement');
-            announcementElement.textContent = `Player ${startingPlayer} starts!`;
+            announcementElement.textContent = `Spieler ${startingPlayer} beginnt!`;
             announcementElement.classList.remove('hidden');
         }
 
@@ -133,7 +133,7 @@
             }
             isPaused = false;
             document.getElementById('pause-button').textContent = ' PAUSE';
-            document.getElementById('timer-heading').textContent = 'DISCUSSION ROUND';
+            document.getElementById('timer-heading').textContent = 'DISKUSSIONSRUNDE';
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 if (timeRemaining <= 0) {
@@ -150,15 +150,15 @@
             if (!isPaused) {
                 clearInterval(timerInterval);
                 isPaused = true;
-                document.getElementById('pause-button').textContent = ' RESUME';
-                document.getElementById('timer-heading').textContent = 'ROUND PAUSED';
+                document.getElementById('pause-button').textContent = ' WEITER';
+                document.getElementById('timer-heading').textContent = 'RUNDE PAUSIERT';
             } else {
                 startTimer();
             }
         }
 
         function endRound() {
-            if (confirm("Are you sure you want to end the round early and start voting?")) {
+            if (confirm("Möchtest du die Runde wirklich vorzeitig beenden und abstimmen?")) {
                 clearInterval(timerInterval);
                 handleTimeUp(true);
             }
@@ -168,25 +168,25 @@
             document.getElementById('start-player-announcement').classList.add('hidden');
             document.getElementById('timer-state').classList.add('hidden');
             document.getElementById('results-state').classList.remove('hidden');
-            const heading = earlyEnd ? 'VOTING TIME!' : 'TIME IS UP!';
+            const heading = earlyEnd ? 'ABSTIMMUNG!' : 'ZEIT ABGELAUFEN!';
             document.getElementById('results-heading').textContent = heading;
-            document.getElementById('results-message').textContent = 'The round has ended. Time to discuss and vote for the imposter!';
+            document.getElementById('results-message').textContent = 'Die Runde ist vorbei. Zeit, über den Imposter abzustimmen!';
         }
 
         function revealImposter() {
             document.getElementById('reveal-button').classList.add('hidden');
             document.getElementById('imposter-details').classList.remove('hidden');
             document.getElementById('play-again-button').classList.remove('hidden');
-            const imposterNamesString = imposterNames.join(' and ');
+            const imposterNamesString = imposterNames.join(' und ');
             document.getElementById('imposter-name').textContent = imposterNamesString;
             document.getElementById('secret-word').textContent = secretWord;
             document.getElementById('imposter-details').classList.remove('bg-deep-twilight/50');
             document.getElementById('imposter-details').classList.add('bg-danger-red/20');
-            document.getElementById('results-message').textContent = "The truth is revealed! Did the crew catch the right person?";
+            document.getElementById('results-message').textContent = "Die Wahrheit ist enthüllt! Hat die Crew die richtige Person erwischt?";
         }
 
         function playAgain() {
-            window.location.href = 'https://chirpss.github.io/En/Imposter/index.html';
+            window.location.href = 'https://chirpss.github.io/De/Imposter/index.html';
         }
 
         document.addEventListener('DOMContentLoaded', () => {

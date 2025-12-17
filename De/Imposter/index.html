@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <script src="https://chirpss.github.io/Cookies.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>CHIRPSS | Imposter Setup</title>
+    <title>CHIRPSS | Imposter Einstellungen</title>
     <link rel="icon" type="image/x-icon" href="/logo.ico">
 
-    <link rel="canonical" href="https://chirpss.github.io/En/Imposter/" />
+    <link rel="canonical" href="https://chirpss.github.io/De/Imposter/" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,8 +69,8 @@
     
     <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-10">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="https://chirpss.github.io/En/" class="hover:opacity-90 transition-opacity flex-shrink-0">
-                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Game hub</h1>
+            <a href="https://chirpss.github.io/De/" class="hover:opacity-90 transition-opacity flex-shrink-0">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Spiele-Hub</h1>
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
             <div class="flex items-center gap-2"></div>
@@ -86,25 +86,25 @@
             <form id="imposter-settings-form">
                 
                 <div class="mb-8">
-                    <label for="player-input" class="block text-lg font-semibold mb-2 text-fiery-core">Add Players</label>
+                    <label for="player-input" class="block text-lg font-semibold mb-2 text-fiery-core">Spieler hinzufügen</label>
                     <div class="flex space-x-2 mb-4">
-                        <input type="text" id="player-input" placeholder="Enter player name" 
+                        <input type="text" id="player-input" placeholder="Spielernamen eingeben" 
                             class="custom-input flex-grow p-3 rounded-lg placeholder-subtle-gray/70" onkeydown="handlePlayerInput(event)">
                         <button type="button" onclick="addPlayer()" class="bg-warm-dusk text-soft-horizon p-3 rounded-lg font-semibold">
-                            Add
+                            Hinzufügen
                         </button>
                     </div>
 
                     <div id="player-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
-                        <p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 3 players to begin.</p>
+                        <p class="text-sm text-subtle-gray" id="player-list-placeholder">Füge mindestens 3 Spieler hinzu, um zu beginnen.</p>
                     </div>
-                    <p class="text-xs text-subtle-gray mt-1" id="player-count-display">Players: 0 (Min 3)</p>
+                    <p class="text-xs text-subtle-gray mt-1" id="player-count-display">Spieler: 0 (Min 3)</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div>
                         <label for="imposter-count-slider" class="block text-lg font-semibold mb-2 text-fiery-core">
-                            Number of Imposters: <span id="imposter-count-value">1</span>
+                            Anzahl der Imposter: <span id="imposter-count-value">1</span>
                         </label>
                         <input type="range" id="imposter-count-slider" min="1" max="5" value="1" 
                                class="w-full h-2 bg-input-bg rounded-lg appearance-none cursor-pointer" 
@@ -113,7 +113,7 @@
 
                     <div>
                         <label for="game-time-slider" class="block text-lg font-semibold mb-2 text-fiery-core">
-                            Game Time Limit: <span id="game-time-display">5 Minutes</span>
+                            Spielzeit-Limit: <span id="game-time-display">5 Minuten</span>
                         </label>
                         <input type="range" id="game-time-slider" min="0.5" max="15" value="5" step="0.5"
                                class="w-full h-2 bg-input-bg rounded-lg appearance-none cursor-pointer"
@@ -123,7 +123,7 @@
 
                 <div class="mb-8 flex items-center justify-between p-3 bg-input-bg rounded-lg border border-subtle-gray/50">
                     <label for="imposter-hint-toggle" class="block text-lg font-semibold text-fiery-core">
-                        Imposter Gets a Hint
+                        Imposter erhält einen Hinweis
                     </label>
                     
                     <label class="relative inline-flex items-center cursor-pointer">
@@ -137,12 +137,12 @@
                 <div class="mb-4">
                     <details id="category-section-1" class="rounded-lg border border-subtle-gray/30 overflow-hidden">
                         <summary class="block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none">
-                            Select Word Categories (Set 1)
+                            Wortkategorien wählen (Set 1)
                         </summary>
                         <div class="p-4 pt-3 border-t border-subtle-gray/30">
                             <div id="categories-container-1" class="flex flex-wrap gap-3">
                                 </div>
-                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-1">Select one or more categories.</p>
+                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-1">Wähle eine oder mehrere Kategorien.</p>
                         </div>
                     </details>
                 </div>
@@ -150,21 +150,21 @@
                 <div class="mb-10">
                     <details id="category-section-2" class="rounded-lg border border-subtle-gray/30 overflow-hidden">
                         <summary class="block text-lg font-semibold p-4 text-fiery-core bg-input-bg cursor-pointer select-none">
-                            Select Word Categories (Set 2)
+                            Wortkategorien wählen (Set 2)
                         </summary>
                         <div class="p-4 pt-3 border-t border-subtle-gray/30">
                             <div id="categories-container-2" class="flex flex-wrap gap-3">
                                 </div>
-                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-2">Select one or more categories.</p>
+                            <p class="text-xs text-subtle-gray mt-2" id="category-count-message-2">Wähle eine oder mehrere Kategorien.</p>
                         </div>
                     </details>
                 </div>
 
                 <button type="submit" id="start-game-btn" class="w-full py-4 bg-subtle-gray text-soft-horizon font-extrabold text-xl rounded-xl shadow-lg" disabled>
-                    START GAME
+                    SPIEL STARTEN
                 </button>
                 
-                <p class="text-sm text-subtle-gray mt-6"> Rules: Everyone gets a secret word besides one player (the imposter) who only gets a hint. The imposter must guess the word before the time runs out. If the timer ends, everyone votes. If the imposter isn't voted out, they win. Players take turns saying one word related to the secret word until the timer ends. The youngest player goes first.
+                <p class="text-sm text-subtle-gray mt-6"> Regeln: Jeder bekommt ein geheimes Wort, außer einem Spieler (dem Imposter), der nur einen Hinweis erhält. Der Imposter muss das Wort erraten, bevor die Zeit abläuft. Wenn die Zeit endet, wird abgestimmt. Wenn der Imposter nicht enttarnt wird, gewinnt er. Die Spieler nennen nacheinander ein Wort, das mit dem geheimen Wort zu tun hat. Der jüngste Spieler beginnt.
                 </p>
 
             </form>
@@ -172,14 +172,13 @@
     </main>
 
     <script>
-        // === Updated URLs for English Version ===
-        // We look for categories.json in the CURRENT directory (./) which will be /En/Imposter/
+        // === German URLs (Assuming JSON files are in /De/Imposter/) ===
         const CATEGORY_URL_1 = './categories.json';
         const CATEGORY_URL_2 = './categories2.json';
         
-        const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings'; 
-        const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players';
-        const UI_STATE_STORAGE_KEY = 'chirpss_imposter_ui_state'; 
+        const SETTINGS_STORAGE_KEY = 'chirpss_imposter_settings_de'; // Unique key for German
+        const PLAYERS_STORAGE_KEY = 'chirpss_imposter_players'; // Shared players list is okay
+        const UI_STATE_STORAGE_KEY = 'chirpss_imposter_ui_state_de'; 
 
         let players = [];
         let selectedCategories_1 = [];
@@ -240,9 +239,9 @@
             const catCount_1 = selectedCategories_1.length;
             const catCount_2 = selectedCategories_2.length;
             
-            document.getElementById('player-count-display').textContent = `Players: ${count} (Min 3)`;
-            document.getElementById('category-count-message-1').textContent = `Selected: ${catCount_1} of ${availableCategories_1.length || 0} categories.`;
-            document.getElementById('category-count-message-2').textContent = `Selected: ${catCount_2} of ${availableCategories_2.length || 0} categories.`;
+            document.getElementById('player-count-display').textContent = `Spieler: ${count} (Min 3)`;
+            document.getElementById('category-count-message-1').textContent = `Ausgewählt: ${catCount_1} von ${availableCategories_1.length || 0} Kategorien.`;
+            document.getElementById('category-count-message-2').textContent = `Ausgewählt: ${catCount_2} von ${availableCategories_2.length || 0} Kategorien.`;
             
             const startBtn = document.getElementById('start-game-btn');
             const isReady = count >= 3 && (catCount_1 > 0 || catCount_2 > 0);
@@ -267,9 +266,9 @@
             const timeDisplay = document.getElementById('game-time-display');
             const minutes = parseFloat(minutesString);
             if (minutes === 0.5) {
-                timeDisplay.textContent = '30 Seconds';
+                timeDisplay.textContent = '30 Sekunden';
             } else {
-                timeDisplay.textContent = `${minutes} Minutes`;
+                timeDisplay.textContent = `${minutes} Minuten`;
             }
             updatePlayerCount(); 
         }
@@ -278,7 +277,7 @@
             const listEl = document.getElementById('player-list');
             listEl.innerHTML = '';
             if (players.length === 0) {
-                listEl.innerHTML = `<p class="text-sm text-subtle-gray" id="player-list-placeholder">Add at least 3 players to begin.</p>`;
+                listEl.innerHTML = `<p class="text-sm text-subtle-gray" id="player-list-placeholder">Füge mindestens 3 Spieler hinzu, um zu beginnen.</p>`;
             }
             players.forEach((name) => {
                 const playerEl = document.createElement('div');
@@ -322,18 +321,18 @@
 
         async function fetchAndRenderCategories_1() {
             const container = document.getElementById('categories-container-1');
-            container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
+            container.innerHTML = `<p class="text-fiery-core">Lade Kategorien...</p>`;
             try {
                 const response = await fetch(CATEGORY_URL_1);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
-                if (!data || !data.c) throw new Error("Invalid JSON structure.");
+                if (!data || !data.c) throw new Error("Ungültiges JSON.");
                 availableCategories_1 = data.c;
                 renderCategories_1();
                 updatePlayerCount();
             } catch (error) {
-                console.error("Failed to load categories 1:", error);
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 1).</p>`;
+                console.error("Fehler beim Laden von Kategorien 1:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Fehler: Kategorien (Set 1) konnten nicht geladen werden.</p>`;
                 updatePlayerCount(); 
             }
         }
@@ -342,7 +341,7 @@
             const container = document.getElementById('categories-container-1');
             container.innerHTML = ''; 
             if (!availableCategories_1 || availableCategories_1.length === 0) {
-                container.innerHTML = `<p class="text-subtle-gray">No categories found for Set 1.</p>`;
+                container.innerHTML = `<p class="text-subtle-gray">Keine Kategorien für Set 1 gefunden.</p>`;
                 return;
             }
             availableCategories_1.forEach(category => {
@@ -376,18 +375,18 @@
 
         async function fetchAndRenderCategories_2() {
             const container = document.getElementById('categories-container-2');
-            container.innerHTML = `<p class="text-fiery-core">Loading categories...</p>`;
+            container.innerHTML = `<p class="text-fiery-core">Lade Kategorien...</p>`;
             try {
                 const response = await fetch(CATEGORY_URL_2);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
-                if (!data || !data.c) throw new Error("Invalid JSON structure.");
+                if (!data || !data.c) throw new Error("Ungültiges JSON.");
                 availableCategories_2 = data.c;
                 renderCategories_2();
                 updatePlayerCount();
             } catch (error) {
-                console.error("Failed to load categories 2:", error);
-                container.innerHTML = `<p class="text-danger-red font-semibold">Error: Could not load categories (Set 2).</p>`;
+                console.error("Fehler beim Laden von Kategorien 2:", error);
+                container.innerHTML = `<p class="text-danger-red font-semibold">Fehler: Kategorien (Set 2) konnten nicht geladen werden.</p>`;
                 updatePlayerCount(); 
             }
         }
@@ -396,7 +395,7 @@
             const container = document.getElementById('categories-container-2');
             container.innerHTML = ''; 
             if (!availableCategories_2 || availableCategories_2.length === 0) {
-                container.innerHTML = `<p class="text-subtle-gray">No categories found for Set 2.</p>`;
+                container.innerHTML = `<p class="text-subtle-gray">Keine Kategorien für Set 2 gefunden.</p>`;
                 return;
             }
             availableCategories_2.forEach(category => {
@@ -443,11 +442,11 @@
             e.preventDefault();
             
             if (players.length < 3) {
-                alert("Please add a minimum of 3 players.");
+                alert("Bitte füge mindestens 3 Spieler hinzu.");
                 return;
             }
             if (selectedCategories_1.length === 0 && selectedCategories_2.length === 0) {
-                alert("Please select at least one word category from either list.");
+                alert("Bitte wähle mindestens eine Wortkategorie aus einer der Listen.");
                 return;
             }
 
@@ -465,7 +464,7 @@
             const allFinalCategories = finalCategories_1.concat(finalCategories_2);
             
             if (allFinalCategories.length === 0 || allFinalCategories.every(cat => cat.words.length === 0)) {
-                alert("Error: No words were loaded from the selected categories. Cannot start game.");
+                alert("Fehler: Keine Wörter konnten aus den gewählten Kategorien geladen werden. Spiel kann nicht starten.");
                 return;
             }
             
@@ -479,8 +478,8 @@
 
             sessionStorage.setItem('chirpss_imposter_game_data', JSON.stringify(gameData));
 
-            // Redirect to English Reveal page
-            window.location.href = 'https://chirpss.github.io/En/Imposter/RevealRole.html';
+            // Redirect to German Reveal page
+            window.location.href = 'https://chirpss.github.io/De/Imposter/RevealRole.html';
         });
 
         function initializeSettings() {
