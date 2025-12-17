@@ -62,8 +62,7 @@
                 <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
             </a>
             
-            <div class="flex items-center gap-2">
-                </div>
+            <div class="flex items-center gap-2"></div>
         </div>
     </header>
 
@@ -72,21 +71,51 @@
             
             <h2 class="text-6xl sm:text-9xl font-extrabold text-warm-dusk">404</h2>
             
-            <h3 class="text-2xl sm:text-3xl font-bold text-soft-horizon mt-4">
+            <h3 id="error-title" class="text-2xl sm:text-3xl font-bold text-soft-horizon mt-4">
                 Page Not Found
             </h3>
             
-            <p class="text-lg text-subtle-gray mt-2 mb-8">
+            <p id="error-desc" class="text-lg text-subtle-gray mt-2 mb-8">
                 Sorry, we couldn't find the page you're looking for.<br>:(
             </p>
             
-            <a href="https://chirpss.github.io" 
+            <a id="home-btn" href="https://chirpss.github.io/En/" 
                class="inline-block px-8 py-3 bg-warm-dusk text-soft-horizon font-semibold text-lg rounded-lg shadow-md hover:scale-[1.02] transition duration-200 hover:shadow-card-glow focus:outline-none focus:ring-2 focus:ring-fiery-core focus:ring-offset-2 focus:ring-offset-deep-twilight">
                 Go Back Home
             </a>
 
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get Elements
+            const title = document.getElementById('error-title');
+            const desc = document.getElementById('error-desc');
+            const btn = document.getElementById('home-btn');
+
+            // 1. Check if user prefers German stored in localStorage
+            const savedLang = localStorage.getItem('preferredLanguage');
+            
+            // 2. Check if the URL they TRIED to visit contained /De/
+            const isGermanUrl = window.location.href.includes('/De/');
+
+            // Logic: If saved is 'de' OR they were trying to visit a German link
+            if (savedLang === 'de' || isGermanUrl) {
+                // Translate to German
+                document.title = "CHIRPSS | Seite nicht gefunden";
+                title.innerText = "Seite nicht gefunden";
+                desc.innerHTML = "Entschuldigung, wir konnten die gesuchte Seite nicht finden.<br>:(";
+                
+                // Update Button
+                btn.innerText = "Zur Startseite";
+                btn.href = "https://chirpss.github.io/De/";
+            } else {
+                // Default to English (Content is already English)
+                btn.href = "https://chirpss.github.io/En/";
+            }
+        });
+    </script>
     
-    </body>
+</body>
 </html>
