@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <script src="https://chirpss.github.io/Cookies.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>CHIRPSS | Kostenlose Partyspiele</title>
+    <link rel="icon" type="image/x-icon" href="/logo.ico">
+
+    <meta name="description" content="Spiele CHIRPSS, die ultimative Seite für kostenlose Online-Partyspiele.">
+    
+    <link rel="canonical" href="https://chirpss.github.io/De/" />
+    <meta property="og:title" content="CHIRPSS: Kostenlose Online-Partyspiele" />
+    <meta property="og:description" content="Die beste Auswahl an kostenlosen Social-Deduction- und Gruppenspielen ohne Download." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chirpss.github.io/De/" />
+    <meta property="og:image" content="https://chirpss.github.io/icon.png" /> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-twilight': '#1C2A39',
+                        'warm-dusk': '#E87040',
+                        'fiery-core': '#FFC35B',
+                        'soft-horizon': '#F5F1E6',
+                        'subtle-gray': '#5A6F82',
+                    },
+                    boxShadow: {
+                        'card-glow': '0 0 15px rgba(232, 112, 64, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #1C2A39; color: #F5F1E6; }
+        .game-card-link { outline: none; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .game-card-link:hover, .game-card-link:focus-visible { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), var(--tw-shadow-card-glow); }
+        
+        /* Dropdown styling adjustment for dark mode */
+        select option {
+            background-color: #1C2A39;
+            color: #F5F1E6;
+        }
+    </style>
+
+    <script>
+        function changeLanguage(selectObject) {
+            const lang = selectObject.value;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            if (lang === 'en') {
+                window.location.href = 'https://chirpss.github.io/En/';
+            }
+            // If 'de', we are already here
+        }
+    </script>
+</head>
+<body class="min-h-screen antialiased flex flex-col relative">
+
+    <script>
+        window.startPlay = function(gameName) {
+            const pathMap = { 
+                'Imposter': 'https://chirpss.github.io/De/Imposter/', 
+                'WrongAnswersOnly': 'https://chirpss.github.io/De/WrongAnswersOnly/', 
+                'TenBut': 'https://chirpss.github.io/De/TenBut/', 
+                'WhoAmI': 'https://chirpss.github.io/De/WhoAmI/', 
+                'MoreOrLess': 'https://chirpss.github.io/De/MoreOrLess/', 
+                'WerewolfEarlyAccess': 'https://chirpss.github.io/De/WerewolfEarlyAccess/'
+            };
+            const urlPath = pathMap[gameName] || 'https://chirpss.github.io/De/';
+            window.location.href = urlPath;
+        };
+    </script>
+    
+    <div class="bg-warm-dusk text-deep-twilight font-bold text-center p-3 px-4 flex flex-col sm:flex-row items-center justify-center gap-3 shadow-lg z-[60] relative">
+        <span class="text-sm sm:text-base">⚠️ Hinweis: Aktuell funktionieren noch nicht alle Spiele vollständig oder sind online.</span>
+        <button onclick="changeLanguage({value: 'en'})" class="bg-deep-twilight text-soft-horizon px-4 py-1.5 rounded-full text-xs sm:text-sm shadow-md hover:bg-opacity-90 transition whitespace-nowrap flex items-center gap-2">
+            Zur englischen Seite 🇬🇧
+        </button>
+    </div>
+    <header class="bg-deep-twilight border-b border-subtle-gray/30 p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="https://chirpss.github.io/De/" class="hover:opacity-90 transition-opacity">
+                <h1 class="hidden sm:block text-2xl font-bold text-fiery-core/90">CHIRPSS Spiele-Hub</h1>
+                <h1 class="sm:hidden text-2xl font-bold text-fiery-core/90">CHIRPSS</h1>
+            </a>
+            
+            <button onclick="window.location.href='https://chirpss.github.io/De/Join/'" class="px-4 py-2 bg-fiery-core text-deep-twilight font-bold rounded-full shadow-lg active:scale-95 transition-all text-sm flex items-center gap-1">
+                <span>Raum beitreten</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-8 flex-grow">
+        <div class="text-center mb-12 mt-4">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-soft-horizon mb-2">Die besten Online-Partyspiele</h2>
+            <p class="text-base sm:text-lg text-subtle-gray font-medium">Sofortige Partyspiele für Treffen vor Ort – keine Werbung, keine Accounts.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('Imposter')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Imposter</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Diskutieren und abstimmen, um den Spion zu entlarven.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('WhoAmI')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Wer bin ich</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Errate die geheime Person oder das Objekt.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('WrongAnswersOnly')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Falsche Antworten</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Antworte falsch, um zu gewinnen.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('TenBut')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">10/10 Aber</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Bewerte eine 10/10 mit einem würzigen Twist.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative game-card-link rounded-xl" onclick="startPlay('MoreOrLess')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden shadow-xl bg-soft-horizon/95 flex flex-col group">
+                    <div class="h-1 bg-gradient-to-r from-warm-dusk to-fiery-core"></div>
+                    <div class="p-4 flex flex-col flex-grow text-deep-twilight">
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-extrabold mb-1 tracking-tight">Mehr oder Weniger</h3>
+                            <p class="text-xs sm:text-sm font-normal text-deep-twilight/80">Schätze, ob verrückte Fakten höher oder niedriger sind!</p>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-warm-dusk text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="relative cursor-default p-1" onclick="startPlay('WerewolfEarlyAccess')">
+                <div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-subtle-gray/50 bg-deep-twilight/50 flex items-center justify-center p-4">
+                    <div class="text-center text-soft-horizon">
+                        <h3 class="text-base sm:text-lg font-bold">Werwolf</h3>
+                        <br>
+                        <p class="text-xs sm:text-sm mt-1 text-subtle-gray">Spiele mit 40+ Rollen und mehr als 100 Leuten</p>
+                        <br>
+                        <p class="text-xs sm:text-sm mt-1 text-subtle-gray">Kommt bald zu deiner Party</p>
+                        <div class="mt-4">
+                            <button class="w-full py-1.5 sm:py-2 bg-subtle-gray text-soft-horizon font-semibold text-xs sm:text-sm rounded-lg shadow-md hover:scale-[1.02] transition duration-200">Vorabzugriff erhalten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-deep-twilight border-t border-subtle-gray/20 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+
+            <div class="mb-6 flex justify-center">
+                <div class="relative inline-block text-left">
+                     <select onchange="changeLanguage(this)" class="bg-deep-twilight text-subtle-gray hover:text-soft-horizon text-sm border border-subtle-gray/50 rounded-lg py-2 px-3 focus:ring-2 focus:ring-fiery-core focus:border-transparent outline-none cursor-pointer transition-colors appearance-none text-center font-semibold">
+                        <option value="en">English 🇬🇧</option>
+                        <option value="de" selected>Deutsch 🇩🇪</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-center space-x-6 text-sm text-subtle-gray mb-4">
+                <a href="https://chirpss.github.io/De/Impressum" class="hover:text-fiery-core transition-colors">Impressum</a>
+                <a href="https://chirpss.github.io/De/privacy" class="hover:text-fiery-core transition-colors">Datenschutzerklärung</a>
+                <a href="https://chirpss.github.io/De/cookies" class="hover:text-fiery-core transition-colors">Cookie-Regeln</a>
+            </div>
+            <p class="text-xs text-subtle-gray/60">&copy; 2025 CHIRPSS. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <div id="scroll-hint" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-1000 opacity-0 pointer-events-none">
+        <div class="flex flex-col items-center animate-bounce">
+            <p class="text-[10px] uppercase tracking-widest text-subtle-gray mb-1">Mehr</p>
+            <div class="p-2 rounded-full bg-deep-twilight/80 backdrop-blur-sm border border-subtle-gray/30 shadow-card-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-fiery-core" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollHint = document.getElementById('scroll-hint');
+            let hasScrolled = false;
+
+            const hideHint = () => {
+                hasScrolled = true;
+                scrollHint.classList.add('opacity-0');
+            };
+
+            window.addEventListener('scroll', () => {
+                if (!hasScrolled) hideHint();
+            }, { once: true });
+
+            setTimeout(() => {
+                const isAtTop = window.scrollY < 50; 
+                const isScrollable = document.body.scrollHeight > window.innerHeight;
+
+                if (!hasScrolled && isAtTop && isScrollable) {
+                    scrollHint.classList.remove('opacity-0');
+                }
+            }, 10000); 
+        });
+    </script>
+
+</body>
+</html>
