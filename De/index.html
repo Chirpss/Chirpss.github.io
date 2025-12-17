@@ -56,7 +56,8 @@
             const lang = selectObject.value;
             localStorage.setItem('preferredLanguage', lang);
             
-            if (lang === 'en') {
+            // FIXED: Added .toLowerCase() to ensure 'En' or 'en' triggers the redirect
+            if (lang.toLowerCase() === 'en') {
                 window.location.href = 'https://chirpss.github.io/En/';
             }
             // If 'de', we are already here
@@ -82,7 +83,7 @@
     
     <div class="bg-warm-dusk text-deep-twilight font-bold text-center p-3 px-4 flex flex-col sm:flex-row items-center justify-center gap-3 shadow-lg z-[60] relative">
         <span class="text-sm sm:text-base">⚠️ Hinweis: Aktuell funktionieren noch nicht alle Spiele vollständig oder sind online.</span>
-        <button onclick="changeLanguage({value: 'En'})" class="bg-deep-twilight text-soft-horizon px-4 py-1.5 rounded-full text-xs sm:text-sm shadow-md hover:bg-opacity-90 transition whitespace-nowrap flex items-center gap-2">
+        <button onclick="changeLanguage({value: 'en'})" class="bg-deep-twilight text-soft-horizon px-4 py-1.5 rounded-full text-xs sm:text-sm shadow-md hover:bg-opacity-90 transition whitespace-nowrap flex items-center gap-2">
             Zur englischen Seite 🇬🇧
         </button>
     </div>
@@ -207,7 +208,7 @@
             <div class="mb-6 flex justify-center">
                 <div class="relative inline-block text-left">
                      <select onchange="changeLanguage(this)" class="bg-deep-twilight text-subtle-gray hover:text-soft-horizon text-sm border border-subtle-gray/50 rounded-lg py-2 px-3 focus:ring-2 focus:ring-fiery-core focus:border-transparent outline-none cursor-pointer transition-colors appearance-none text-center font-semibold">
-                        <option value="En">English 🇬🇧</option>
+                        <option value="en">English 🇬🇧</option>
                         <option value="de" selected>Deutsch 🇩🇪</option>
                     </select>
                 </div>
@@ -260,4 +261,3 @@
 
 </body>
 </html>
-
