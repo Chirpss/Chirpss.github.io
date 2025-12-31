@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dark Presence Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            background: #000; 
+            overflow: hidden; 
+            box-sizing: border-box; 
+        }
+
+        #map { 
+            height: 100%; 
+            width: 100%; 
+            background: #000; 
+        }
+        
+        .leaflet-control-attribution { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdgoyDsUteoRBIQ74NXvg5Xfj8V105Dnw",
+            authDomain: "chirpssgames.firebaseapp.com",
+            databaseURL: "https://chirpssgames-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "chirpssgames",
+            storageBucket: "chirpssgames.firebasestorage.app",
+            messagingSenderId: "949878456642",
+            appId: "1:949878456642:web:4287fe5fe9577ce1b688db",
+            measurementId: "G-E628QMNRQY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- Setup Dark Map with EXTRA ZOOM ---
+        // 1. Set maxZoom on the map instance
+        const map = L.map('map', { 
+            zoomControl: false,
+            maxZoom: 22 
+        }).setView([0, 0], 2);
+
+        // 2. Set maxZoom on the tile layer (and maxNativeZoom)
+        // maxNativeZoom tells Leaflet: "Tiles only exist up to 19, but scale them up for 20-22"
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 22,
+            maxNativeZoom: 19
+        }).addTo(map);
+
+        // --- User Identity ---
+        const userId = "user_" + Math.floor(Math.random() * 100000);
+        const userColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
+        
+        // Apply color to border
+        document.body.style.border = `10px solid ${userColor}`;
+
+        let userCoords = { lat: 0, lng: 0 };
+        const markers = {};
+
+        // Track local device location
+        navigator.geolocation.watchPosition((pos) => {
+            userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            
+            // Move map to user on first load (Zoom level 19 is very close)
+            if(map.getZoom() <= 2) map.setView([userCoords.lat, userCoords.lng], 19);
+        }, err => console.log(err), { enableHighAccuracy: true });
+
+        const myUserRef = ref(db, 'presence/' + userId);
+        onDisconnect(myUserRef).remove();
+
+        // Update loop
+        setInterval(() => {
+            if (userCoords.lat !== 0) {
+                set(myUserRef, {
+                    color: userColor,
+                    lat: userCoords.lat,
+                    lng: userCoords.lng,
+                    lastSeen: Date.now()
+                });
+            }
+        }, 1000);
+
+        // Listen for others
+        const allUsersRef = ref(db, 'presence');
+        onValue(allUsersRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            const now = Date.now();
+
+            Object.keys(markers).forEach(id => {
+                if (!data[id]) {
+                    map.removeLayer(markers[id]);
+                    delete markers[id];
+                }
+            });
+
+            Object.entries(data).forEach(([id, user]) => {
+                const isFresh = (now - user.lastSeen) < 60000;
+
+                if (isFresh) {
+                    if (markers[id]) {
+                        markers[id].setLatLng([user.lat, user.lng]);
+                    } else {
+                        markers[id] = L.circleMarker([user.lat, user.lng], {
+                            radius: 8,
+                            fillColor: user.color,
+                            color: user.color,
+                            weight: 4,
+                            fillOpacity: 0.9,
+                            opacity: 0.5
+                        }).addTo(map);
+                    }
+                } else if (markers[id]) {
+                    map.removeLayer(markers[id]);
+                    delete markers[id];
+                }
+            });
+        });
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>
